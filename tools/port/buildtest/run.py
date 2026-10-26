@@ -14,6 +14,7 @@ Prints each plan's result and the end of a failed build's log; exits nonzero if 
 """
 
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -43,14 +44,16 @@ for pair in "${pairs[@]}"; do
   [[ -n "$out" ]] || { echo "stand-in $ident: $installable did not build"; exit 1; }
   dir="$root/pkgs/$ident/0.0.0/20200101000000"
   mkdir -p "$dir"
-  # A package's PATH and flags name directories inside the package.
-  [[ -d "$out/bin" ]] && { ln -sfn "$out/bin" "$dir/bin"; echo "$dir/bin" > "$dir/PATH"; }
+  # The installable's top-level entries, in the package; its PATH and flags
+  # name directories inside the package.
+  for entry in "$out"/*; do
+    ln -sfn "$entry" "$dir/$(basename "$entry")"
+  done
+  [[ -d "$out/bin" ]] && echo "$dir/bin" > "$dir/PATH"
   if [[ -d "$out/include" ]]; then
-    ln -sfn "$out/include" "$dir/include"
     echo "-I$dir/include" > "$dir/CFLAGS"; echo "-I$dir/include" > "$dir/CPPFLAGS"; echo "-I$dir/include" > "$dir/CXXFLAGS"
   fi
   if [[ -d "$out/lib" ]]; then
-    ln -sfn "$out/lib" "$dir/lib"
     echo "-L$dir/lib" > "$dir/LDFLAGS"; echo "$dir/lib" > "$dir/LD_RUN_PATH"
     [[ -d "$out/lib/pkgconfig" ]] && echo "$dir/lib/pkgconfig" > "$dir/PKG_CONFIG_PATH"
   fi
@@ -119,7 +122,7 @@ def main(argv):
         archive = shutil.make_archive(os.path.join(tmp, "buildtest"), "tar", tmp, ".")
         remote = ("set -e; d=$(mktemp -d); tar --warning=no-timestamp -xf - -C \"$d\"; "
                   "bash \"$d/run.sh\" \"$d\" \"$HOME/plan-file-ops/components/plan/target/debug/doj-plan-build\" "
-                  + subprocess.list2cmdline([standins] + plans) + "; s=$?; rm -rf \"$d\"; exit $s")
+                  + shlex.join([standins] + plans) + "; s=$?; rm -rf \"$d\"; exit $s")
         env = dict(os.environ, DOJO_BUILDER_STATE=state, DOJO_BUILDER_PORT=port)
         with open(archive, "rb") as f:
             ran = subprocess.run([os.path.join(checkout, "support/vm/builder"), "ssh", remote], stdin=f,

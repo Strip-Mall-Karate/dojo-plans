@@ -22,3 +22,4 @@ foulkon
 traefik
 runc
 scaffolding-node
+scaffolding-ruby
