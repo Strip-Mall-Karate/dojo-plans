@@ -266,3 +266,9 @@ true
 local p="/a/b/file.tar.gz"
 local q="tail/"
 echo "$(basename "$p") $(dirname "$p") $(basename "$q") $(dirname "$q")" > names
+
+== sed-alternation-address
+-- setup
+printf '#SSL=/usr\n#_ssl x\n#other\n#c -lssl\n' > Setup.dist
+-- body
+sed -i -re "/(SSL=|_ssl|-DUSE_SSL|-lssl).*/ s|^#||" Setup.dist

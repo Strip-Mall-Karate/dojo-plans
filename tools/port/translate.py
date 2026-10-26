@@ -742,8 +742,11 @@ def cmd_sed(words, scope):
                 pass  # -i.bak keeps a backup the build never reads.
         elif w in ("-r", "-E", "--regexp-extended"):
             extended = True
-        elif w in ("-ir", "-ri"):
-            inplace = extended = True
+        elif re.fullmatch(r"-[irEe]+", w) and len(w) > 2:
+            inplace = inplace or "i" in w
+            extended = extended or "r" in w or "E" in w
+            if "e" in w:
+                exprs.append(next(it))
         elif w in ("-e", "--expression"):
             exprs.append(next(it))
         elif w.startswith("-"):
@@ -789,7 +792,13 @@ def sed_operation(parts, extended):
     cond = None
     m = SED_ADDRESS.match(text)
     if m and m.end() > 0:
-        if m.group(3) is not None:
+        alternatives = re.fullmatch(r"\(([^()]*\|[^()]*)\)(\.\*)?", m.group(3) or "") if extended else None
+        if alternatives:
+            # An address that only finds one of several strings in the line: any of them.
+            finds = " ".join(f"(string.find line {fstr(sed_to_lua(a, extended))})"
+                             for a in alternatives.group(1).split("|"))
+            cond = f"(or {finds})"
+        elif m.group(3) is not None:
             cond = f"(string.find line {fstr(sed_to_lua(m.group(3), extended))})"
         elif m.group(0) == "$":
             cond = "(= n (length lines))"
