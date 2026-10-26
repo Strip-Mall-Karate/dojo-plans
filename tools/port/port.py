@@ -208,8 +208,14 @@ def port(package_dir):
                   if not line.startswith((":name ", ":origin ", ":maintainer "))]
         k_phases, k_helpers = translate.callbacks(kernel2, k_emitter)
         emitter.problems.extend(f"{KERNEL2}: {p}" for p in k_emitter.problems)
-        if k_helpers:
-            emitter.problems.append(f"{KERNEL2}: helper functions need hand porting")
+        # The target's definitions join the plan's, unless one names another body.
+        defined = {d.split("\n", 1)[0]: d for d in helpers}
+        for definition in k_helpers:
+            head = definition.split("\n", 1)[0]
+            if head not in defined:
+                out.insert(len(out) - 1, definition)
+            elif defined[head] != definition:
+                emitter.problems.append(f"{KERNEL2}: {head} differs from the plan's")
         out.append(" :on {" + fennel_string(KERNEL2))
         out.append("      {" + "\n       ".join(k_body + k_phases) + "}}")
     out[-1] += "}"

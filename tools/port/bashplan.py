@@ -31,6 +31,8 @@ class Plan:
     order: list = field(default_factory=list)
     # The plans this one sourced, by directory name, in order.
     sourced: list = field(default_factory=list)
+    # Helpers the Fennel port of this plan needs, by name (translate.py).
+    helpers: set = field(default_factory=set)
 
 
 # ---------------------------------------------------------------- splitting

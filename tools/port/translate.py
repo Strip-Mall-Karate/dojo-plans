@@ -904,6 +904,8 @@ def statement(text, scope):
         return assignment(words[0], scope, exported=False)
     cmd = words[0]
     args = words[1:]
+    if re.fullmatch(r"(local\s+)?_clean_\w+(=true|=\(\))", stmt):
+        return []  # The studio link's bookkeeping; see use-dependency-path.
     if cmd in ("local", "declare", "readonly", "typeset"):
         args = [a for a in args if not a.startswith("-")]
         out = []
@@ -1097,8 +1099,42 @@ def condition(text, scope):
     return f"(not {expr})" if negate else expr
 
 
+# The old studio's workaround: link a dependency's tool where the build's
+# scripts look for it, and remove the link at the end. Dojo's build writes
+# nothing outside itself, so the scripts are pointed at the dependency instead.
+STUDIO_LINK = re.compile(
+    r'if\s+\[\[?\s+!\s+-[rex]\s+(/(?:usr/)?(?:s?bin)/[\w.+-]+)\s+\]\]?\s*;?\s*then\s+'
+    r'ln\s+-s[vf]*\s+"\$\(pkg_path_for\s+([\w/.-]+)\)/((?:s?bin)/[\w.+-]+)"\s+\1\s*'
+    r'(?:_clean_\w+=true|_clean_cmds\+=\(\1\))?\s*fi$', re.S)
+STUDIO_UNLINK = re.compile(
+    r'(if\s+\[\[?\s+-n\s+"\$_clean_\w+"\s+\]\]?\s*;?\s*then\s+rm\s+-f?v?f?\s+/\S+\s*fi'
+    r'|for\s+cmd\s+in\s+"\$\{_clean_cmds\[@\]\}"\s*;?\s*do\s+rm\s+-fv\s+"\$cmd"\s*;?\s*done)$', re.S)
+
+USE_DEPENDENCY_PATH = """(fn use-dependency-path [b path replacement]
+  ;; The source project's studio linked a dependency's tool to `path` for the
+  ;; build. A Dojo build writes nothing outside itself, so the build's scripts
+  ;; name the dependency's tool instead.
+  (each [_ f (ipairs (b:find b.src "*"))]
+    (let [name (: f :match "[^/]+$")]
+      (when (and (or (: name :match "^configure") (: name :match "^Makefile") (: name :match "^ltmain")
+                     (: name :match "%.in$") (: name :match "%.am$") (: name :match "%.ac$")
+                     (: name :match "%.m4$") (: name :match "%.mk$") (: name :match "%.sh$")
+                     (: name :match "%.pl$") (: name :match "%.py$"))
+                 (not (b:exists (b:join f "."))))
+        (let [text (b:read f)
+              escaped (pick-values 1 (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]" "%%%0"))
+              (fixed n) (: text :gsub escaped (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+          (when (> n 0) (b:write f fixed)))))))"""
+
+
 def block(text, scope):
     t = text.strip()
+    link = STUDIO_LINK.match(t)
+    if link:
+        scope.plan.helpers.add("use-dependency-path")
+        return [f'(use-dependency-path b {fstr(link.group(1))} (b:path_for {_dep(link.group(2), scope)} {fstr(link.group(3))}))']
+    if STUDIO_UNLINK.match(t):
+        return []
     m = re.match(r"if\s+(.*?)\s*;?\s*then\b(.*)\bfi$", t, re.S)
     if m and not re.search(r"\b(elif|if)\b", m.group(2)):
         cond = condition(m.group(1), scope)
@@ -1166,7 +1202,8 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
     # Every variable the function assigns is declared at its top, so one set
     # inside an if or a loop is still there after it, as in bash.
     for var in sorted(set(ASSIGNED.findall(body)) | set(LOCAL.findall(body))):
-        if var in scope.locals or re.fullmatch(r"[A-Z][A-Z0-9_]*", var) or var.startswith("pkg_"):
+        if (var in scope.locals or re.fullmatch(r"[A-Z][A-Z0-9_]*", var) or var.startswith("pkg_")
+                or var.startswith("_clean_")):
             continue
         scope.locals[var] = _local(var)
         scope.declared.add(var)
@@ -1210,7 +1247,8 @@ def shared_variables(plan, functions):
         body = plan.functions[fn]
         local = set(LOCAL.findall(body))
         for var in ASSIGNED.findall(body):
-            if var not in local and not re.fullmatch(r"[A-Z][A-Z0-9_]*", var) and not var.startswith("pkg_"):
+            if (var not in local and not re.fullmatch(r"[A-Z][A-Z0-9_]*", var) and not var.startswith("pkg_")
+                    and not var.startswith("_clean_")):
                 assigned.setdefault(var, set()).add(fn)
     shared = set()
     for var, setters in assigned.items():
@@ -1244,8 +1282,7 @@ def callbacks(plan, emitter):
         if fn in plan.functions:
             where = "before" if phase in ("download", "prepare") else "after"
             phases.setdefault(phase, {}).setdefault(where, []).append(fn)
-    if "do_clean" in plan.functions:
-        emitter.problems.append("do_clean: the build always empties the source directory before unpacking")
+    dropped_clean = "do_clean" in plan.functions
 
     def translated(fn, params=0):
         f, unported = translate_function(fn, plan.functions[fn], plan, name, shared, params)
@@ -1270,6 +1307,9 @@ def callbacks(plan, emitter):
         lines.append(f":{phase} (fn [b]\n{phase_text(forms)}")
 
     before_plan = [f'(var {_local(v)} "")' for v in shared]
+    if dropped_clean:
+        before_plan.insert(0, ";; The plan's do_clean is not ported: a build empties its source directory before\n"
+                              ";; unpacking and starts with no state from an earlier one.")
     for fn in functions:
         if fn in PHASE_OF or fn in FOLDED or fn == "do_clean":
             continue
@@ -1284,4 +1324,6 @@ def callbacks(plan, emitter):
         args = " ".join(["b"] + [f"a{i}" for i in range(1, params + 1)])
         close = "\n  )" if f and f[-1].lstrip().startswith(";;") else ")"
         before_plan.append(f"(fn {_local(fn)} [{args}]\n{indent(f, 2) if f else '  nil'}{close}")
+    if "use-dependency-path" in plan.helpers:
+        before_plan.insert(0, USE_DEPENDENCY_PATH)
     return lines, before_plan
