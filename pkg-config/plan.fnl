@@ -13,6 +13,9 @@
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]
  :build (fn [b]
+          ;; The glib 0.29.2 bundles names a struct member bool, a keyword in C23, gcc 15's and
+          ;; 16's default.
+          (b:env "CFLAGS" (.. (or (b:getenv "CFLAGS") "") " -std=gnu17"))
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--with-internal-glib" "--disable-host-tool"])
           (b:run ["make"]))
  :check (fn [b]
