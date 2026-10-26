@@ -22,9 +22,9 @@
           (b.default.install b)
           (b:mkdir (.. b.prefix "/include/gdbm"))
           (b:chmod (.. b.prefix "/include/gdbm") "755")
-          (b:remove (.. b.prefix "/include/gdbm/gdbm.h"))
-          (b:symlink "../gdbm.h" (.. b.prefix "/include/gdbm/gdbm.h"))
-          (b:remove (.. b.prefix "/include/gdbm/ndbm.h"))
-          (b:symlink "../ndbm.h" (.. b.prefix "/include/gdbm/ndbm.h"))
-          (b:remove (.. b.prefix "/include/gdbm/dbm.h"))
-          (b:symlink "../dbm.h" (.. b.prefix "/include/gdbm/dbm.h")))}
+          (let [link (if (b:exists (b:join (.. b.prefix "/include/gdbm/gdbm.h") ".")) (b:join (.. b.prefix "/include/gdbm/gdbm.h") "gdbm.h") (.. b.prefix "/include/gdbm/gdbm.h"))]
+            (b:remove link) (b:symlink "../gdbm.h" link))
+          (let [link (if (b:exists (b:join (.. b.prefix "/include/gdbm/ndbm.h") ".")) (b:join (.. b.prefix "/include/gdbm/ndbm.h") "ndbm.h") (.. b.prefix "/include/gdbm/ndbm.h"))]
+            (b:remove link) (b:symlink "../ndbm.h" link))
+          (let [link (if (b:exists (b:join (.. b.prefix "/include/gdbm/dbm.h") ".")) (b:join (.. b.prefix "/include/gdbm/dbm.h") "dbm.h") (.. b.prefix "/include/gdbm/dbm.h"))]
+            (b:remove link) (b:symlink "../dbm.h" link)))}

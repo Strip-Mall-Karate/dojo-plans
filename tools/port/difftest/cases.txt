@@ -392,3 +392,13 @@ for bin in "$pkg_prefix/bin/c++" "$pkg_prefix/bin/"*-c++* "$pkg_prefix/bin/"*-g+
         ln -sfn g++ "$bin"
       fi
     done
+
+== ln-into-existing-directory
+-- setup
+mkdir -p d e; echo t > target
+-- body
+ln -s ../target d
+ln -sf ../target e
+ln -sf target newlink
+ln -s target newlink2
+ln -sv /etc/hostname .

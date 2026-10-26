@@ -27,7 +27,8 @@
             (b:move (.. b.cache "/cli-" b.version) (.. b.cache "/" b.name "-" b.version))))
  :prepare (fn [b]
           (b:mkdir v-parent-go-path)
-          (b:symlink b.src (.. v-parent-go-path "/cli")))
+          (let [link (if (b:exists (b:join (.. v-parent-go-path "/cli") ".")) (b:join (.. v-parent-go-path "/cli") (: b.src :match "[^/]+$")) (.. v-parent-go-path "/cli"))]
+            (b:symlink b.src link)))
  :build (fn [b]
           (var v-code "")
           (b:run ["go" "install" "--tags" "extended"] {:cwd (.. v-parent-go-path "/cli")})

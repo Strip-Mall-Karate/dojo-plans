@@ -23,12 +23,16 @@
           (set v-maj "6")
           (set v-maj-min "6.1")
           (each [_ v-x (ipairs ["curses" "ncurses" "form" "panel" "menu" "tinfo"])]
-            (b:symlink (.. "lib" v-x "w.so") (.. b.prefix "/lib/lib" v-x ".so")) (b:symlink (.. "lib" v-x "w.so") (.. b.prefix "/lib/lib" v-x ".so." v-maj)) (b:symlink (.. "lib" v-x "w.so") (.. b.prefix "/lib/lib" v-x ".so." v-maj-min)) (b:symlink (.. v-x "w.pc") (.. b.prefix "/lib/pkgconfig/" v-x ".pc")))
-          (b:remove (.. b.prefix "/lib/libcursesw.so"))
-          (b:symlink "libncursesw.so" (.. b.prefix "/lib/libcursesw.so"))
-          (b:remove (.. b.prefix "/lib/libcursesw.a"))
-          (b:symlink "libncursesw.a" (.. b.prefix "/lib/libcursesw.a"))
-          (b:remove (.. b.prefix "/lib/libcurses.a"))
-          (b:symlink "libncursesw.a" (.. b.prefix "/lib/libcurses.a"))
+            (let [link (if (b:exists (b:join (.. b.prefix "/lib/lib" v-x ".so") ".")) (b:join (.. b.prefix "/lib/lib" v-x ".so") (: (.. "lib" v-x "w.so") :match "[^/]+$")) (.. b.prefix "/lib/lib" v-x ".so"))]
+            (b:symlink (.. "lib" v-x "w.so") link)) (let [link (if (b:exists (b:join (.. b.prefix "/lib/lib" v-x ".so." v-maj) ".")) (b:join (.. b.prefix "/lib/lib" v-x ".so." v-maj) (: (.. "lib" v-x "w.so") :match "[^/]+$")) (.. b.prefix "/lib/lib" v-x ".so." v-maj))]
+            (b:symlink (.. "lib" v-x "w.so") link)) (let [link (if (b:exists (b:join (.. b.prefix "/lib/lib" v-x ".so." v-maj-min) ".")) (b:join (.. b.prefix "/lib/lib" v-x ".so." v-maj-min) (: (.. "lib" v-x "w.so") :match "[^/]+$")) (.. b.prefix "/lib/lib" v-x ".so." v-maj-min))]
+            (b:symlink (.. "lib" v-x "w.so") link)) (let [link (if (b:exists (b:join (.. b.prefix "/lib/pkgconfig/" v-x ".pc") ".")) (b:join (.. b.prefix "/lib/pkgconfig/" v-x ".pc") (: (.. v-x "w.pc") :match "[^/]+$")) (.. b.prefix "/lib/pkgconfig/" v-x ".pc"))]
+            (b:symlink (.. v-x "w.pc") link)))
+          (let [link (if (b:exists (b:join (.. b.prefix "/lib/libcursesw.so") ".")) (b:join (.. b.prefix "/lib/libcursesw.so") "libncursesw.so") (.. b.prefix "/lib/libcursesw.so"))]
+            (b:remove link) (b:symlink "libncursesw.so" link))
+          (let [link (if (b:exists (b:join (.. b.prefix "/lib/libcursesw.a") ".")) (b:join (.. b.prefix "/lib/libcursesw.a") "libncursesw.a") (.. b.prefix "/lib/libcursesw.a"))]
+            (b:remove link) (b:symlink "libncursesw.a" link))
+          (let [link (if (b:exists (b:join (.. b.prefix "/lib/libcurses.a") ".")) (b:join (.. b.prefix "/lib/libcurses.a") "libncursesw.a") (.. b.prefix "/lib/libcurses.a"))]
+            (b:remove link) (b:symlink "libncursesw.a" link))
           (b:mkdir (.. b.prefix "/share/licenses"))
           (b:write (.. b.prefix "/share/licenses/LICENSE") (.. (b:capture ["grep" "-B" "100" "$Id" "README"]) "\n")))}

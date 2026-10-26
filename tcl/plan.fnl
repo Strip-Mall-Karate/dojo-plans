@@ -57,10 +57,10 @@
  :install (fn [b]
           (b:run ["make" "install"] {:cwd "unix"})
           (b:run ["make" "install-private-headers"] {:cwd "unix"})
-          (b:remove (.. b.prefix "/bin/tclsh"))
-          (b:symlink "tclsh8.6" (.. b.prefix "/bin/tclsh"))
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/tclsh") ".")) (b:join (.. b.prefix "/bin/tclsh") "tclsh8.6") (.. b.prefix "/bin/tclsh"))]
+            (b:remove link) (b:symlink "tclsh8.6" link))
           (b:chmod (.. b.prefix "/lib/libtcl8.6.so") "755")
-          (b:remove (.. b.prefix "/lib/libtcl.so"))
-          (b:symlink "libtcl8.6.so" (.. b.prefix "/lib/libtcl.so"))
+          (let [link (if (b:exists (b:join (.. b.prefix "/lib/libtcl.so") ".")) (b:join (.. b.prefix "/lib/libtcl.so") "libtcl8.6.so") (.. b.prefix "/lib/libtcl.so"))]
+            (b:remove link) (b:symlink "libtcl8.6.so" link))
           (b:copy (b:join (b:join b.src "unix") "../license.terms") (.. b.prefix "/share/licenses/LICENSE"))
           (b:chmod (.. b.prefix "/share/licenses/LICENSE") "644"))}

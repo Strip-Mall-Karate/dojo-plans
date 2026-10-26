@@ -35,10 +35,10 @@
           (b:chmod v--lib-dir "0755")
           (b:copy (b:join b.src (.. "libjbig/libjbig85.so." b.version)) v--lib-dir)
           (b:chmod v--lib-dir "0755")
-          (b:remove (.. v--lib-dir "/libjbig.so"))
-          (b:symlink (.. "libjbig.so." b.version) (.. v--lib-dir "/libjbig.so"))
-          (b:remove (.. v--lib-dir "/libjbig85.so"))
-          (b:symlink (.. "libjbig85.so." b.version) (.. v--lib-dir "/libjbig85.so"))
+          (let [link (if (b:exists (b:join (.. v--lib-dir "/libjbig.so") ".")) (b:join (.. v--lib-dir "/libjbig.so") (: (.. "libjbig.so." b.version) :match "[^/]+$")) (.. v--lib-dir "/libjbig.so"))]
+            (b:remove link) (b:symlink (.. "libjbig.so." b.version) link))
+          (let [link (if (b:exists (b:join (.. v--lib-dir "/libjbig85.so") ".")) (b:join (.. v--lib-dir "/libjbig85.so") (: (.. "libjbig85.so." b.version) :match "[^/]+$")) (.. v--lib-dir "/libjbig85.so"))]
+            (b:remove link) (b:symlink (.. "libjbig85.so." b.version) link))
           (b:copy (b:join b.src "libjbig/jbig.h") v--include-dir)
           (b:chmod v--include-dir "0644")
           (b:copy (b:join b.src "libjbig/jbig85.h") v--include-dir)

@@ -39,7 +39,8 @@
  :install (fn [b]
           (b.default.install b)
           (each [_ v-bin (ipairs ["depmod" "insmod" "lsmod" "modinfo" "modprobe" "rmmod"])]
-            (b:symlink "kmod" (if (= (: v-bin :sub 1 1) "/") v-bin (b:join (.. b.prefix "/bin") v-bin)))))
+            (let [link (if (b:exists (b:join (if (= (: v-bin :sub 1 1) "/") v-bin (b:join (.. b.prefix "/bin") v-bin)) ".")) (b:join (if (= (: v-bin :sub 1 1) "/") v-bin (b:join (.. b.prefix "/bin") v-bin)) "kmod") (if (= (: v-bin :sub 1 1) "/") v-bin (b:join (.. b.prefix "/bin") v-bin)))]
+            (b:symlink "kmod" link))))
  :strip (fn [b]
           (b.default.strip b)
           ;; From do_end.

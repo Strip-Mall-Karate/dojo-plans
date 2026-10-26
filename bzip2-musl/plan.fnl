@@ -51,11 +51,16 @@
           (b:run ["make" "install" (.. "PREFIX=" b.prefix)])
           (b:remove (.. b.prefix "/bin/bunzip2"))
           (b:remove (.. b.prefix "/bin/bzcat"))
-          (b:symlink "bzip2" (.. b.prefix "/bin/bunzip2"))
-          (b:symlink "bzip2" (.. b.prefix "/bin/bzcat"))
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/bunzip2") ".")) (b:join (.. b.prefix "/bin/bunzip2") "bzip2") (.. b.prefix "/bin/bunzip2"))]
+            (b:symlink "bzip2" link))
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/bzcat") ".")) (b:join (.. b.prefix "/bin/bzcat") "bzip2") (.. b.prefix "/bin/bzcat"))]
+            (b:symlink "bzip2" link))
           (if (b:exists (.. b.prefix "/lib"))
             (b:copy (.. b.cache "/bzip2-1.0.6/libbz2.so." b.version) (b:join (.. b.prefix "/lib") (: (.. b.cache "/bzip2-1.0.6/libbz2.so." b.version) :match "[^/]+$")))
             (b:copy (.. b.cache "/bzip2-1.0.6/libbz2.so." b.version) (.. b.prefix "/lib")))
-          (b:symlink (.. "libbz2.so." b.version) (.. b.prefix "/lib/libbz2.so"))
-          (b:symlink (.. "libbz2.so." b.version) (.. b.prefix "/lib/libbz2.so." v-maj))
-          (b:symlink (.. "libbz2.so." b.version) (.. b.prefix "/lib/libbz2.so." v-maj-min)))}
+          (let [link (if (b:exists (b:join (.. b.prefix "/lib/libbz2.so") ".")) (b:join (.. b.prefix "/lib/libbz2.so") (: (.. "libbz2.so." b.version) :match "[^/]+$")) (.. b.prefix "/lib/libbz2.so"))]
+            (b:symlink (.. "libbz2.so." b.version) link))
+          (let [link (if (b:exists (b:join (.. b.prefix "/lib/libbz2.so." v-maj) ".")) (b:join (.. b.prefix "/lib/libbz2.so." v-maj) (: (.. "libbz2.so." b.version) :match "[^/]+$")) (.. b.prefix "/lib/libbz2.so." v-maj))]
+            (b:symlink (.. "libbz2.so." b.version) link))
+          (let [link (if (b:exists (b:join (.. b.prefix "/lib/libbz2.so." v-maj-min) ".")) (b:join (.. b.prefix "/lib/libbz2.so." v-maj-min) (: (.. "libbz2.so." b.version) :match "[^/]+$")) (.. b.prefix "/lib/libbz2.so." v-maj-min))]
+            (b:symlink (.. "libbz2.so." b.version) link)))}

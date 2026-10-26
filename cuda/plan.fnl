@@ -88,8 +88,10 @@
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (.. b.prefix "/include/host_defines.h") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          (b:symlink (.. (b:path_for "karate/gcc") "/bin/gcc") (.. b.prefix "/bin/gcc"))
-          (b:symlink (.. (b:path_for "karate/gcc") "/bin/g++") (.. b.prefix "/bin/g++"))
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/gcc") ".")) (b:join (.. b.prefix "/bin/gcc") (: (.. (b:path_for "karate/gcc") "/bin/gcc") :match "[^/]+$")) (.. b.prefix "/bin/gcc"))]
+            (b:symlink (.. (b:path_for "karate/gcc") "/bin/gcc") link))
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/g++") ".")) (b:join (.. b.prefix "/bin/g++") (: (.. (b:path_for "karate/gcc") "/bin/g++") :match "[^/]+$")) (.. b.prefix "/bin/g++"))]
+            (b:symlink (.. (b:path_for "karate/gcc") "/bin/g++") link))
           (b:mkdir (.. b.prefix "/etc/profile.d"))
           (b:write (.. b.prefix "/etc/profile.d/cuda.sh") (.. "export PATH=$PATH:" b.prefix "/bin\n"))
           (b:chmod (.. b.prefix "/etc/profile.d/cuda.sh") "0755")

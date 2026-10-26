@@ -26,7 +26,8 @@
             (b:move (.. b.cache "/agent-" b.version) (.. b.cache "/" b.name "-" b.version))))
  :prepare (fn [b]
           (b:mkdir v-parent-go-path)
-          (b:symlink b.src (.. v-parent-go-path "/agent")))
+          (let [link (if (b:exists (b:join (.. v-parent-go-path "/agent") ".")) (b:join (.. v-parent-go-path "/agent") (: b.src :match "[^/]+$")) (.. v-parent-go-path "/agent"))]
+            (b:symlink b.src link)))
  :build (fn [b]
           (var v-code "")
           (b:run ["go" "install" "--tags" "extended"] {:cwd (.. v-parent-go-path "/agent")})

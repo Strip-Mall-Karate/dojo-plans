@@ -17,6 +17,7 @@
  :install (fn [b]
           (b:copy (b:join b.src "mksh") (.. b.prefix "/bin/mksh"))
           (b:chmod (.. b.prefix "/bin/mksh") "755")
-          (b:symlink "mksh" (b:join (.. b.prefix "/bin") "ksh"))
+          (let [link (if (b:exists (b:join (b:join (.. b.prefix "/bin") "ksh") ".")) (b:join (b:join (.. b.prefix "/bin") "ksh") "mksh") (b:join (.. b.prefix "/bin") "ksh"))]
+            (b:symlink "mksh" link))
           (b:mkdir (.. b.prefix "/share"))
           (b:run ["wget" "https://www.mirbsd.org/TaC-mksh.txt" "-O" (.. b.prefix "/share/TaC-mksh.txt")]))}

@@ -178,7 +178,8 @@
               (when (and (b:exists bin) (= gxx (b:read bin)))
                 (b:remove bin)
                 (b:symlink "g++" bin))))
-          (b:symlink "gcc" (.. b.prefix "/bin/cc"))
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/cc") ".")) (b:join (.. b.prefix "/bin/cc") "gcc") (.. b.prefix "/bin/cc"))]
+            (b:symlink "gcc" link))
           (v-wrap-binary b "gcc")
           (v-wrap-binary b "g++")
           (v-wrap-binary b "cpp"))}

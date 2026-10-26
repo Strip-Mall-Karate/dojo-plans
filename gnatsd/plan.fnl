@@ -24,7 +24,8 @@
           (b.default.download b))
  :prepare (fn [b]
           (b:mkdir v-parent-go-path)
-          (b:symlink b.src (.. v-parent-go-path "/" b.name)))
+          (let [link (if (b:exists (b:join (.. v-parent-go-path "/" b.name) ".")) (b:join (.. v-parent-go-path "/" b.name) (: b.src :match "[^/]+$")) (.. v-parent-go-path "/" b.name))]
+            (b:symlink b.src link)))
  :build (fn [b]
           (var v-code "")
           (b:run ["go" "build"] {:cwd (.. v-parent-go-path "/" b.name)})

@@ -23,12 +23,14 @@
           (b:run ["env" (.. "PATH=" (b:path_for "karate/tar") "/bin:" (or (b:getenv "PATH") "")) "sh" "-c" (b:capture ["curl" "-L" "https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/setup_agent.sh"])])
           (b:fix_interpreter [(.. (or (b:getenv "DD_HOME") "") "/bin/agent")] "karate/busybox-static" "bin/env")
           (b:remove (.. (or (b:getenv "DD_HOME") "") "/logs"))
-          (b:symlink "/doj/svc/dd-agent/var" (.. (or (b:getenv "DD_HOME") "") "/logs"))
+          (let [link (if (b:exists (b:join (.. (or (b:getenv "DD_HOME") "") "/logs") ".")) (b:join (.. (or (b:getenv "DD_HOME") "") "/logs") "var") (.. (or (b:getenv "DD_HOME") "") "/logs"))]
+            (b:symlink "/doj/svc/dd-agent/var" link))
           (b:mkdir (.. b.prefix "/config"))
           (if (b:exists (.. b.prefix "/config"))
             (b:move (.. (or (b:getenv "DD_HOME") "") "/agent/datadog.conf") (b:join (.. b.prefix "/config") (: (.. (or (b:getenv "DD_HOME") "") "/agent/datadog.conf") :match "[^/]+$")))
             (b:move (.. (or (b:getenv "DD_HOME") "") "/agent/datadog.conf") (.. b.prefix "/config")))
-          (b:symlink "/doj/svc/dd-agent/config/datadog.conf" (.. (or (b:getenv "DD_HOME") "") "/agent/datadog.conf")))
+          (let [link (if (b:exists (b:join (.. (or (b:getenv "DD_HOME") "") "/agent/datadog.conf") ".")) (b:join (.. (or (b:getenv "DD_HOME") "") "/agent/datadog.conf") "datadog.conf") (.. (or (b:getenv "DD_HOME") "") "/agent/datadog.conf"))]
+            (b:symlink "/doj/svc/dd-agent/config/datadog.conf" link)))
  :install (fn [b]
           nil)
  :strip (fn [b]

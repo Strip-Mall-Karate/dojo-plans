@@ -20,6 +20,7 @@
           (b:run ["make"]))
  :install (fn [b]
           (b.default.install b)
-          (b:symlink "vim" (.. b.prefix "/bin/vi"))
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/vi") ".")) (b:join (.. b.prefix "/bin/vi") "vim") (.. b.prefix "/bin/vi"))]
+            (b:symlink "vim" link))
           (b:copy (b:join b.src "runtime/doc/uganda.txt") (.. b.prefix "/share/licenses/license.txt"))
           (b:chmod (.. b.prefix "/share/licenses/license.txt") "644"))}

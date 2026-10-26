@@ -38,10 +38,12 @@
           (set v-clean-cmds [])
           (each [_ v-cmd (ipairs ["/bin/rm" "/bin/cat" "/bin/touch" "/bin/chmod" "/usr/bin/printf" "/bin/echo"])]
             (when (not (b:exists v-cmd))
-            (b:symlink (.. (b:path_for "coreutils") "/bin/" (: (: v-cmd :gsub "/+$" "") :match "[^/]*$")) v-cmd) (set v-clean-cmds [v-cmd])))
+            (let [link (if (b:exists (b:join v-cmd ".")) (b:join v-cmd (: (.. (b:path_for "coreutils") "/bin/" (: (: v-cmd :gsub "/+$" "") :match "[^/]*$")) :match "[^/]+$")) v-cmd)]
+            (b:symlink (.. (b:path_for "coreutils") "/bin/" (: (: v-cmd :gsub "/+$" "") :match "[^/]*$")) link)) (set v-clean-cmds [v-cmd])))
           (b:run ["make" "tests"])
           (each [_ v-cmd (ipairs v-clean-cmds)]
             (b:remove v-cmd)))
  :install (fn [b]
           (b.default.install b)
-          (b:symlink "bash" (.. b.prefix "/bin/sh")))}
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/sh") ".")) (b:join (.. b.prefix "/bin/sh") "bash") (.. b.prefix "/bin/sh"))]
+            (b:symlink "bash" link)))}

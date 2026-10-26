@@ -629,12 +629,20 @@ def cmd_ln(words, scope):
     else:
         raise Unported("ln arity")
     target_expr = word(target, scope)
+    decide = False
     if link is None:
         link_expr = anchor(basename(target_expr), scope)
     else:
         link_expr = path(link, scope)
-        if into_dir(link):
+        if into_dir(link) or link.strip("\"'") in (".", ".."):
             link_expr = f"(b:join {link_expr} {basename(target_expr)})"
+        elif not found & {"T", "n", "r"}:
+            # The link goes inside the destination when that is a directory, as ln did.
+            decide = True
+    if decide:
+        forms = ([f"(b:remove link)"] if "f" in found else []) + [f"(b:symlink {target_expr} link)"]
+        return [f"(let [link (if (b:exists (b:join {link_expr} \".\")) (b:join {link_expr} {basename(target_expr)}) {link_expr})]\n"
+                f"  {' '.join(forms)})"]
     out = []
     if "r" in found:
         # Relative link: only when target and link are in the same directory.

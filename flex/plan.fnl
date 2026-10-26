@@ -23,4 +23,5 @@
           (b:run ["make" "check" (.. "LDFLAGS=" (or (b:getenv "LDFLAGS") "") " -lstdc++")]))
  :install (fn [b]
           (b.default.install b)
-          (b:symlink "flex" (.. b.prefix "/bin/lex")))}
+          (let [link (if (b:exists (b:join (.. b.prefix "/bin/lex") ".")) (b:join (.. b.prefix "/bin/lex") "flex") (.. b.prefix "/bin/lex"))]
+            (b:symlink "flex" link)))}
