@@ -14,9 +14,12 @@ const GlobalArgsSchema = z.object({
   planBuild: z.string().default("doj-plan-build").describe(
     "The doj-plan-build program, a path or a name on PATH",
   ),
-  target: z.string().default("x86_64-linux").describe(
-    "The package target to show and build for",
-  ),
+  // An architecture and an OS, nothing else: it is passed to doj-plan-build after --target, and a
+  // value starting with "-" would be read as a flag.
+  target: z.string().regex(/^[a-z0-9_]+-[a-z0-9_]+$/).default("x86_64-linux")
+    .describe(
+      "The package target to show and build for, such as x86_64-linux",
+    ),
   root: z.string().optional().describe(
     "DOJ_ROOT_PATH for builds: where packages are installed and sources cached (default /doj)",
   ),
@@ -35,6 +38,20 @@ const GlobalArgsSchema = z.object({
 });
 
 type GlobalArgs = z.infer<typeof GlobalArgsSchema>;
+
+/**
+ * What `doj-plan-build show` prints, as far as this behavior reads it. Checked, because a `deps`
+ * that arrived as a string would be spread into its characters and order the waves wrong.
+ */
+const ShownSchema = z.looseObject({
+  name: z.string(),
+  origin: z.string(),
+  version: z.string().nullish(),
+  deps: z.array(z.string()).default([]),
+  build_deps: z.array(z.string()).default([]),
+  scaffolding: z.union([z.string(), z.looseObject({ package: z.string() })])
+    .nullish(),
+});
 
 const PlanArgsSchema = z.object({
   plan: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_.-]*$/).describe(
@@ -287,19 +304,30 @@ async function showPlan(
       `doj-plan-build show ${plan} --target ${args.target}: ${shown.stderr.trim()}`,
     );
   }
-  const metadata = JSON.parse(shown.stdout) as Record<string, unknown>;
-  const scaffolding = metadata.scaffolding;
+  let metadata: Record<string, unknown>;
+  let shownPlan: z.infer<typeof ShownSchema>;
+  try {
+    metadata = JSON.parse(shown.stdout) as Record<string, unknown>;
+    shownPlan = ShownSchema.parse(metadata);
+  } catch (error) {
+    throw new Error(
+      `doj-plan-build show ${plan} --target ${args.target} printed metadata this behavior cannot read: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  }
+  const scaffolding = shownPlan.scaffolding;
   return {
     plan,
     target: args.target,
-    name: String(metadata.name),
-    origin: String(metadata.origin),
-    version: typeof metadata.version === "string" ? metadata.version : null,
-    deps: (metadata.deps as string[] | undefined) ?? [],
-    buildDeps: (metadata.build_deps as string[] | undefined) ?? [],
+    name: shownPlan.name,
+    origin: shownPlan.origin,
+    version: shownPlan.version ?? null,
+    deps: shownPlan.deps,
+    buildDeps: shownPlan.build_deps,
     scaffolding: typeof scaffolding === "string"
       ? scaffolding
-      : (scaffolding as { package?: string } | undefined)?.package ?? null,
+      : scaffolding?.package ?? null,
     metadata,
   };
 }

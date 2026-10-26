@@ -285,3 +285,30 @@ Deno.test("build says which setting to fix when doj-plan-build is missing", asyn
     "set planBuild to its path",
   );
 });
+
+Deno.test("a target that could be read as a flag is refused", () => {
+  const args = { checkout: "/plans", target: "--check" };
+  assert(!behavior.globalArguments.safeParse(args).success);
+  assert(
+    behavior.globalArguments.safeParse({ ...args, target: "aarch64-linux" })
+      .success,
+  );
+});
+
+Deno.test("order refuses show output whose deps is not a list, naming the plan", async () => {
+  const f = await fixture({ app: {} });
+  await Deno.writeTextFile(
+    `${f.checkout}/app/meta.json`,
+    JSON.stringify({ name: "app", origin: "karate", deps: "karate/lib" }),
+  );
+  const { context } = contextFor(f);
+  await assertRejects(
+    () =>
+      behavior.methods.order.execute({
+        plans: ["app"],
+        withDependencies: true,
+      }, context),
+    Error,
+    "doj-plan-build show app",
+  );
+});
