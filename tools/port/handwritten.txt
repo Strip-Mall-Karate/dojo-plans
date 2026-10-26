@@ -5,3 +5,4 @@ patchelf
 netcat-openbsd
 prometheus-cpp
 img
+rust-nightly
