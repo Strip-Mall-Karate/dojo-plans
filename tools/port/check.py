@@ -63,6 +63,8 @@ def check(tool, package):
     helper = HELPER_RUN.search(text)
     if helper:
         problems.append(f"runs the source project's builder function {helper.group(1)}")
+    if "@{" in text:
+        problems.append("holds a build path marker the port did not turn into Fennel")
     old = OLD_NAME.search(text)
     if old:
         problems.append(f"names the source project: {old.group(0)!r}")

@@ -14,4 +14,4 @@
  :build (fn [b]
           nil)
  :install (fn [b]
-          (b:copy (b:join b.src "@{cache}/wordpress") (b:join (.. b.prefix "/public_html/") (: (b:join b.src "@{cache}/wordpress") :match "[^/]+$"))))}
+          (b:copy (.. b.cache "/wordpress") (b:join (.. b.prefix "/public_html/") (: (.. b.cache "/wordpress") :match "[^/]+$"))))}

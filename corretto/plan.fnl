@@ -19,7 +19,7 @@
  :build (fn [b]
           nil)
  :install (fn [b]
-          (b:run ["rsync" "-avz" "@{cache}/amazon-corretto-11.0.2.9.3-linux-x64/" "."] {:cwd b.prefix})
+          (b:run ["rsync" "-avz" (.. (.. b.cache "/amazon-corretto-11.0.2.9.3-linux-x64") "/") "."] {:cwd b.prefix})
           (b:env "LD_RUN_PATH" (.. (or (b:getenv "LD_RUN_PATH") "") ":" b.prefix "/lib/jli:" b.prefix "/lib/server:" b.prefix "/lib"))
           (b:log (.. "Setting interpreter for all executables to '" (b:path_for "glibc") "/lib/ld-linux-x86-64.so.2'"))
           (b:log (.. "Setting rpath for all libraries to '" (or (b:getenv "LD_RUN_PATH") "") "'"))

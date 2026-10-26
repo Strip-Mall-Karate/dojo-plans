@@ -14,15 +14,15 @@
  :exposes ["prom_ds_http"]
  :binds_optional {"targets" ["metric-http-port"]}
  :unpack (fn [b]
-          (b:mkdir (b:join b.src "@{cache}/prometheus-2.7.1/src/github.com/prometheus/prometheus"))
-          (b:run ["tar" "xf" (.. b.cache "/v2.7.1.tar.gz") "--strip" "1" "--no-same-owner"] {:cwd "@{cache}/prometheus-2.7.1/src/github.com/prometheus/prometheus"}))
+          (b:mkdir (.. (.. b.cache "/prometheus-2.7.1") "/src/github.com/prometheus/prometheus"))
+          (b:run ["tar" "xf" (.. b.cache "/v2.7.1.tar.gz") "--strip" "1" "--no-same-owner"] {:cwd (.. (.. b.cache "/prometheus-2.7.1") "/src/github.com/prometheus/prometheus")}))
  :prepare (fn [b]
           ;; From do_setup_environment.
           (b:env "GOPATH" (.. b.cache "/" (.. b.name "-" b.version)))
           (b.default.prepare b))
  :build (fn [b]
-          (b:run ["make" "build"] {:cwd "@{cache}/prometheus-2.7.1/src/github.com/prometheus/prometheus" :env {"USER" "root" "PREFIX" (.. b.prefix "/bin")}}))
+          (b:run ["make" "build"] {:cwd (.. (.. b.cache "/prometheus-2.7.1") "/src/github.com/prometheus/prometheus") :env {"USER" "root" "PREFIX" (.. b.prefix "/bin")}}))
  :check (fn [b]
-          (b:run ["make" "test"] {:cwd "@{cache}/prometheus-2.7.1/src/github.com/prometheus/prometheus"}))
+          (b:run ["make" "test"] {:cwd (.. (.. b.cache "/prometheus-2.7.1") "/src/github.com/prometheus/prometheus")}))
  :install (fn [b]
           nil)}

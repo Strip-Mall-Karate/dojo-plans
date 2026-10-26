@@ -83,12 +83,34 @@ def normalize(bash):
 HAND = {}
 
 
-def fstr(value):
+def literal(value):
     out = ['"']
     for c in value:
         out.append({"\\": "\\\\", '"': '\\"', "\n": "\\n", "\t": "\\t"}.get(c, c))
     out.append('"')
     return "".join(out)
+
+
+# The markers a plan's top-level values hold for build paths (port.MARKERS), as Fennel.
+MARKER = re.compile(r"@\{(prefix|plan_dir|cache|src|svc)\}")
+MARKER_FENNEL = {"prefix": "b.prefix", "plan_dir": "b.plan_dir", "cache": "b.cache", "src": "b.src",
+                 "svc": '(.. "/doj/svc/" b.name)'}
+
+
+def fstr(value):
+    """A Fennel string for `value`; a build path marker in it becomes that path."""
+    if not MARKER.search(value):
+        return literal(value)
+    parts = []
+    last = 0
+    for m in MARKER.finditer(value):
+        if m.start() > last:
+            parts.append(literal(value[last:m.start()]))
+        parts.append(MARKER_FENNEL[m.group(1)])
+        last = m.end()
+    if last < len(value):
+        parts.append(literal(value[last:]))
+    return parts[0] if len(parts) == 1 else "(.. " + " ".join(parts) + ")"
 
 
 def concat(parts):
