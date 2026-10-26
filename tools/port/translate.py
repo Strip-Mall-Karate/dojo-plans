@@ -754,7 +754,7 @@ def cmd_sed(words, scope):
         # Several commands in one expression: `211,217 d; 232 d`. Only split
         # expressions with no substitution, whose text holds no ; of its own.
         if (len(parts) == 1 and parts[0][0] == "lit" and ";" in parts[0][1]
-                and not re.search(r"(^|;)\s*[0-9$/,\s]*s", parts[0][1])):
+                and not re.search(r"(^|;)\s*(?:\d+(?:,(?:\d+|\$))?|\$|/(?:[^/\\]|\\.)*/)?\s*s[^\w\s]", parts[0][1])):
             ops.extend(sed_operation([("lit", piece.strip())], extended)
                        for piece in parts[0][1].split(";") if piece.strip())
         else:
@@ -1487,7 +1487,14 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
         last = statements[-1][2].strip()
         if last in ("return", "return 0", "return $?") or re.fullmatch(r"return \$\w+", last):
             statements = statements[:-1]
+    if not HAND:
+        HAND.update(_load_hand())
     for kind, _, stmt in statements:
+        hand = HAND.get(normalize(stmt))
+        if hand is not None:
+            # A person's port of this statement wins over the translator's.
+            forms.extend([hand] if hand else [])
+            continue
         try:
             if scope.lost_cwd:
                 raise Unported("after a cd or pushd that is not ported")
@@ -1549,7 +1556,7 @@ def params_of(body):
 
 def phase_text(forms):
     text = indent(forms, 10) if forms else "          nil"
-    close = "\n          )" if forms and forms[-1].lstrip().startswith(";;") else ")"
+    close = "\n          )" if forms and forms[-1].strip().split("\n")[-1].lstrip().startswith(";;") else ")"
     return text + close
 
 

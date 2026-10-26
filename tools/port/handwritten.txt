@@ -1,0 +1,4 @@
+# Plans written by hand in whole, which port.py leaves as they are.
+cacerts
+grub
+patchelf

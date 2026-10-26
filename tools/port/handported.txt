@@ -3,3 +3,93 @@
 # what it did. port.py uses an entry wherever the statement appears, so one entry
 # serves a plan and every plan that sources it. An empty Fennel part drops the
 # statement; its reason is a Fennel comment.
+
+== echo "quit" | ./bc/bc -l Test/checklib.b
+--
+;; bc reads the test file, then quits at the end of its input, which a build's
+;; programs read as empty: what piping in `quit` did.
+(b:run ["./bc/bc" "-l" "Test/checklib.b"])
+
+== PLAN_CONTEXT=$PLAN_CONTEXT/../coreutils _patch_files
+--
+;; coreutils' own patch, applied as its _patch_files did.
+(b:run ["patch" "-p1" "-i" (.. b.plan_dir "/../coreutils/skip-tests.patch")])
+
+== lzip -d --stdout "${HAB_CACHE_SRC_PATH}/${pkg_filename}" | tar x -C "${HAB_CACHE_SRC_PATH}/"
+--
+(b:run ["tar" "--lzip" "-xf" (.. b.cache "/" (.. b.name "-" b.version ".tar.lz")) "-C" b.cache])
+
+== install -Dm644 COPYING "$pkgdir/share/licenses/COPYING"
+--
+;; The plan named $pkgdir, which nothing sets, so the source project's builder
+;; installed this to /share/licenses; the license belongs in the package.
+(b:copy (b:join b.src "COPYING") (.. b.prefix "/share/licenses/COPYING"))
+(b:chmod (.. b.prefix "/share/licenses/COPYING") "644")
+
+== install -Dm644 COPYING "${pkgdir}/share/COPYING"
+--
+;; The plan named $pkgdir, which nothing sets, so the source project's builder
+;; installed this to /share; the license belongs in the package.
+(b:copy (b:join b.src "COPYING") (.. b.prefix "/share/COPYING"))
+(b:chmod (.. b.prefix "/share/COPYING") "644")
+
+== export GEM_HOME=${pkg_path}/vendor/bundle
+--
+;; The plan named $pkg_path, which nothing sets, so GEM_HOME was /vendor/bundle;
+;; bundle installs into ./vendor/bundle, so that is GEM_HOME here.
+(b:env "GEM_HOME" (b:join b.src "vendor/bundle"))
+
+== for d in src/azure-cli src/azure-cli-telemetry src/azure-cli-core src/azure-cli-nspkg src/azure-cli-command_modules-nspkg src/command_modules/azure-cli-*/ ; do
+    pushd "$d" > /dev/null
+    build_line "Building $d"
+    python setup.py bdist_wheel -d "$HAB_CACHE_SRC_PATH/$pkg_dirname/_build"
+    popd > /dev/null
+  done
+--
+(local dirs ["src/azure-cli" "src/azure-cli-telemetry" "src/azure-cli-core" "src/azure-cli-nspkg"
+             "src/azure-cli-command_modules-nspkg"])
+(each [_ m (ipairs (b:glob (b:join b.src "src/command_modules") "azure-cli-*"))]
+  (table.insert dirs m))
+(each [_ d (ipairs dirs)]
+  (b:log (.. "Building " d))
+  (b:run ["python" "setup.py" "bdist_wheel" "-d" (b:join b.src "_build")] {:cwd d}))
+
+== $_tar_cmd xf "${CACHE_PATH}/${pkg_name}_${pkg_version}_src.tar" -C "${CACHE_PATH}" --strip-components=1
+--
+;; $_tar_cmd was the source project's builder's tar.
+(b:run ["tar" "xf" (b:join b.src (.. b.name "_" b.version "_src.tar")) "-C" b.src "--strip-components=1"])
+
+== sed \
+    -e "/^dist_man1_MANS =/ s,^.*$,dist_man1_MANS = $(libtoolize_1),g" \
+    -i Makefile.in
+--
+;; The plan named $(libtoolize_1), which no plan defines, so the shell put nothing
+;; there: the man page is dropped, and help2man with it.
+(let [text (b:read (b:join b.src "Makefile.in"))]
+  (b:write (b:join b.src "Makefile.in")
+           (pick-values 1 (: text :gsub "\ndist_man1_MANS =[^\n]*" "\ndist_man1_MANS = "))))
+
+== find tests -type f \
+    | xargs sed -e "s,/bin/pwd,$(pkg_path_for coreutils)/bin/pwd,g" -i
+--
+;; find tests -type f | xargs sed: each file under tests, /bin/pwd made coreutils' pwd.
+(let [pwd (.. (b:path_for "coreutils") "/bin/pwd")]
+  (each [_ f (ipairs (b:find (b:join b.src "tests") "*"))]
+    (when (not (b:exists (b:join f ".")))
+      (let [text (b:read f)
+            (fixed n) (: text :gsub "/bin/pwd" (pick-values 1 (: pwd :gsub "%%" "%%%%")))]
+        (when (> n 0) (b:write f fixed))))))
+
+== if [[ ! -f /etc/services ]]; then
+    cp -v "$(pkg_path_for iana-etc)/etc/services" /etc/services
+    local clean_services=true
+  fi
+--
+;; The plan copied iana-etc's services file to /etc/services for the tests when it
+;; was missing. A Dojo build writes nothing outside itself; the tests need a
+;; services file where the build runs.
+
+== if [[ -n "$clean_services" ]]; then
+    rm -fv /etc/services
+  fi
+--

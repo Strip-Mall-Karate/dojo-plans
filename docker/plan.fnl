@@ -14,6 +14,6 @@
  :install (fn [b]
           (each [_ p (ipairs (b:glob b.src "docker*"))]
             (let [v-bin (: p :match "[^/]+$")]
-              (b:copy v-bin (.. b.prefix "/bin/" v-bin)) (b:chmod (.. b.prefix "/bin/" v-bin) "755"))))
+              (b:copy (if (= (: v-bin :sub 1 1) "/") v-bin (b:join b.src v-bin)) (.. b.prefix "/bin/" v-bin)) (b:chmod (.. b.prefix "/bin/" v-bin) "755"))))
  :strip (fn [b]
           nil)}

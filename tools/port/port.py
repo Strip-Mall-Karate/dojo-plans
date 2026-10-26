@@ -263,7 +263,13 @@ def port(package_dir):
 
 def main(argv):
     status = 0
+    here = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(here, "handwritten.txt"), encoding="utf-8") as f:
+        handwritten = {line.strip() for line in f if line.strip() and not line.startswith("#")}
     for package_dir in argv:
+        if os.path.basename(os.path.normpath(package_dir)) in handwritten:
+            print(f"{os.path.basename(os.path.normpath(package_dir))}: written by hand")
+            continue
         try:
             problems = port(package_dir)
         except Exception as e:  # noqa: BLE001 - one plan's failure must not stop the others.

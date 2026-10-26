@@ -33,8 +33,9 @@
           (b:env "LDFLAGS" (.. "-lgcc_s " (or (b:getenv "LDFLAGS") "")))
           (use-dependency-path b "/usr/bin/file" (b:path_for "file" "bin/file")))
  :check (fn [b]
-          ;; The plan copied iana-etc's services file to /etc/services for the tests when
-          ;; it was missing. A Dojo build writes nothing outside itself; the tests need a
+          (var v-clean-services "")
+          ;; The plan copied iana-etc's services file to /etc/services for the tests when it
+          ;; was missing. A Dojo build writes nothing outside itself; the tests need a
           ;; services file where the build runs.
           (b:run ["make" "test"]))
  :strip (fn [b]
