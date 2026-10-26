@@ -68,7 +68,8 @@
               ;; A platform-specific gem: `nokogiri (1.8.2-x86_64-linux)`.
               (tset specs name (or (version:match "^([^-]+)%-") version))))
           (and (= section "RUBY VERSION") (line:match "^%s+ruby "))
-          (set ruby (: (trim line) :gsub "p%d+$" ""))))
+          ;; Bundler drops the first patch level (`p105`), wherever it is.
+          (set ruby (pick-values 1 (: (trim line) :gsub "p%d+" "" 1)))))
     {:specs specs :ruby ruby}))
 
 (fn has-gem [d name]

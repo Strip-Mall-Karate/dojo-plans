@@ -1,30 +1,40 @@
-# Dojo Ruby Scaffolding
+# Ruby Scaffolding
 
-Ruby Scaffolding is a Dojo package which helps you build your Ruby-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Dojo Supervisor. The Supervisor will facilitate clustering, discovery of database services, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
+Builds Ruby web applications, services and processes ("apps") into a Dojo package that the Supervisor
+runs: Rails 4.2 and 5 apps, and Rack apps. A plan names the scaffolding and has no source: its directory,
+with a `Gemfile` and a `Gemfile.lock`, is the app.
 
-* Dojo Website
-* [Ruby Scaffolding Quickstart Guide](doc/quickstart.md)
-* [Ruby Scaffolding Documentation](doc/reference.md)
+```fennel
+{:name "my_app"
+ :origin "acmecorp"
+ :version "0.1.0"
+ :targets ["x86_64-linux"]
+ :scaffolding "karate/scaffolding-ruby"}
+```
+
+With settings:
+
+```fennel
+ :scaffolding {:package "karate/scaffolding-ruby" :settings {:app_port 9000 :env {:GREETING "hi"}}}
+```
+
+The scaffolding's package depends on Bundler, Ruby, gcc, make and pkg-config, so a plan using it builds
+with them.
+
+- [Quickstart](doc/quickstart.md)
+- [Reference](doc/reference.md)
+
+## Settings
+
+| Setting | Meaning | Default |
+| ------- | ------- | ------- |
+| `ruby_pkg` | The Ruby package | from `Gemfile.lock`'s `RUBY VERSION`, else `karate/ruby` |
+| `app_port` | The app's port in `default.toml` | `8000` |
+| `env` | More variables for the app's environment, name to value | none |
+| `process_bins` | More processes, name to command. They win over detected ones | none |
+| `symlinked_dirs` | More app directories to keep under the service's `var` directory | none, or Rails' `log`, `tmp` and `public/system` |
 
 ## Troubleshooting
 
-If you receive this error when running a build with this scaffolding:
-
-```bash
-The latest bundler is 1.15.4, but you are currently running 1.15.1.
-To update, run `gem install bundler`
-ERROR:  Could not find a valid gem '/doj/pkgs/core/bundler/1.15.1/20170621175238/cache/bundler-1.15.1
-1.15.1.
-bundler`.gem' (>= 0) in any repository
-   widget_world: Build time: 0m41s
-		widget_world: Exiting on error
-```
-
-You can bypass it by adding these lines to your plan.sh
-
-```bash
-do_prepare() {
-    do_default_prepare
-    _bundler_version="1.15.1"
-}
-```
+A build without a `Gemfile.lock` fails. Run `bundle lock` in the app and commit the `Gemfile.lock` it
+writes.

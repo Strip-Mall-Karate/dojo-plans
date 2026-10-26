@@ -1,17 +1,39 @@
-# Dojo Node Scaffolding
+# Node Scaffolding
 
-Node Scaffolding is a Dojo package which helps you build your  [Node.js][node]-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Dojo Supervisor. The Supervisor will facilitate clustering, discovery of external services such as databases, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
+Builds [Node.js][node] web applications, services and processes ("apps") into a Dojo package that the
+Supervisor runs. A plan names the scaffolding and has no source: its directory, with a `package.json`,
+is the app.
 
-* Dojo Website
-* [Node Scaffolding Quickstart Guide](doc/quickstart.md)
-* [Node Scaffolding Documentation](doc/reference.md)
-
-# Pre-build, build, and post-build steps}
-
-This scaffolding does support running build scripts, etc. that are defined in package.json. However, due to a known issue, you will need to run the Dojo services as "root" rather than the default "doj" user.  You can do this by adding this line to your plan.sh
-
+```fennel
+{:name "my_app"
+ :origin "acmecorp"
+ :version "0.1.0"
+ :targets ["x86_64-linux"]
+ :scaffolding "karate/scaffolding-node"}
 ```
-pkg_svc_user=root
+
+With settings:
+
+```fennel
+ :scaffolding {:package "karate/scaffolding-node" :settings {:app_port 9000 :env {:GREETING "hi"}}}
 ```
+
+- [Quickstart](doc/quickstart.md)
+- [Reference](doc/reference.md)
+
+## Settings
+
+| Setting | Meaning | Default |
+| ------- | ------- | ------- |
+| `pkg_manager` | `"npm"` or `"yarn"` | detected from the lock file |
+| `node_pkg` | The Node package | from `engines.node`, then `.nvmrc`, then `karate/node` |
+| `app_port` | The app's port in `default.toml` | `8000` |
+| `env` | More variables for the app's environment, name to value | none |
+| `process_bins` | More processes, name to command. They win over detected ones | none |
+
+## Build scripts
+
+`npm install` runs with `--unsafe-perm`, so the package's lifecycle scripts run during the build. The
+build sets `NODE_ENV=development`, so development dependencies are there for them.
 
 [node]: https://nodejs.org/en/
