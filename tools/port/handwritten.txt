@@ -147,3 +147,4 @@ xz
 xz-musl
 zlib
 zlib-musl
+coreutils-static

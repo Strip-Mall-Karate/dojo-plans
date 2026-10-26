@@ -16,7 +16,7 @@
  :interpreters ["bin/env"]
  :prepare (fn [b]
           ;; coreutils' own patch, applied as its _patch_files did.
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/../coreutils/skip-tests.patch")]))
+          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/skip-tests.patch")]))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--enable-single-binary" (.. "LDFLAGS=-static " (or (b:getenv "LDFLAGS") ""))] {:env {"FORCE_UNSAFE_CONFIGURE" "1"}})
           (b:run ["make"]))}
