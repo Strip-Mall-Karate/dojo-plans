@@ -278,3 +278,11 @@ sed -i -re "/(SSL=|_ssl|-DUSE_SSL|-lssl).*/ s|^#||" Setup.dist
 printf '    node "$@"\n\tnode x\nnodejs y\n' > node-gyp
 -- body
 sed -e "s#^\([[:space:]]\)\+node\([[:space:]]\)#\1/opt/bin/node\2#" -i node-gyp
+
+== glob-program-and-quoted-prefix-glob
+-- setup
+printf '#!/bin/sh\necho ran > ran.txt\n' > tool-1.run; chmod +x tool-1.run; mkdir -p sub; echo a > sub/rm-me-1.sh; echo b > sub/rm-me-2.sh; echo c > sub/keep.sh
+-- body
+./tool-*.run --flag
+local d="sub"
+rm -f "$d/rm-me-"*.sh

@@ -420,9 +420,12 @@ def _unquoted_split(text):
     if quoted and GLOB.search(quoted.group(3)):
         directory = quoted.group(1)
         if not quoted.group(2):
-            if not directory.endswith('/"'):
+            inner = directory[1:-1]
+            slash = inner.rfind("/")
+            if slash < 0 or GLOB.search(inner[slash + 1:]):
                 return None
-            directory = directory[:-2] + '"'
+            # "<dir>/start"*.sh: the glob begins inside the quotes, after the last /.
+            return '"' + inner[:slash] + '"', inner[slash + 1:] + quoted.group(3)
         return directory, quoted.group(3)
     masked = _unquoted(text)
     slash = masked.rfind("/")
@@ -1380,6 +1383,13 @@ def _command(cmd, args, scope, stdin):
         return [f"({_local(cmd)} b {' '.join(word(a, scope) for a in args)})".replace(" )", ")")]
     if cmd in SHELL_BUILTINS:
         raise Unported("the shell's " + cmd)
+    if GLOB.search(_unquoted(cmd)):
+        # A program named by a glob: each match is run, as the shell ran the first
+        # with the rest as its arguments only when several matched, which plans avoid.
+        kind, expr = paths(cmd, scope)
+        if kind != "*":
+            raise Unported("glob program " + cmd)
+        return [f"(each [_ program (ipairs {expr})]\n  (b:run [program {' '.join(word(a, scope) for a in args)}]{scope_cwd(scope)}))"]
     for a in args:
         # A glob character in a package spec (name:version, name@version, key=value) is literal.
         if GLOB.search(_unquoted(a)) and not re.search(r"[:@=]", _unquoted(a)):
