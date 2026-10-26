@@ -1,13 +1,14 @@
 ;; gettext, ported from its plan.sh.
+;; gettext 1.0, the latest release on 2026-10-26.
 {:name "gettext"
  :origin "karate"
- :version "0.19.8"
+ :version "1.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv2+" "lgpl2+"]
  :description "GNU internationalization library."
  :upstream_url "http://www.gnu.org/software/gettext/"
- :source {:url "http://ftp.gnu.org/gnu/gettext/gettext-0.19.8.tar.gz" :sha256 "3da4f6bd79685648ecf46dab51d66fcdddc156f41ed07e580a696a38ac61d48f"}
+ :source {:url "https://ftp.gnu.org/gnu/gettext/gettext-1.0.tar.xz" :sha256 "71132a3fb71e68245b8f2ac4e9e97137d3e5c02f415636eb508ae607bc01add7"}
  :deps ["karate/glibc" "karate/gcc-libs" "karate/acl" "karate/xz"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/findutils"]
  :bin_dirs ["bin"]

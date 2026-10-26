@@ -1,15 +1,16 @@
 ;; perl, ported from its plan.sh.
+;; perl 5.44.0, the latest release on 2026-10-26.
 (var v-locincpth "")
 (var v-loclibpth "")
 {:name "perl"
  :origin "karate"
- :version "5.28.0"
+ :version "5.44.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gpl" "perlartistic"]
  :description "Perl 5 is a highly capable, feature-rich programming language with over 29 years of development."
  :upstream_url "http://www.perl.org/"
- :source {:url "http://www.cpan.org/src/5.0/perl-5.28.0.tar.gz" :sha256 "7e929f64d4cb0e9d1159d4a59fc89394e27fa1f7004d0836ca0d514685406ea8"}
+ :source {:url "https://www.cpan.org/src/5.0/perl-5.44.0.tar.xz" :sha256 "505cf43912e9480495c344c70260452e32aa2a73c546a026b3f100053b23ce91"}
  :deps ["karate/glibc" "karate/zlib" "karate/bzip2" "karate/gdbm" "karate/db" "karate/coreutils" "karate/less"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/procps-ng" "karate/inetutils" "karate/iana-etc"]
  :bin_dirs ["bin"]

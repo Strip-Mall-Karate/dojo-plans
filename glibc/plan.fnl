@@ -1,4 +1,5 @@
 ;; glibc, ported from its plan.sh.
+;; glibc 2.44, the latest release on 2026-10-26.
 (fn use-dependency-path [b path replacement]
   ;; The source project's studio linked a dependency's tool to `path` for the
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
@@ -33,13 +34,13 @@
   )
 {:name "glibc"
  :origin "karate"
- :version "2.27"
+ :version "2.44"
  :targets ["x86_64-linux" "x86_64-linux-kernel2"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-2.0" "LGPL-2.0"]
  :description "The GNU C Library project provides the core libraries for the GNU system and GNU/Linux systems, as well as many other systems that use Linux as the kernel. These libraries provide critical APIs including ISO C11, POSIX.1-2008, BSD, OS-specific APIs and more. These APIs include such foundational facilities as open, read, write, malloc, printf, getaddrinfo, dlopen, pthread_create, crypt, login, exit and more."
  :upstream_url "https://www.gnu.org/software/libc"
- :source {:url "http://ftp.gnu.org/gnu/glibc/glibc-2.27.tar.xz" :sha256 "5172de54318ec0b7f2735e5a91d908afe1c9ca291fec16b5374d9faadfc1fc72"}
+ :source {:url "https://ftp.gnu.org/gnu/glibc/glibc-2.44.tar.xz" :sha256 "37f600f2bef3c5e8300147059568b2a2e40a7ad6ccc65ce942556d49429cc667"}
  :deps ["karate/linux-headers"]
  :build_deps ["karate/coreutils" "karate/bison" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/perl"]
  :bin_dirs ["bin"]
@@ -58,7 +59,6 @@
           (b:env "LDFLAGS" (.. "-Wl,--dynamic-linker=" v-dynamic-linker))
           (b:log (.. "Setting LDFLAGS=" (or (b:getenv "LDFLAGS") "")))
           (b:write (b:join b.src "nscd/Makefile") (.. (if (b:exists (b:join b.src "nscd/Makefile")) (b:read (b:join b.src "nscd/Makefile")) "") "LDFLAGS-nscd += -static-libgcc\n"))
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/rpcgen-path.patch")])
           (b:run ["patch" "-p1"] {:stdin (let [text (b:read (.. b.plan_dir "/dont-use-system-ld-so.patch")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]

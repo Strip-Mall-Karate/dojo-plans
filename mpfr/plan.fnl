@@ -1,13 +1,14 @@
 ;; mpfr, ported from its plan.sh.
+;; mpfr 4.2.2, the latest release on 2026-10-26.
 {:name "mpfr"
  :origin "karate"
- :version "4.0.1"
+ :version "4.2.2"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["lgpl"]
  :description "GNU MPFR (GNU Multiple Precision Floating-Point Reliably) is a GNU portable C library for arbitrary-precision binary floating-point computation with correct rounding, based on GNU Multi-Precision Library."
  :upstream_url "http://www.mpfr.org/"
- :source {:url "http://www.mpfr.org/mpfr-4.0.1/mpfr-4.0.1.tar.xz" :sha256 "67874a60826303ee2fb6affc6dc0ddd3e749e9bfcb4c8655e3953d0458a6e16e"}
+ :source {:url "https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.2.tar.xz" :sha256 "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01"}
  :deps ["karate/glibc" "karate/gmp"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/binutils"]
  :lib_dirs ["lib"]

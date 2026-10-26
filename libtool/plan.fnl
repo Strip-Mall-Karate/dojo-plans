@@ -1,13 +1,14 @@
 ;; libtool, ported from its plan.sh.
+;; libtool 2.6.2, the latest release on 2026-10-26.
 {:name "libtool"
  :origin "karate"
- :version "2.4.6"
+ :version "2.6.2"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv2+"]
  :description "GNU libtool is a generic library support script. Libtool hides the complexity of using shared libraries behind a consistent, portable interface."
  :upstream_url "http://www.gnu.org/software/libtool"
- :source {:url "http://ftp.gnu.org/gnu/libtool/libtool-2.4.6.tar.gz" :sha256 "e3bd4d5d3d025a36c21dd6af7ea818a2afcd4dfc1ea5a17b39d7854bcd0c06e3" :filename "libtool-2.4.6.tar.gz"}
+ :source {:url "https://ftp.gnu.org/gnu/libtool/libtool-2.6.2.tar.xz" :sha256 "2ef1067c16c97db930fd740cc9bc3d3ba9a583804ae5ac42cc3e8719e49e191e" :filename "libtool-2.6.2.tar.xz"}
  :deps ["karate/glibc" "karate/coreutils" "karate/sed" "karate/grep" "karate/binutils"]
  :build_deps ["karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/m4"]
  :bin_dirs ["bin"]

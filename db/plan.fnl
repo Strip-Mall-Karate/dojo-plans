@@ -1,4 +1,5 @@
 ;; db, ported from its plan.sh.
+;; db 5.3.28, the latest release on 2026-10-26 under the Sleepycat license: 6.0 and later are AGPL.
 {:name "db"
  :origin "karate"
  :version "5.3.28"

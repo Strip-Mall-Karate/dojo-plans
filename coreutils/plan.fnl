@@ -1,15 +1,16 @@
 ;; coreutils, ported from its plan.sh.
+;; coreutils 9.12, the latest release on 2026-10-26.
 (fn v--patch-files [b]
   (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/skip-tests.patch")]))
 {:name "coreutils"
  :origin "karate"
- :version "8.30"
+ :version "9.12"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-3.0"]
  :description "The GNU Core Utilities are the basic file, shell and text manipulation utilities of the GNU operating system. These are the core utilities which are expected to exist on every operating system."
  :upstream_url "https://www.gnu.org/software/coreutils/"
- :source {:url "http://ftp.gnu.org/gnu/coreutils/coreutils-8.30.tar.xz" :sha256 "e831b3a86091496cdba720411f9748de81507798f6130adeaef872d206e1b057"}
+ :source {:url "https://ftp.gnu.org/gnu/coreutils/coreutils-9.12.tar.xz" :sha256 "a480198559733e9b3da999e90543ac6f888a2caa544d8d664c5a1f17e528e210"}
  :deps ["karate/glibc" "karate/acl" "karate/attr" "karate/gmp" "karate/libcap"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/m4" "karate/perl" "karate/inetutils"]
  :bin_dirs ["bin"]

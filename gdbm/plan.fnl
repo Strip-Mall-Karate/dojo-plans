@@ -1,13 +1,14 @@
 ;; gdbm, ported from its plan.sh.
+;; gdbm 1.26, the latest release on 2026-10-26.
 {:name "gdbm"
  :origin "karate"
- :version "1.17"
+ :version "1.26"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv3+"]
  :description "GNU dbm is a set of database routines that use extensible hashing. It works similar to the standard UNIX dbm routines."
  :upstream_url "http://www.gnu.org/software/gdbm/gdbm.html"
- :source {:url "http://ftp.gnu.org/gnu/gdbm/gdbm-1.17.tar.gz" :sha256 "7cd8cc2e35b1aaede6084ea57cc9447752f498daaea854100a4bad567614977d"}
+ :source {:url "https://ftp.gnu.org/gnu/gdbm/gdbm-1.26.tar.gz" :sha256 "6a24504a14de4a744103dcb936be976df6fbe88ccff26065e54c1c47946f4a5e"}
  :deps ["karate/glibc"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]

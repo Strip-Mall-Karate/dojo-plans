@@ -1,13 +1,14 @@
 ;; util-linux, ported from its plan.sh.
+;; util-linux 2.42.4, the latest release on 2026-10-26.
 {:name "util-linux"
  :origin "karate"
- :version "2.32"
+ :version "2.42.4"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPLv2"]
  :description "Miscellaneous system utilities for Linux"
  :upstream_url "https://www.kernel.org/pub/linux/utils/util-linux"
- :source {:url "https://www.kernel.org/pub/linux/utils/util-linux/v2.32/util-linux-2.32.tar.xz" :sha256 "6c7397abc764e32e8159c2e96042874a190303e77adceb4ac5bd502a272a4734"}
+ :source {:url "https://www.kernel.org/pub/linux/utils/util-linux/v2.42/util-linux-2.42.4.tar.xz" :sha256 "fbd62a100ab7bb8746ba0661255c3c48185b1e9021507c624da01fbc696330ec"}
  :deps ["karate/glibc" "karate/zlib" "karate/ncurses"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
  :bin_dirs ["bin"]

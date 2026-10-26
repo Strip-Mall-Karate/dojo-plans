@@ -1,4 +1,5 @@
 ;; rust, ported from its plan.sh.
+;; rust 1.99.1, the latest release on 2026-10-26.
 (fn v-wrap-with-cert-path [b a1]
   (var v-bin "")
   (set v-bin (.. b.prefix "/bin/" a1))
@@ -10,13 +11,13 @@
   (b:chmod v-bin "755"))
 {:name "rust"
  :origin "karate"
- :version "1.33.0"
+ :version "1.99.1"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["Apache-2.0" "MIT"]
  :description "Rust is a systems programming language that runs blazingly fast, prevents segfaults, and guarantees thread safety."
  :upstream_url "https://www.rust-lang.org/"
- :source {:url "https://static.rust-lang.org/dist/rust-1.33.0-x86_64-unknown-linux-gnu.tar.gz" :sha256 "6623168b9ee9de79deb0d9274c577d741ea92003768660aca184e04fe774393f" :dirname "rust-1.33.0-x86_64-unknown-linux-gnu"}
+ :source {:url "https://static.rust-lang.org/dist/rust-1.99.1-x86_64-unknown-linux-gnu.tar.gz" :sha256 "aded4e6c1d580415e7b594a3080d8e23e9cbe06f159f97e300aa6875211f71bf" :dirname "rust-1.99.1-x86_64-unknown-linux-gnu"}
  :deps ["karate/glibc" "karate/gcc-libs" "karate/zlib" "karate/gcc" "karate/cacerts" "karate/busybox-static"]
  :build_deps ["karate/patchelf" "karate/findutils" "karate/coreutils"]
  :bin_dirs ["bin"]
@@ -24,32 +25,32 @@
  :download (fn [b]
           (var v-p "")
           (b.default.download b)
-          (let [v--target-shasumss ["c3c0bf38140f7108705bbeeeaebd3dd9e23f556d36796779100c8ecf9142da7f"] v--target-sourcess ["https://static.rust-lang.org/dist/rust-std-1.33.0-x86_64-unknown-linux-musl.tar.gz"]]
+          (let [v--target-shasumss ["89703fc52323fad35169fcf649e56844b7dd62bf9dd9a4113bbcd96865690e36"] v--target-sourcess ["https://static.rust-lang.org/dist/rust-std-1.99.1-x86_64-unknown-linux-musl.tar.gz"]]
             (for [n 1 1]
               (set v-p (. v--target-sourcess n)) (b:download v-p (. v--target-shasumss n) (: (: v-p :gsub "/+$" "") :match "[^/]*$"))))
           (set v-p ""))
  :verify (fn [b]
           (b.default.verify b)
-          (let [v--target-shasumss ["c3c0bf38140f7108705bbeeeaebd3dd9e23f556d36796779100c8ecf9142da7f"] v--target-sourcess ["https://static.rust-lang.org/dist/rust-std-1.33.0-x86_64-unknown-linux-musl.tar.gz"]]
+          (let [v--target-shasumss ["89703fc52323fad35169fcf649e56844b7dd62bf9dd9a4113bbcd96865690e36"] v--target-sourcess ["https://static.rust-lang.org/dist/rust-std-1.99.1-x86_64-unknown-linux-musl.tar.gz"]]
             (for [n 1 1]
               nil)))
  :unpack (fn [b]
           (b.default.unpack b)
-          (let [v--target-sourcess ["https://static.rust-lang.org/dist/rust-std-1.33.0-x86_64-unknown-linux-musl.tar.gz"]]
+          (let [v--target-sourcess ["https://static.rust-lang.org/dist/rust-std-1.99.1-x86_64-unknown-linux-musl.tar.gz"]]
             (for [n 1 1]
-              (b:run ["tar" "xf" (.. b.cache "/" (: (: (. v--target-sourcess n) :gsub "/+$" "") :match "[^/]*$"))] {:cwd (.. b.cache "/rust-1.33.0-x86_64-unknown-linux-gnu")}))))
+              (b:run ["tar" "xf" (.. b.cache "/" (: (: (. v--target-sourcess n) :gsub "/+$" "") :match "[^/]*$"))] {:cwd (.. b.cache "/rust-1.99.1-x86_64-unknown-linux-gnu")}))))
  :build (fn [b]
           nil)
  :install (fn [b]
           (var v-dir "")
           (b:run ["./install.sh" (.. "--prefix=" b.prefix) "--disable-ldconfig"])
-          (each [_ v-b (ipairs ["rustc" "cargo" "rustdoc" "cargo-fmt" "rls" "rustfmt"])]
+          (each [_ v-b (ipairs ["rustc" "cargo" "rustdoc" "cargo-fmt" "rustfmt"])]
             (b:run ["patchelf" "--interpreter" (.. (b:path_for "glibc") "/lib/ld-linux-x86-64.so.2") "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") (.. b.prefix "/bin/" v-b)]))
           (each [_ f (ipairs (b:find (b:join b.prefix "lib") "*.so"))]
             (b:run ["patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") f]))
           ;; Each extra target's standard library, unpacked beside the source, installed into rustc's sysroot.
           (let [sysroot (b:capture [(.. b.prefix "/bin/rustc") "--print" "sysroot"])]
-            (each [_ source (ipairs ["https://static.rust-lang.org/dist/rust-std-1.33.0-x86_64-unknown-linux-musl.tar.gz"])]
+            (each [_ source (ipairs ["https://static.rust-lang.org/dist/rust-std-1.99.1-x86_64-unknown-linux-musl.tar.gz"])]
               (let [dir (pick-values 1 (: (source:match "[^/]+$") :gsub "%.tar%.gz$" ""))]
                 (b:log (.. "Installing " dir " target for Rust"))
                 (b:run ["./install.sh" (.. "--prefix=" sysroot)] {:cwd (b:join b.src dir)}))))

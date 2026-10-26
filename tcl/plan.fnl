@@ -1,13 +1,14 @@
 ;; tcl, ported from its plan.sh.
+;; tcl 8.6.18, the latest 8.6 release on 2026-10-26: Tcl 9 breaks expect 5.45.4 and the plan's 8.6 layout.
 {:name "tcl"
  :origin "karate"
- :version "8.6.8"
+ :version "8.6.18"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["custom"]
  :description "Tool Command Language -- A dynamic programming language."
  :upstream_url "http://tcl.sourceforge.net/"
- :source {:url "http://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.8-src.tar.gz" :sha256 "c43cb0c1518ce42b00e7c8f6eaddd5195c53a98f94adc717234a65cbcfd3f96a" :dirname "tcl8.6.8"}
+ :source {:url "https://downloads.sourceforge.net/project/tcl/Tcl/8.6.18/tcl8.6.18-src.tar.gz" :sha256 "14f9af32b1767ff718477a8f974ad03c34341097e6b43f4ce54644ee974e268e" :dirname "tcl8.6.18"}
  :deps ["karate/glibc" "karate/gcc-libs" "karate/zlib"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
  :bin_dirs ["bin"]
@@ -22,8 +23,8 @@
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--enable-threads" "--enable-64bit"] {:cwd "unix"})
           (b:run ["make"] {:cwd "unix"})
           (set v-srcdir (: (b:join b.src "unix") :match "^(.*)/[^/]+$"))
-          (set v-tdbcver "tdbc1.0.6")
-          (set v-itclver "itcl4.1.1")
+          (set v-tdbcver "tdbc1.1.13")
+          (set v-itclver "itcl4.3.7")
           (let [text (b:read (b:join (b:join b.src "unix") "tclConfig.sh")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]

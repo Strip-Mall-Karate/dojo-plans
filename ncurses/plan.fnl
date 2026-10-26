@@ -1,13 +1,14 @@
 ;; ncurses, ported from its plan.sh.
+;; ncurses 6.6, the latest release on 2026-10-26.
 {:name "ncurses"
  :origin "karate"
- :version "6.1"
+ :version "6.6"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["ncurses"]
  :description "ncurses (new curses) is a programming library providing an application programming interface (API) that allows the programmer to write text-based user interfaces in a terminal-independent manner."
  :upstream_url "https://www.gnu.org/software/ncurses/"
- :source {:url "http://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz" :sha256 "aa057eeeb4a14d470101eff4597d5833dcef5965331be3528c08d99cebaa0d17"}
+ :source {:url "https://ftp.gnu.org/gnu/ncurses/ncurses-6.6.tar.gz" :sha256 "355b4cbbed880b0381a04c46617b7656e362585d52e9cf84a67e2009b749ff11"}
  :deps ["karate/glibc" "karate/gcc-libs"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/bzip2"]
  :bin_dirs ["bin"]
@@ -21,7 +22,7 @@
           (var v-maj-min "")
           (b:run ["make" "install"])
           (set v-maj "6")
-          (set v-maj-min "6.1")
+          (set v-maj-min "6.6")
           (each [_ v-x (ipairs ["curses" "ncurses" "form" "panel" "menu" "tinfo"])]
             (let [link (if (b:exists (b:join (.. b.prefix "/lib/lib" v-x ".so") ".")) (b:join (.. b.prefix "/lib/lib" v-x ".so") (: (.. "lib" v-x "w.so") :match "[^/]+$")) (.. b.prefix "/lib/lib" v-x ".so"))]
             (b:symlink (.. "lib" v-x "w.so") link)) (let [link (if (b:exists (b:join (.. b.prefix "/lib/lib" v-x ".so." v-maj) ".")) (b:join (.. b.prefix "/lib/lib" v-x ".so." v-maj) (: (.. "lib" v-x "w.so") :match "[^/]+$")) (.. b.prefix "/lib/lib" v-x ".so." v-maj))]

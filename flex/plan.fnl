@@ -1,4 +1,5 @@
 ;; flex, ported from its plan.sh.
+;; flex 2.6.4, the latest release on 2026-10-26.
 {:name "flex"
  :origin "karate"
  :version "2.6.4"

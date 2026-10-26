@@ -1,13 +1,14 @@
 ;; gzip, ported from its plan.sh.
+;; gzip 1.15, the latest release on 2026-10-26.
 {:name "gzip"
  :origin "karate"
- :version "1.9"
+ :version "1.15"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv3+"]
  :description "GNU Gzip is a popular data compression program originally written by Jean-loup Gailly for the GNU project."
  :upstream_url "https://www.gnu.org/software/gzip/"
- :source {:url "http://ftp.gnu.org/gnu/gzip/gzip-1.9.tar.xz" :sha256 "ae506144fc198bd8f81f1f4ad19ce63d5a2d65e42333255977cf1dcf1479089a"}
+ :source {:url "https://ftp.gnu.org/gnu/gzip/gzip-1.15.tar.xz" :sha256 "9aa0cc780dec156b8282844833b342ab7cb08c25d2cd9a1869cdd0df31deff48"}
  :deps ["karate/glibc" "karate/less" "karate/grep"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/xz"]
  :bin_dirs ["bin"]

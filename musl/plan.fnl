@@ -1,13 +1,14 @@
 ;; musl, ported from its plan.sh.
+;; musl 1.2.6, the latest release on 2026-10-26.
 {:name "musl"
  :origin "karate"
- :version "1.1.19"
+ :version "1.2.6"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["MIT"]
  :description "musl is a new standard library to power a new generation of Linux-based devices. musl is lightweight, fast, simple, free, and strives to be correct in the sense of standards-conformance and safety."
  :upstream_url "https://www.musl-libc.org/"
- :source {:url "http://www.musl-libc.org/releases/musl-1.1.19.tar.gz" :sha256 "db59a8578226b98373f5b27e61f0dd29ad2456f4aa9cec587ba8c24508e4c1d9"}
+ :source {:url "https://musl.libc.org/releases/musl-1.2.6.tar.gz" :sha256 "d585fd3b613c66151fc3249e8ed44f77020cb5e6c1e635a616d3f9f82460512a"}
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/gcc" "karate/make" "karate/patch" "karate/sed"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
@@ -15,7 +16,7 @@
  :prepare (fn [b]
           (var v-stack-size "")
           (set v-stack-size "2097152")
-          (b:log (.. "Setting default stack size to '" v-stack-size "' from default '81920'"))
+          (b:log (.. "Setting default stack size to '" v-stack-size "' from default '131072'"))
           (let [text (b:read (b:join b.src "src/internal/pthread_impl.h")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]

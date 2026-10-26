@@ -1,13 +1,14 @@
 ;; zlib, ported from its plan.sh.
+;; zlib 1.3.2, the latest release on 2026-10-26.
 {:name "zlib"
  :origin "karate"
- :version "1.2.11"
+ :version "1.3.2"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["zlib"]
  :description "Compression library implementing the deflate compression method found in gzip and PKZIP."
  :upstream_url "http://www.zlib.net/"
- :source {:url "http://zlib.net/zlib-1.2.11.tar.gz" :sha256 "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1" :dirname "zlib-1.2.11"}
+ :source {:url "https://zlib.net/zlib-1.3.2.tar.xz" :sha256 "d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3" :dirname "zlib-1.3.2"}
  :deps ["karate/glibc"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :lib_dirs ["lib"]

@@ -1,4 +1,5 @@
 ;; busybox-static, ported from its plan.sh.
+;; busybox-static 1.38.0, the latest release on 2026-10-26.
 ;; Built from the busybox plan, with its own changes.
 (fn v--create-config [b]
   (b:log "Customizing busybox configuration...")
@@ -17,13 +18,13 @@
     (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
 {:name "busybox-static"
  :origin "karate"
- :version "1.29.2"
+ :version "1.38.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv2"]
  :description "BusyBox is the Swiss Army Knife of embedded Linux. BusyBox combines tiny versions of many common UNIX utilities into a single small executable. It provides replacements for most of the utilities you usually find in GNU fileutils, shellutils, etc."
  :upstream_url "https://www.busybox.net/"
- :source {:url "http://www.busybox.net/downloads/busybox-1.29.2.tar.bz2" :sha256 "67d2fa6e147a45875fe972de62d907ef866fe784c495c363bf34756c444a5d61" :dirname "busybox-1.29.2"}
+ :source {:url "https://busybox.net/downloads/busybox-1.38.0.tar.bz2" :sha256 "34f9ea6ff8636f2c9241153b9114eefa9e65674a45318ae1ef95bb5f31c53bb2" :dirname "busybox-1.38.0"}
  :build_deps ["karate/linux-headers-musl" "karate/musl" "karate/bash" "karate/bison" "karate/coreutils" "karate/diffutils" "karate/findutils" "karate/flex" "karate/gawk" "karate/gcc" "karate/gettext" "karate/grep" "karate/gzip" "karate/libtool" "karate/make" "karate/patch" "karate/sed" "karate/texinfo" "karate/util-linux" "karate/wget" "karate/xz"]
  :bin_dirs ["bin"]
  :interpreters ["bin/ash" "bin/awk" "bin/env" "bin/sh" "bin/bash"]

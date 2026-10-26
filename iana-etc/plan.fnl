@@ -1,15 +1,18 @@
 ;; iana-etc, ported from its plan.sh.
+;; iana-etc 20261022, the latest release on 2026-10-26, from the maintained project: the original
+;; (sethwklein.net 2.30) is gone. Releases are the generated files themselves, so there is nothing
+;; to build; etc/services and etc/protocols are where the packages that use them look.
 {:name "iana-etc"
  :origin "karate"
- :version "2.30"
+ :version "20261022"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
- :license ["gplv3+"]
+ :license ["MIT"]
  :description "The iana-etc package provides the Unix/Linux /etc/services and /etc/protocols files."
- :upstream_url "http://sethwklein.net/iana-etc"
- :source {:url "http://sethwklein.net/iana-etc-2.30.tar.bz2" :sha256 "b9a6874fb20012836efef75452ef2acae624022d680feeb1994d73facba3f20d"}
- :build_deps ["karate/coreutils" "karate/make" "karate/gawk"]
- :build (fn [b]
-          (b:run ["make"]))
+ :upstream_url "https://github.com/Mic92/iana-etc"
+ :source {:url "https://github.com/Mic92/iana-etc/releases/download/20261022/iana-etc-20261022.tar.gz" :sha256 "8ea9429c691634056ad8c292cf94df8e4cc5e828dceef658490bcbab132dee7c"}
+ :build (fn [b])
  :install (fn [b]
-          (b:run ["make" "install" (.. "PREFIX=" b.prefix)]))}
+          (b:mkdir (.. b.prefix "/etc"))
+          (b:copy (b:join b.src "services") (.. b.prefix "/etc/services"))
+          (b:copy (b:join b.src "protocols") (.. b.prefix "/etc/protocols")))}

@@ -1,4 +1,5 @@
 ;; openssl-musl, ported from its plan.sh.
+;; openssl-musl 4.1.0, the latest release on 2026-10-26.
 ;; Built from the openssl plan, with its own changes.
 (fn use-dependency-path [b path replacement]
   ;; The source project's studio linked a dependency's tool to `path` for the
@@ -33,13 +34,13 @@
   )
 {:name "openssl-musl"
  :origin "karate"
- :version "1.0.2r"
+ :version "4.1.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["OpenSSL"]
  :description "OpenSSL is an open source project that provides a robust, commercial-grade, and full-featured toolkit for the Transport Layer Security (TLS) and Secure Sockets Layer (SSL) protocols. It is also a general-purpose cryptography library."
  :upstream_url "https://www.openssl.org"
- :source {:url "https://www.openssl.org/source/openssl-1.0.2r.tar.gz" :sha256 "ae51d08bba8a83958e894946f15303ff894d75c2b8bbd44a852b64e3fe11d0d6" :dirname "openssl-1.0.2r"}
+ :source {:url "https://github.com/openssl/openssl/releases/download/openssl-4.1.0/openssl-4.1.0.tar.gz" :sha256 "50c17baf54cb008f6ce42d50deb4b28050a1aad711636cabd4b241c7e90cc2fd" :dirname "openssl-4.1.0"}
  :deps ["karate/musl" "karate/zlib-musl" "karate/cacerts"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/grep" "karate/perl"]
  :bin_dirs ["bin"]

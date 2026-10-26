@@ -1,4 +1,5 @@
 ;; bzip2-musl, ported from its plan.sh.
+;; bzip2-musl 1.0.8, the latest release on 2026-10-26.
 ;; Built from the bzip2 plan, with its own changes.
 (fn v--common-prepare [b]
   (let [text (b:read (b:join b.src "Makefile")) ends (= (text:sub -1) "\n") lines [] out []]
@@ -19,13 +20,13 @@
     (b:write (b:join b.src "Makefile") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
 {:name "bzip2-musl"
  :origin "karate"
- :version "1.0.6"
+ :version "1.0.8"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["bzip2"]
  :description "bzip2 is a free and open-source file compression program that uses the Burrows–Wheeler algorithm. It only compresses single files and is not a file archiver."
  :upstream_url "http://www.bzip.org/"
- :source {:url "https://github.com/nemequ/bzip2/releases/download/v1.0.6/bzip2-1.0.6.tar.gz" :sha256 "a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd" :dirname "bzip2-1.0.6"}
+ :source {:url "https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz" :sha256 "ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269" :dirname "bzip2-1.0.8"}
  :deps ["karate/musl"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]
@@ -56,8 +57,8 @@
           (let [link (if (b:exists (b:join (.. b.prefix "/bin/bzcat") ".")) (b:join (.. b.prefix "/bin/bzcat") "bzip2") (.. b.prefix "/bin/bzcat"))]
             (b:symlink "bzip2" link))
           (if (b:exists (.. b.prefix "/lib"))
-            (b:copy (.. b.cache "/bzip2-1.0.6/libbz2.so." b.version) (b:join (.. b.prefix "/lib") (: (.. b.cache "/bzip2-1.0.6/libbz2.so." b.version) :match "[^/]+$")))
-            (b:copy (.. b.cache "/bzip2-1.0.6/libbz2.so." b.version) (.. b.prefix "/lib")))
+            (b:copy (.. b.cache "/bzip2-1.0.8/libbz2.so." b.version) (b:join (.. b.prefix "/lib") (: (.. b.cache "/bzip2-1.0.8/libbz2.so." b.version) :match "[^/]+$")))
+            (b:copy (.. b.cache "/bzip2-1.0.8/libbz2.so." b.version) (.. b.prefix "/lib")))
           (let [link (if (b:exists (b:join (.. b.prefix "/lib/libbz2.so") ".")) (b:join (.. b.prefix "/lib/libbz2.so") (: (.. "libbz2.so." b.version) :match "[^/]+$")) (.. b.prefix "/lib/libbz2.so"))]
             (b:symlink (.. "libbz2.so." b.version) link))
           (let [link (if (b:exists (b:join (.. b.prefix "/lib/libbz2.so." v-maj) ".")) (b:join (.. b.prefix "/lib/libbz2.so." v-maj) (: (.. "libbz2.so." b.version) :match "[^/]+$")) (.. b.prefix "/lib/libbz2.so." v-maj))]

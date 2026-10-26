@@ -1,4 +1,5 @@
 ;; gcc, ported from its plan.sh.
+;; gcc 16.2.0, the latest release on 2026-10-26.
 (var v-bash "")
 (var v-binutils "")
 (var v-build-cflags "")
@@ -29,13 +30,13 @@
   (b:chmod v-bin "755"))
 {:name "gcc"
  :origin "karate"
- :version "8.2.0"
+ :version "16.2.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-2.0"]
  :description "The GNU Compiler Collection (GCC) is a compiler system produced by the GNU Project supporting various programming languages. GCC is a key component of the GNU toolchain and the standard compiler for most Unix-like operating systems."
  :upstream_url "https://gcc.gnu.org/"
- :source {:url "http://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.xz" :sha256 "196c3c04ba2613f893283977e6011b2345d1cd1af9abeac58e916b1aab3e0080"}
+ :source {:url "https://ftp.gnu.org/gnu/gcc/gcc-16.2.0/gcc-16.2.0.tar.xz" :sha256 "e6738e29597f733270731aa90600f37ffdc045079dfc27ec7e8192cc81085c3e"}
  :deps ["karate/glibc" "karate/zlib" "karate/gmp" "karate/mpfr" "karate/libmpc" "karate/binutils"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/file" "karate/make" "karate/gcc" "karate/gawk" "karate/m4" "karate/texinfo" "karate/perl" "karate/inetutils" "karate/expect" "karate/dejagnu"]
  :bin_dirs ["bin"]

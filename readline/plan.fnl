@@ -1,14 +1,15 @@
 ;; readline, ported from its plan.sh.
+;; readline 8.3.6, the latest release on 2026-10-26.
 (var v-p "")
 {:name "readline"
  :origin "karate"
- :version "7.0.3"
+ :version "8.3.6"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-3.0"]
  :description "The GNU Readline library provides a set of functions for use by applications that allow users to edit command lines as they are typed in."
  :upstream_url "http://tiswww.case.edu/php/chet/readline/rltop.html"
- :source {:url "http://ftp.gnu.org/gnu/readline/readline-7.0.tar.gz" :sha256 "750d437185286f40a369e1e4f4764eda932b9459b5ec9a731628393dd3d32334" :dirname "readline-7.0"}
+ :source {:url "https://ftp.gnu.org/gnu/readline/readline-8.3.tar.gz" :sha256 "fe5383204467828cd495ee8d1d3c037a7eba1389c22bc6a041f627976f9061cc" :dirname "readline-8.3"}
  :deps ["karate/glibc" "karate/ncurses"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/bison" "karate/grep"]
  :lib_dirs ["lib"]
@@ -17,18 +18,18 @@
           ;; From do_begin.
           ;; The values readline-patches.sh set, read when the plan was ported.
           (b.default.download b)
-          (let [v--patch-filess ["http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-001" "http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-002" "http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-003"] v--patch-shasumss ["9ac1b3ac2ec7b1bf0709af047f2d7d2a34ccde353684e57c6b47ebca77d7a376" "8747c92c35d5db32eae99af66f17b384abaca961653e185677f9c9a571ed2d58" "9e43aa93378c7e9f7001d8174b1beb948deefa6799b6f581673f465b7d9d4780"]]
-            (for [n 1 3]
+          (let [v--patch-filess ["https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-001" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-002" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-003" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-004" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-005" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-006"] v--patch-shasumss ["21f0a03106dbe697337cd25c70eb0edbaa2bdb6d595b45f83285cdd35bac84de" "e27364396ba9f6debf7cbaaf1a669e2b2854241ae07f7eca74ca8a8ba0c97472" "72dee13601ce38f6746eb15239999a7c56f8e1ff5eb1ec8153a1f213e4acdb29" "1f189c4566aa35950964647b9ec3be1a821e42b86048129c63eb7f9d4d2f5a74" "5481adbe161c9f6ba972c74db9e18c7aa351d3df3035cc4a673a1aa06247d1c6" "4ebd261a608287796e171af0ea9af5a1e3122e46672accda2484b6698c47c1a4"]]
+            (for [n 1 6]
               (set v-p (. v--patch-filess n)) (b:download v-p (. v--patch-shasumss n) (: (: v-p :gsub "/+$" "") :match "[^/]*$"))))
           (set v-p ""))
  :verify (fn [b]
           (b.default.verify b)
-          (let [v--patch-filess ["http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-001" "http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-002" "http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-003"] v--patch-shasumss ["9ac1b3ac2ec7b1bf0709af047f2d7d2a34ccde353684e57c6b47ebca77d7a376" "8747c92c35d5db32eae99af66f17b384abaca961653e185677f9c9a571ed2d58" "9e43aa93378c7e9f7001d8174b1beb948deefa6799b6f581673f465b7d9d4780"]]
-            (for [n 1 3]
+          (let [v--patch-filess ["https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-001" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-002" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-003" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-004" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-005" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-006"] v--patch-shasumss ["21f0a03106dbe697337cd25c70eb0edbaa2bdb6d595b45f83285cdd35bac84de" "e27364396ba9f6debf7cbaaf1a669e2b2854241ae07f7eca74ca8a8ba0c97472" "72dee13601ce38f6746eb15239999a7c56f8e1ff5eb1ec8153a1f213e4acdb29" "1f189c4566aa35950964647b9ec3be1a821e42b86048129c63eb7f9d4d2f5a74" "5481adbe161c9f6ba972c74db9e18c7aa351d3df3035cc4a673a1aa06247d1c6" "4ebd261a608287796e171af0ea9af5a1e3122e46672accda2484b6698c47c1a4"]]
+            (for [n 1 6]
               nil)))
  :prepare (fn [b]
           (b.default.prepare b)
-          (each [_ v-p (ipairs ["http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-001" "http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-002" "http://ftp.gnu.org/gnu/readline/readline-7.0-patches/readline70-003"])]
+          (each [_ v-p (ipairs ["https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-001" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-002" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-003" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-004" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-005" "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-006"])]
             (b:log (.. "Applying patch " (: (: v-p :gsub "/+$" "") :match "[^/]*$"))) (b:run ["patch" "-p0" "-i" (.. b.cache "/" (: (: v-p :gsub "/+$" "") :match "[^/]*$"))]))
           (b:log "Applying patch link-against-ncurses.patch")
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/../readline/link-against-ncurses.patch")]))

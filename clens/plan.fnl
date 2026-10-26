@@ -1,4 +1,5 @@
 ;; clens, ported from its plan.sh.
+;; clens 0.7.0, the latest release on 2026-10-26.
 {:name "clens"
  :origin "karate"
  :version "0.7.0"
