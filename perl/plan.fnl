@@ -43,6 +43,12 @@
  :build (fn [b]
           (b:env "BUILD_ZLIB" "False")
           (b:env "BUILD_BZIP2" "0")
+          ;; Where zlib's and bzip2's headers and libraries are: Compress-Raw-Zlib and -Bzip2
+          ;; read these, and perl 5.44 no longer passes its include paths to them.
+          (b:env "ZLIB_INCLUDE" (.. (b:path_for "zlib") "/include"))
+          (b:env "ZLIB_LIB" (.. (b:path_for "zlib") "/lib"))
+          (b:env "BZIP2_INCLUDE" (.. (b:path_for "bzip2") "/include"))
+          (b:env "BZIP2_LIB" (.. (b:path_for "bzip2") "/lib"))
           (b:run ["sh" "Configure" "-de" (.. "-Dprefix=" b.prefix) (.. "-Dman1dir=" b.prefix "/share/man/man1") (.. "-Dman3dir=" b.prefix "/share/man/man3") (.. "-Dlocincpth=" v-locincpth) (.. "-Dloclibpth=" v-loclibpth) (.. "-Dpager=" (b:path_for "less") "/bin/less -isR") "-Dinstallstyle=lib/perl5" "-Uinstallusrbinperl" "-Duseshrplib" "-Dusethreads" "-Dinc_version_list=none" (.. "-Dlddlflags=-shared " (or (b:getenv "LDFLAGS") "")) (.. "-Dldflags=" (or (b:getenv "LDFLAGS") ""))])
           (b:run ["make" (.. "-j" (tostring b.jobs))])
           (b:unsetenv "BUILD_ZLIB")
