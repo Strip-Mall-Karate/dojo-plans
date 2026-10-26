@@ -58,6 +58,8 @@ def check(tool, package):
     outside = OUTSIDE.search(text)
     if outside:
         problems.append(f"writes outside the build: {outside.group(0)[:60]}")
+    if re.search(r'\(b:run \["doj" "pkg" "binlink"', text):
+        problems.append("binlinks a package during the build, outside it")
     helper = HELPER_RUN.search(text)
     if helper:
         problems.append(f"runs the source project's builder function {helper.group(1)}")

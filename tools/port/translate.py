@@ -1421,9 +1421,13 @@ def condition(text, scope):
 # scripts look for it, and remove the link at the end. Dojo's build writes
 # nothing outside itself, so the scripts are pointed at the dependency instead.
 STUDIO_LINK = re.compile(
-    r'if\s+\[\[?\s+!\s+-[rex]\s+(/(?:usr/)?(?:s?bin)/[\w.+-]+)\s+\]\]?\s*;?\s*then\s+'
+    r'if\s+\[\[?\s+!\s+-[refx]\s+(/(?:usr/)?(?:s?bin)/[\w.+-]+)\s+\]\]?\s*;?\s*then\s+'
     r'ln\s+-s[vf]*\s+"\$\(pkg_path_for\s+([\w/.-]+)\)/((?:s?bin)/[\w.+-]+)"\s+\1\s*'
     r'(?:_clean_\w+=true|_clean_cmds\+=\(\1\))?\s*fi$', re.S)
+STUDIO_BINLINK = re.compile(
+    r'if\s+\[\[?\s+!\s+-[refx]\s+(/(?:usr/)?(?:s?bin)/([\w.+-]+))\s+\]\]?\s*;?\s*then\s+'
+    r'hab\s+pkg\s+binlink\s+([\w/.-]+)\s+(\2)\s+-d\s+/(?:usr/)?s?bin\s*'
+    r'(?:_clean_\w+=true)?\s*fi$', re.S)
 STUDIO_UNLINK = re.compile(
     r'(if\s+\[\[?\s+-n\s+"\$\{?_clean_\w+\}?"\s+\]\]?\s*;?\s*then\s+rm(?:\s+-[fv]+)?\s+/\S+\s*fi'
     r'|for\s+cmd\s+in\s+"\$\{_clean_cmds\[@\]\}"\s*;?\s*do\s+rm\s+-fv\s+"\$cmd"\s*;?\s*done)$', re.S)
@@ -1454,6 +1458,10 @@ def block(text, scope):
     if link:
         scope.plan.helpers.add("use-dependency-path")
         return [f'(use-dependency-path b {fstr(link.group(1))} (b:path_for {_dep(link.group(2), scope)} {fstr(link.group(3))}))']
+    binlink = STUDIO_BINLINK.match(t)
+    if binlink:
+        scope.plan.helpers.add("use-dependency-path")
+        return [f'(use-dependency-path b {fstr(binlink.group(1))} (b:path_for {_dep(binlink.group(3), scope)} {fstr("bin/" + binlink.group(2))}))']
     if STUDIO_UNLINK.match(t) or STUDIO_UNLINK_EXISTS.match(t):
         return []
     m = re.match(r"if\s+(.*?)\s*;?\s*then\b(.*)\bfi$", t, re.S)

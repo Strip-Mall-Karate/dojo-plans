@@ -1,4 +1,19 @@
 ;; kmod, ported from its plan.sh.
+(fn use-dependency-path [b path replacement]
+  ;; The source project's studio linked a dependency's tool to `path` for the
+  ;; build. A Dojo build writes nothing outside itself, so the build's scripts
+  ;; name the dependency's tool instead.
+  (each [_ f (ipairs (b:find b.src "*"))]
+    (let [name (: f :match "[^/]+$")]
+      (when (and (or (: name :match "^configure") (: name :match "^Makefile") (: name :match "^ltmain")
+                     (: name :match "%.in$") (: name :match "%.am$") (: name :match "%.ac$")
+                     (: name :match "%.m4$") (: name :match "%.mk$") (: name :match "%.sh$")
+                     (: name :match "%.pl$") (: name :match "%.py$"))
+                 (not (b:exists (b:join f "."))))
+        (let [text (b:read f)
+              escaped (pick-values 1 (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]" "%%%0"))
+              (fixed n) (: text :gsub escaped (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+          (when (> n 0) (b:write f fixed)))))))
 {:name "kmod"
  :origin "karate"
  :version "24"
@@ -16,8 +31,7 @@
  :pconfig_dirs ["lib/pkgconfig"]
  :download (fn [b]
           ;; From do_before.
-          (when (not (b:exists "/usr/bin/file"))
-            (b:run ["doj" "pkg" "binlink" "karate/file" "file" "-d" "/usr/bin"]) (var v--clean-file "true"))
+          (use-dependency-path b "/usr/bin/file" (b:path_for "karate/file" "bin/file"))
           (b.default.download b))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--with-xz" "--with-zlib"])
