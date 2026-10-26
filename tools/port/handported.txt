@@ -93,3 +93,64 @@
     rm -fv /etc/services
   fi
 --
+
+== find "$path" -name "$fileending" -type f \
+    -exec grep -Iq . {} \; \
+    -exec sh -c 'head -n 1 "$1" | grep -q "$2"' _ {} "$int" \; \
+    -exec sh -c 'echo "$1"' _ {} \; > /tmp/fix_interpreter_in_path_list
+--
+;; Each text file under path named like fileending whose #! names int, pointed
+;; at the dependency's: b:fix_interpreter rewrites only a #! line that names it.
+(each [_ f (ipairs (b:find v-path v-fileending))]
+  (when (not (b:exists (b:join f ".")))
+    (b:fix_interpreter [f] v-pkg v-int)))
+
+== find "${path}" -name "${fileending}" -type f \
+    -exec grep -Iq . {} \; \
+    -exec sh -c 'head -n 1 "$1" | grep -q "$2"' _ {} "${int}" \; \
+    -exec sh -c 'echo "$1"' _ {} \; > /tmp/fix_interpreter_in_path_list
+--
+;; Each text file under path named like fileending whose #! names int, pointed
+;; at the dependency's: b:fix_interpreter rewrites only a #! line that names it.
+(each [_ f (ipairs (b:find v-path v-fileending))]
+  (when (not (b:exists (b:join f ".")))
+    (b:fix_interpreter [f] v-pkg v-int)))
+
+== grep -v '^ *#' < /tmp/fix_interpreter_in_path_list | while IFS= read -r line
+  do
+    fix_interpreter "$line" "$pkg" "$int"
+  done
+--
+;; The files the find above listed are fixed there.
+
+== grep -v '^ *#' < /tmp/fix_interpreter_in_path_list | while IFS= read -r line
+  do
+    fix_interpreter "${line}" "${pkg}" "${int}"
+  done
+--
+;; The files the find above listed are fixed there.
+
+== rm -rf /tmp/fix_interpreter_in_path_list
+--
+
+
+== for folder in bin include lib; do
+    find "$pkg_prefix/$folder" -type f -perm -u+w -print0 2> /dev/null \
+      | while read -rd '' f; do
+        case "$(file -bi "$f")" in
+          *application/x-executable*) strip --strip-all "$f";;
+          *application/x-sharedlib*) strip --strip-unneeded "$f";;
+          *application/x-archive*) strip --strip-debug "$f";;
+          *) continue;;
+          esac
+      done
+  done
+--
+(each [_ folder (ipairs ["bin" "include" "lib"])]
+  (when (b:exists (b:join b.prefix folder))
+    (each [_ f (ipairs (b:find (b:join b.prefix folder) "*"))]
+      (when (not (b:exists (b:join f ".")))
+        (let [kind (b:capture ["file" "-bi" f])]
+          (if (: kind :find "application/x-executable" 1 true) (b:run ["strip" "--strip-all" f])
+              (: kind :find "application/x-sharedlib" 1 true) (b:run ["strip" "--strip-unneeded" f])
+              (: kind :find "application/x-archive" 1 true) (b:run ["strip" "--strip-debug" f])))))))
