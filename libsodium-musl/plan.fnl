@@ -17,6 +17,9 @@
  :pconfig_dirs ["lib/pkgconfig"]
  :prepare (fn [b]
           (b:env "CC" "musl-gcc")
-          (b:log (.. "Setting CC=" (or (b:getenv "CC") ""))))
+          (b:log (.. "Setting CC=" (or (b:getenv "CC") "")))
+          ;; karate gcc names glibc's dynamic linker on every link; a musl program needs musl's,
+          ;; which LDFLAGS gives last, as the other musl plans do.
+          (b:env "LDFLAGS" (.. (or (b:getenv "LDFLAGS") "") " -Wl,--dynamic-linker=" (b:path_for "musl") "/lib/ld-musl-x86_64.so.1")))
  :check (fn [b]
           (b:run ["make" "check"]))}
