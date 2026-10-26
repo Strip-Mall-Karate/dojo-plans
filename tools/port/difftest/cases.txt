@@ -183,3 +183,35 @@ printf 'ln -s -f $(PREFIX)/bin/tool\nCFLAGS = -O2 -g\nx-y-z\n' > Makefile
 sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
 sed -i -r 's/^(CFLAGS) = (.*)$/\1 := \2 -fPIC/' Makefile
 sed -i 's/\([a-z]\)-\([a-z]\)/\2+\1/g' Makefile
+
+== glob-after-quoted-dir-and-array-for
+-- setup
+mkdir -p lib; echo a > lib/a.so; echo b > lib/b.so; echo c > lib/c.a
+-- body
+local dir="lib"
+local names=(one two)
+mkdir -p "$pkg_prefix/lib"
+cp "$dir/"*.so "$pkg_prefix/lib"
+for n in ${names[@]}; do
+  mkdir -p "${pkg_prefix:?}/share/$n"
+done
+sed -i 's#\#include#include#' lib/a.so
+
+== chmod-symbolic
+-- setup
+echo s > script; chmod 0644 script; echo d > data; chmod 0640 data; mkdir -p tree; chmod 0700 tree
+-- body
+chmod +x script
+chmod o+r data
+chmod a+X tree
+
+== variable-set-inside-if
+-- setup
+echo present > marker
+-- body
+if [[ -f marker ]]; then
+  where="found"
+else
+  where="missing"
+fi
+echo "$where" > result

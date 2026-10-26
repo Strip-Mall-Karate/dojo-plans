@@ -89,10 +89,14 @@ class Scope:
         self.name = name
         self.locals = {v: _local(v) for v in shared}
         self.shared = set(shared)
+        # Variables declared at the function's top; assigning one is a set.
+        self.declared = set()
         self.params = params
         # The value of each local that is a plain string, for expansions on it.
         self.literal = {}
         self.cwd = []  # Fennel expressions, innermost last.
+        # Set when a cd or pushd could not be translated: nothing after it knows its directory.
+        self.lost_cwd = False
         self.helpers_used = set()
 
     def var(self, name):
@@ -226,6 +230,9 @@ def _param(text, i, scope):
     if text.startswith("${", i):
         j = bashplan._skip_balanced(text, i + 1, "{", "}")
         inner = text[i + 2:j - 1]
+        unset_check = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*):?\?.*", inner, re.S)
+        if unset_check:
+            inner = unset_check.group(1)  # The build fails on an unset variable anyway.
         if bashplan.NAME.fullmatch(inner):
             return scope.var(inner), j
         if inner.isdigit() and 1 <= int(inner) <= scope.params:
@@ -343,6 +350,14 @@ def _unquoted(text):
 
 def _unquoted_split(text):
     """(directory word, glob pattern) when only the last path part is a glob."""
+    quoted = re.fullmatch(r'("[^"]*")(/?)([A-Za-z0-9_.*?+@-]*)', text)
+    if quoted and GLOB.search(quoted.group(3)):
+        directory = quoted.group(1)
+        if not quoted.group(2):
+            if not directory.endswith('/"'):
+                return None
+            directory = directory[:-2] + '"'
+        return directory, quoted.group(3)
     masked = _unquoted(text)
     slash = masked.rfind("/")
     tail = text[slash + 1:]
@@ -473,7 +488,8 @@ def cmd_ln(words, scope):
 
 def cmd_chmod(words, scope):
     _, rest = flags(words, set("Rvf"))
-    if len(rest) < 2 or not re.fullmatch(r"[0-7]{3,4}", rest[0]):
+    symbolic = r"[ugoa]*[-+=][rwxXst]*(,[ugoa]*[-+=][rwxXst]*)*"
+    if len(rest) < 2 or not (re.fullmatch(r"[0-7]{3,4}", rest[0]) or re.fullmatch(symbolic, rest[0])):
         raise Unported("chmod " + " ".join(rest[:1]))
     mode = fstr(rest[0])
     return [each_path(w, scope, "(b:chmod {p} " + mode + ")") for w in rest[1:]]
@@ -561,6 +577,8 @@ def sed_to_lua(pattern, extended):
                 out.append("\n")
             elif nxt == "t":
                 out.append("\t")
+            elif nxt in "#@,|:;!=_~&\"'<>`":
+                out.append(nxt)
             elif nxt in "sSdDwW":
                 out.append("%" + {"s": "s", "S": "S", "d": "d", "D": "D", "w": "w", "W": "W"}[nxt])
             else:
@@ -775,7 +793,7 @@ def assignment(stmt, scope, exported):
         items = [word(w, scope) for w in bashplan.split_words(inner)]
         fennel = "[" + " ".join(items) + "]"
         name = _local(var)
-        if var in scope.locals:
+        if var in scope.locals or var in scope.declared:
             return [f"(set {name} {fennel})"]
         scope.locals[var] = name
         return [f"(var {name} {fennel})"]
@@ -853,6 +871,9 @@ def statement(text, scope):
         return [f"(b:write {dest} {content})"]
     if "<<" in _unquoted(stmt):
         raise Unported("heredoc")
+    array_local = re.match(r"(local|declare|readonly|typeset)\s+(?:-\w+\s+)*([A-Za-z_][A-Za-z0-9_]*\+?=\()", stmt)
+    if array_local:
+        return assignment(stmt[array_local.start(2):], scope, exported=False)
     words = bashplan.split_words(stmt)
     stdin = None
     stdout = None
@@ -889,7 +910,7 @@ def statement(text, scope):
         for a in args:
             if bashplan.ASSIGN.match(a):
                 out += assignment(a, scope, exported=False)
-            else:
+            elif a not in scope.declared:
                 scope.locals[a] = _local(a)
                 out.append(f'(var {_local(a)} "")')
         return out
@@ -1111,8 +1132,9 @@ def block(text, scope):
                 # A relative glob gives names, not paths.
                 return [f'(each [_ p (ipairs {expr})]\n  (let [{name} (: p :match "[^/]+$")]\n    {" ".join(body)}))']
             return [f"(each [_ {name} (ipairs {expr})]\n  {' '.join(body)})"]
-        if len(words) == 1 and re.fullmatch(r'"\$\{[A-Za-z_]+\[@\]\}"', words[0]):
-            arr = words[0][4:-5]
+        whole = re.fullmatch(r'"?\$\{([A-Za-z_][A-Za-z0-9_]*)\[[@*]\]\}"?', words[0]) if len(words) == 1 else None
+        if whole:
+            arr = whole.group(1)
             arr_expr = scope.locals.get(arr) or (
                 "[" + " ".join(fstr(v) for v in scope.plan.arrays.get(arr, [])) + "]" if arr in scope.plan.arrays else None)
             if arr_expr is None:
@@ -1141,9 +1163,19 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
     """A callback's body as Fennel forms, or the bash it could not translate."""
     scope = Scope(plan, scope_name, shared, params)
     forms = []
+    # Every variable the function assigns is declared at its top, so one set
+    # inside an if or a loop is still there after it, as in bash.
+    for var in sorted(set(ASSIGNED.findall(body)) | set(LOCAL.findall(body))):
+        if var in scope.locals or re.fullmatch(r"[A-Z][A-Z0-9_]*", var) or var.startswith("pkg_"):
+            continue
+        scope.locals[var] = _local(var)
+        scope.declared.add(var)
+        forms.append(f'(var {_local(var)} "")')
     unported = []
     for kind, _, stmt in bashplan.statements(body):
         try:
+            if scope.lost_cwd:
+                raise Unported("after a cd or pushd that is not ported")
             if kind == "block":
                 forms.extend(block(stmt, scope))
             elif kind == "function":
@@ -1151,6 +1183,8 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
             else:
                 forms.extend(statement(stmt, scope))
         except (Unported, ValueError, IndexError, StopIteration, bashplan.Unresolved) as e:
+            if re.match(r"\s*(pushd|cd|popd)\b", stmt) or re.search(r"\b(pushd|cd)\b", stmt.split("\n")[0]):
+                scope.lost_cwd = True
             unported.append((str(e), stmt.strip()))
             forms.append(";; UNPORTED (" + str(e).replace("\n", " ")[:60] + "):\n" +
                          "\n".join(";;   " + line for line in stmt.strip().splitlines()))
