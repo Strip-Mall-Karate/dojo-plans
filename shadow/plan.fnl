@@ -31,7 +31,7 @@
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src "etc/login.defs") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
-          (b:run ["./configure" (.. "--prefix=" b.prefix) "--with-acl" "--with-attr" "--with-group-name-max-length=32" "--without-selinux" "--without-libpam"])
+          (b:run ["./configure" (.. "--prefix=" b.prefix) "--with-acl" "--disable-logind" "--with-group-name-max-length=32" "--without-selinux" "--without-libpam"])
           (b:run ["make"]))
  :check (fn [b]
           (b:run ["make" "check"]))
