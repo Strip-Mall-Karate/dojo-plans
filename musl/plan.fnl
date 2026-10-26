@@ -30,5 +30,17 @@
           (b:run ["make" "-j" (tostring b.jobs)]))
  :install (fn [b]
           (b.default.install b)
+          ;; gcc 16 links -latomic_asneeded unless -fno-link-libatomic, and musl's specs find
+          ;; libraries only in musl's lib; musl has its atomics built in. Older gcc does not
+          ;; know the option, so musl-gcc passes it only to a gcc that does.
+          (let [wrapper (.. b.prefix "/bin/musl-gcc")
+                specs (.. b.prefix "/lib/musl-gcc.specs")]
+            (b:write wrapper (.. "#!/bin/sh\n"
+                                 "cc=\"${REALGCC:-gcc}\"\n"
+                                 "if \"$cc\" -fno-link-libatomic -E -x c /dev/null >/dev/null 2>&1; then\n"
+                                 "  set -- \"$@\" -fno-link-libatomic\n"
+                                 "fi\n"
+                                 "exec \"$cc\" \"$@\" -specs \"" specs "\"\n"))
+            (b:chmod wrapper "755"))
           (b:copy (b:join b.src "COPYRIGHT") (.. b.prefix "/share/licenses/COPYRIGHT"))
           (b:chmod (.. b.prefix "/share/licenses/COPYRIGHT") "0644"))}

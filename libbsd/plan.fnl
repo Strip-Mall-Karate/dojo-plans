@@ -18,6 +18,18 @@
           (b:run ["make" "check"]))
  :install (fn [b]
           (b.default.install b)
+          ;; libbsd's link script and pkg-config files name libmd as -lmd, which a package
+          ;; linking libbsd cannot find unless it depends on libmd itself; name libmd's
+          ;; library and headers where it is installed.
+          (let [libmd (b:path_for "libmd")
+                script (.. b.prefix "/lib/libbsd.so")]
+            (b:write script (pick-values 1 (: (b:read script) :gsub "%-lmd" (.. libmd "/lib/libmd.so"))))
+            (each [_ pc (ipairs ["libbsd.pc" "libbsd-overlay.pc"])]
+              (let [path (.. b.prefix "/lib/pkgconfig/" pc)
+                    text (-> (b:read path)
+                             (: :gsub "Libs%.private:([^\n]*)" (.. "Libs.private: -L" libmd "/lib%1"))
+                             (: :gsub "Cflags:([^\n]*)" (.. "Cflags:%1 -I" libmd "/include")))]
+                (b:write path text))))
           (b:copy (b:join b.src "COPYING") (.. b.prefix "/share/licenses/LICENSE"))
           (b:chmod (.. b.prefix "/share/licenses/LICENSE") "644"))
  :strip (fn [b]
