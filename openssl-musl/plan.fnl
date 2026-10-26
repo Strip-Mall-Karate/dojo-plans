@@ -28,8 +28,6 @@
       (each [_ x (ipairs after)] (table.insert out x)))
     (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))})
   ;; The plan linked coreutils' rm to /bin/rm, which OpenSSL's build scripts name.
-  ;; Its comment held that the scripts must not change for the FIPS build; the
-  ;; validated part is openssl-fips's canister, which this does not touch.
   (use-dependency-path b "/bin/rm" (b:path_for "karate/coreutils" "bin/rm"))
   )
 {:name "openssl-musl"
@@ -37,7 +35,7 @@
  :version "4.1.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
- :license ["OpenSSL"]
+ :license ["Apache-2.0"]
  :description "OpenSSL is an open source project that provides a robust, commercial-grade, and full-featured toolkit for the Transport Layer Security (TLS) and Secure Sockets Layer (SSL) protocols. It is also a general-purpose cryptography library."
  :upstream_url "https://www.openssl.org"
  :source {:url "https://github.com/openssl/openssl/releases/download/openssl-4.1.0/openssl-4.1.0.tar.gz" :sha256 "50c17baf54cb008f6ce42d50deb4b28050a1aad711636cabd4b241c7e90cc2fd" :dirname "openssl-4.1.0"}
@@ -54,14 +52,13 @@
           (v--common-prepare b)
           (set v-dynamic-linker (.. (b:path_for "musl") "/lib/ld-musl-x86_64.so.1"))
           (b:env "LDFLAGS" (.. (or (b:getenv "LDFLAGS") "") " -Wl,--dynamic-linker=" v-dynamic-linker))
-          (b:env "BUILD_CC" "musl-gcc")
-          (b:log (.. "Setting BUILD_CC=" (or (b:getenv "BUILD_CC") ""))))
+          (b:env "CC" "musl-gcc")
+          (b:log (.. "Setting CC=" (or (b:getenv "CC") ""))))
  :build (fn [b]
           (var v-perl (.. (b:path_for "karate/perl") "/bin/perl"))
           (b:env "PERL" v-perl)
-          (b:run [(.. (b:path_for "karate/perl") "/bin/perl") "./Configure" "no-idea" "no-mdc2" "no-rc5" "no-sslv2" "no-sslv3" "no-comp" "no-zlib" "shared" "disable-gost" (.. "--prefix=" b.prefix) "--openssldir=ssl" "linux-x86_64"])
-          (b:run ["make" "CC=" "depend"])
-          (b:run ["make" (.. "--jobs=" (tostring b.jobs)) (.. "CC=" (or (b:getenv "BUILD_CC") ""))]))
+          (b:run [(.. (b:path_for "karate/perl") "/bin/perl") "./Configure" "linux-x86_64" "shared" "no-idea" "no-mdc2" "no-rc5" "no-ssl3" "no-comp" "no-zlib" (.. "--prefix=" b.prefix) "--openssldir=ssl" "--libdir=lib"])
+          (b:run ["make" (.. "--jobs=" (tostring b.jobs))]))
  :check (fn [b]
           (each [_ v-f (ipairs ["apps/CA.pl.in" "apps/CA.sh" "apps/openssl.cnf"])]
             (if (b:exists (if (= (: (.. v-f ".final") :sub 1 1) "/") (.. v-f ".final") (b:join b.src (.. v-f ".final"))))
@@ -76,8 +73,7 @@
             (b:copy (if (= (: (.. v-f ".final") :sub 1 1) "/") (.. v-f ".final") (b:join b.src (.. v-f ".final"))) (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))))))
  :install (fn [b]
           (b.default.install b)
-          (b:remove (.. b.prefix "/ssl/misc"))
-          (b:remove (.. b.prefix "/bin/c_rehash")))
+          (b:remove (.. b.prefix "/ssl/misc")))
  :strip (fn [b]
           (b.default.strip b)
           ;; From do_end.
