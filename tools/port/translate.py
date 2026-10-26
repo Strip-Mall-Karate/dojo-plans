@@ -906,6 +906,8 @@ def statement(text, scope):
         return assignment(words[0], scope, exported=False)
     cmd = words[0]
     args = words[1:]
+    if re.fullmatch(r"mkdir\s+-p\s+/(usr/)?s?bin/?", stmt):
+        return []  # Where the studio link went; see use-dependency-path.
     if re.fullmatch(r"(local\s+)?_clean_\w+(=true|=\(\))", stmt):
         return []  # The studio link's bookkeeping; see use-dependency-path.
     if cmd in ("local", "declare", "readonly", "typeset"):
@@ -1112,6 +1114,9 @@ STUDIO_UNLINK = re.compile(
     r'(if\s+\[\[?\s+-n\s+"\$_clean_\w+"\s+\]\]?\s*;?\s*then\s+rm\s+-f?v?f?\s+/\S+\s*fi'
     r'|for\s+cmd\s+in\s+"\$\{_clean_cmds\[@\]\}"\s*;?\s*do\s+rm\s+-fv\s+"\$cmd"\s*;?\s*done)$', re.S)
 
+STUDIO_UNLINK_EXISTS = re.compile(
+    r'if\s+\[\[?\s+-[er]\s+(/(?:usr/)?(?:s?bin)/[\w.+-]+)\s+\]\]?\s*;?\s*then\s+rm\s+-f?v?f?\s+\1\s*fi$', re.S)
+
 USE_DEPENDENCY_PATH = """(fn use-dependency-path [b path replacement]
   ;; The source project's studio linked a dependency's tool to `path` for the
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
@@ -1135,7 +1140,7 @@ def block(text, scope):
     if link:
         scope.plan.helpers.add("use-dependency-path")
         return [f'(use-dependency-path b {fstr(link.group(1))} (b:path_for {_dep(link.group(2), scope)} {fstr(link.group(3))}))']
-    if STUDIO_UNLINK.match(t):
+    if STUDIO_UNLINK.match(t) or STUDIO_UNLINK_EXISTS.match(t):
         return []
     m = re.match(r"if\s+(.*?)\s*;?\s*then\b(.*)\bfi$", t, re.S)
     if m and not re.search(r"\b(elif|if)\b", m.group(2)):

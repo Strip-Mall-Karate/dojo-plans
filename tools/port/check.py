@@ -16,6 +16,11 @@ import sys
 
 # The source project's name and command, which appear nowhere in Dojo's tree.
 OLD_NAME = re.compile(r"habitat|\bhab\b|\bHAB_", re.I)
+# A b operation on a literal absolute path outside /doj: the runtime reads and
+# writes only inside the build, so the build would fail there. A link's
+# target may be anywhere.
+OUTSIDE = re.compile(r'\(b:(?:write|remove|mkdir|chmod|copy|move) (?:"[^"]*" )?"/(?!doj/)[^"]*"'
+                     r'|\(b:symlink "[^"]*" "/(?!doj/)[^"]*"')
 SHELL_RUN = re.compile(r'\(b:(run|capture)\s+\[\s*"(bash|sh|zsh|eval|/bin/sh|/bin/bash)"')
 
 
@@ -40,6 +45,9 @@ def check(tool, package):
         problems.append(f"{text.count(';; UNPORTED')} unported block(s)")
     if SHELL_RUN.search(text):
         problems.append("runs a shell")
+    outside = OUTSIDE.search(text)
+    if outside:
+        problems.append(f"writes outside the build: {outside.group(0)[:60]}")
     old = OLD_NAME.search(text)
     if old:
         problems.append(f"names the source project: {old.group(0)!r}")

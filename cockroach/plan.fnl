@@ -28,7 +28,6 @@
  :bin_dirs ["bin"]
  :exports {"port" "port" "http-port" "http-port"}
  :prepare (fn [b]
-          (b:mkdir "/usr/bin")
           (use-dependency-path b "/usr/bin/env" (b:path_for "coreutils" "bin/env")))
  :build (fn [b]
           (b:env "LIBRARY_PATH" (or (b:getenv "LD_RUN_PATH") ""))

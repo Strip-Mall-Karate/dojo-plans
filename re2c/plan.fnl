@@ -29,7 +29,6 @@
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :prepare (fn [b]
-          (b:mkdir "/usr/bin")
           (use-dependency-path b "/usr/bin/env" (b:path_for "coreutils" "bin/env")))
  :check (fn [b]
           (b:run ["make" "check"]))

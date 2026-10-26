@@ -33,8 +33,4 @@
           (use-dependency-path b "/usr/bin/file" (b:path_for "karate/file" "bin/file")))
  :check (fn [b]
           (b:run ["make" "check"]))
- :strip (fn [b]
-          (b.default.strip b)
-          ;; From do_end.
-          (when (b:exists "/usr/bin/file")
-            (b:remove "/usr/bin/file")))}
+}
