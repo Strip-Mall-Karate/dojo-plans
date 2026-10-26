@@ -10,3 +10,14 @@ cargo-nightly
 aws-cli
 boringssl
 phantomjs
+scaffolding-base
+scaffolding-go
+mage
+certstrap
+dep
+grpcurl
+opa
+helm
+foulkon
+traefik
+runc

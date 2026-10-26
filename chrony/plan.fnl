@@ -13,7 +13,6 @@
  :bin_dirs ["bin" "sbin"]
  :lib_dirs ["lib"]
  :include_dirs ["include"]
- :svc {:user "root" :group "root"}
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--enable-scfilter" "--enable-ntp-signd"])
           (b:run ["make"]))}

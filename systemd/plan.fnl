@@ -28,7 +28,6 @@
  :bin_dirs ["bin"]
  :lib_dirs ["lib" "var/lib" "usr/lib"]
  :include_dirs ["include"]
- :svc {:user "root" :group "root"}
  :prepare (fn [b]
           (use-dependency-path b "/usr/bin/env" (b:path_for "karate/coreutils" "bin/env"))
           (b:env "LANG" "en_US.utf8")

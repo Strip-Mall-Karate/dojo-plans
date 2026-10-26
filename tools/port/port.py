@@ -186,7 +186,10 @@ def metadata(plan, name, emitter):
         if s.get("pkg_svc_group"):
             fields.append(f":group {fennel_string(s['pkg_svc_group'])}")
         put("svc", "{" + " ".join(fields) + "}")
-    elif s.get("pkg_svc_user") or s.get("pkg_svc_group"):
+    elif (s.get("pkg_svc_user") or s.get("pkg_svc_group")) and plan.dir and os.path.isfile(
+            os.path.join(plan.dir, "hooks", "run")):
+        # A user and group with no service to run them (no run, no run hook) are
+        # left out: the source project used them only to run a service.
         # Started by its run hook: the build refuses this without hooks/run.
         fields = []
         if s.get("pkg_svc_user"):
