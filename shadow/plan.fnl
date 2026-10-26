@@ -9,7 +9,7 @@
  :description "Password and account management tool suite."
  :upstream_url "https://github.com/shadow-maint/shadow"
  :source {:url "https://github.com/shadow-maint/shadow/releases/download/4.20.3/shadow-4.20.3.tar.xz" :sha256 "623be9429f64fa2165bfc5957c6a642ec309c5cf23c0d53855c99f7591922297"}
- :deps ["karate/glibc" "karate/attr" "karate/acl"]
+ :deps ["karate/glibc" "karate/libxcrypt" "karate/attr" "karate/acl"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]
  :prepare (fn [b]

@@ -18,6 +18,7 @@ dojo-plans/attr
 dojo-plans/acl
 dojo-plans/libcap
 dojo-plans/sed
+dojo-plans/libxcrypt
 dojo-plans/shadow
 dojo-plans/psmisc
 dojo-plans/procps-ng
