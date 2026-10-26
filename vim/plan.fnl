@@ -23,5 +23,13 @@
           (b.default.install b)
           (let [link (if (b:exists (b:join (.. b.prefix "/bin/vi") ".")) (b:join (.. b.prefix "/bin/vi") "vim") (.. b.prefix "/bin/vi"))]
             (b:symlink "vim" link))
+          ;; The example scripts under tools name interpreters by their paths on other systems
+          ;; (nawk, csh, python); they are documentation, not commands.
+          (each [_ runtime (ipairs (b:glob (.. b.prefix "/share/vim") "vim*"))]
+            (let [tools (b:join runtime "tools")]
+              (when (b:exists tools)
+                (each [_ f (ipairs (b:find tools "*"))]
+                  (when (not (b:exists (b:join f ".")))
+                    (b:chmod f "644"))))))
           (b:copy (b:join b.src "runtime/doc/uganda.txt") (.. b.prefix "/share/licenses/license.txt"))
           (b:chmod (.. b.prefix "/share/licenses/license.txt") "644"))}

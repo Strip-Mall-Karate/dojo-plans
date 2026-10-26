@@ -170,7 +170,7 @@ Deno.test("build records the installed package, then skips the same plan", async
   const f = await fixture({ lib: {} });
   const first = contextFor(f);
   await behavior.methods.build.execute(
-    { plan: "lib", force: false, check: false },
+    { plan: "lib", force: false, check: false, refuseHostPaths: false },
     first.context,
   );
   const [record] = first.getWrittenResources();
@@ -190,7 +190,7 @@ Deno.test("build records the installed package, then skips the same plan", async
 
   const second = contextFor(f, { "build-lib": record.data });
   const result = await behavior.methods.build.execute(
-    { plan: "lib", force: false, check: false },
+    { plan: "lib", force: false, check: false, refuseHostPaths: false },
     second.context,
   );
   assertEquals(result.dataHandles, []);
@@ -204,6 +204,7 @@ Deno.test("build rebuilds a plan whose files changed", async () => {
     plan: "lib",
     force: false,
     check: false,
+    refuseHostPaths: false,
   }, first.context);
   const [record] = first.getWrittenResources();
   await Deno.writeTextFile(
@@ -215,6 +216,7 @@ Deno.test("build rebuilds a plan whose files changed", async () => {
     plan: "lib",
     force: false,
     check: false,
+    refuseHostPaths: false,
   }, second.context);
   assertEquals(second.getWrittenResources().length, 1);
 });
@@ -228,6 +230,7 @@ Deno.test("a failed build records the failure and throws with the log's tail", a
         plan: "lib",
         force: false,
         check: false,
+        refuseHostPaths: false,
       }, context),
     Error,
     "lib failed in build",
@@ -246,7 +249,13 @@ Deno.test("build is blocked by a dependency that failed in the same run", async 
   await assertRejects(
     () =>
       behavior.methods.build.execute(
-        { plan: "app", force: false, check: false, runId: "run-1" },
+        {
+          plan: "app",
+          force: false,
+          check: false,
+          refuseHostPaths: false,
+          runId: "run-1",
+        },
         context,
       ),
     Error,
@@ -264,7 +273,13 @@ Deno.test("a failure from an earlier run does not block build", async () => {
     "build-lib": failed,
   });
   await behavior.methods.build.execute(
-    { plan: "app", force: false, check: false, runId: "run-2" },
+    {
+      plan: "app",
+      force: false,
+      check: false,
+      refuseHostPaths: false,
+      runId: "run-2",
+    },
     context,
   );
   assertEquals(getWrittenResources()[0].data.status, "built");
@@ -278,10 +293,28 @@ Deno.test("build says which setting to fix when doj-plan-build is missing", asyn
   await assertRejects(
     () =>
       behavior.methods.build.execute(
-        { plan: "lib", force: true, check: false },
+        { plan: "lib", force: true, check: false, refuseHostPaths: false },
         context,
       ),
     Error,
     "set planBuild to its path",
+  );
+});
+
+Deno.test("build passes refuseHostPaths to doj-plan-build", async () => {
+  const f = await fixture({ lib: {} });
+  const { context, getWrittenFiles } = contextFor(f);
+  await behavior.methods.build.execute(
+    { plan: "lib", force: false, check: false, refuseHostPaths: true },
+    context,
+  );
+  const log = getWrittenFiles().find((file) => file.name === "log-lib");
+  assert(log, "the build wrote its log");
+  const text = typeof log.content === "string"
+    ? log.content
+    : new TextDecoder().decode(log.content);
+  assert(
+    text.split("\n")[0].endsWith(" --refuse-host-paths"),
+    text.split("\n")[0],
   );
 });

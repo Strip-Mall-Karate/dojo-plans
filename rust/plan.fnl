@@ -44,8 +44,13 @@
  :install (fn [b]
           (var v-dir "")
           (b:run ["./install.sh" (.. "--prefix=" b.prefix) "--disable-ldconfig"])
-          (each [_ v-b (ipairs ["rustc" "cargo" "rustdoc" "cargo-fmt" "rustfmt"])]
-            (b:run ["patchelf" "--interpreter" (.. (b:path_for "glibc") "/lib/ld-linux-x86-64.so.2") "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") (.. b.prefix "/bin/" v-b)]))
+          ;; Every program the archive ships, the tools under lib/rustlib (rust-lld and the
+          ;; rest) and libexec included, runs with karate glibc's dynamic linker: those
+          ;; patchelf can print an interpreter for.
+          (each [_ dir (ipairs ["bin" "libexec" "lib/rustlib"])]
+            (each [_ f (ipairs (b:find (b:join b.prefix dir) "*"))]
+              (when (= 0 (b:run ["patchelf" "--print-interpreter" f] {:check false}))
+                (b:run ["patchelf" "--interpreter" (.. (b:path_for "glibc") "/lib/ld-linux-x86-64.so.2") "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") f]))))
           ;; Every shared library, versioned names included (libLLVM.so.23.1-...), but the link
           ;; scripts beside them (libLLVM-23-....so is text): patchelf reads only ELF files.
           (each [_ f (ipairs (b:find (b:join b.prefix "lib") "*.so*"))]

@@ -47,6 +47,9 @@ const BuildArgsSchema = PlanArgsSchema.extend({
     "Build even when the package from the same plan content is installed, or a dependency's last build failed",
   ),
   check: z.boolean().default(false).describe("Run the plan's check phase"),
+  refuseHostPaths: z.boolean().default(false).describe(
+    "Fail when the package names the build machine's files: a dynamic linker, RUNPATH or script interpreter outside Dojo's root",
+  ),
   runId: z.string().optional().describe(
     "The workflow run building this plan: only failures in the same run block it; without one, any last failure does",
   ),
@@ -625,6 +628,7 @@ export const behavior = {
           "--target",
           g.target,
           ...(args.check ? ["--check"] : []),
+          ...(args.refuseHostPaths ? ["--refuse-host-paths"] : []),
         ];
         const trace: Record<string, string> = {};
         if (context.traceHeaders?.traceparent) {

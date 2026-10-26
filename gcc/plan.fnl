@@ -67,7 +67,7 @@
           (var v-library-path (.. (b:path_for "zlib") "/lib"))
           (b:env "LIBRARY_PATH" v-library-path)
           (b:log (.. "Setting LIBRARY_PATH=" v-library-path))
-          (set v-bash "/bin/bash")
+          (set v-bash "/bin/sh")
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/no-sys-dirs.patch")])
           (let [text (b:read (b:join b.src "gcc/configure")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
