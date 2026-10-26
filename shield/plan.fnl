@@ -36,14 +36,14 @@
  :install (fn [b]
           (b:run ["tar" "-xvzf" "shield-server-linux-amd64.tar.gz"] {:cwd (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts")})
           (if (b:exists (.. b.prefix "/bin"))
-            (b:copy (b:join (b:join b.src "shield-server-linux-amd64") "cli/shield") (b:join (.. b.prefix "/bin") (: (b:join (b:join b.src "shield-server-linux-amd64") "cli/shield") :match "[^/]+$")))
-            (b:copy (b:join (b:join b.src "shield-server-linux-amd64") "cli/shield") (.. b.prefix "/bin")))
+            (b:copy (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "cli/shield") (b:join (.. b.prefix "/bin") (: (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "cli/shield") :match "[^/]+$")))
+            (b:copy (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "cli/shield") (.. b.prefix "/bin")))
           (if (b:exists (.. b.prefix "/bin"))
-            (b:copy (b:join (b:join b.src "shield-server-linux-amd64") "daemon/shieldd") (b:join (.. b.prefix "/bin") (: (b:join (b:join b.src "shield-server-linux-amd64") "daemon/shieldd") :match "[^/]+$")))
-            (b:copy (b:join (b:join b.src "shield-server-linux-amd64") "daemon/shieldd") (.. b.prefix "/bin")))
+            (b:copy (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "daemon/shieldd") (b:join (.. b.prefix "/bin") (: (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "daemon/shieldd") :match "[^/]+$")))
+            (b:copy (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "daemon/shieldd") (.. b.prefix "/bin")))
           (if (b:exists (.. b.prefix "/bin"))
-            (b:copy (b:join (b:join b.src "shield-server-linux-amd64") "daemon/shield-schema") (b:join (.. b.prefix "/bin") (: (b:join (b:join b.src "shield-server-linux-amd64") "daemon/shield-schema") :match "[^/]+$")))
-            (b:copy (b:join (b:join b.src "shield-server-linux-amd64") "daemon/shield-schema") (.. b.prefix "/bin")))
+            (b:copy (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "daemon/shield-schema") (b:join (.. b.prefix "/bin") (: (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "daemon/shield-schema") :match "[^/]+$")))
+            (b:copy (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "daemon/shield-schema") (.. b.prefix "/bin")))
           (if (b:exists (.. b.prefix "/webui"))
-            (b:copy (b:join (b:join b.src "shield-server-linux-amd64") "webui") (b:join (.. b.prefix "/webui") (: (b:join (b:join b.src "shield-server-linux-amd64") "webui") :match "[^/]+$")))
-            (b:copy (b:join (b:join b.src "shield-server-linux-amd64") "webui") (.. b.prefix "/webui"))))}
+            (b:copy (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "webui") (b:join (.. b.prefix "/webui") (: (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "webui") :match "[^/]+$")))
+            (b:copy (b:join (.. (.. (or (b:getenv "SHIELD_SRC_PATH") "") "/artifacts") "/shield-server-linux-amd64") "webui") (.. b.prefix "/webui"))))}

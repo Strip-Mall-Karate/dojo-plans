@@ -432,12 +432,25 @@ def split(text):
 ABSOLUTE = re.compile(r'^(\(\.\. )?("/|b\.(prefix|src|cache|plan_dir)\b|\(b:path_for |\(b:join b\.)')
 
 
+def relative(expr):
+    """Whether a Fennel path expression is relative: its text starts with a literal not starting with /."""
+    lead = re.match(r'(?:\(\.\. )*"([^"]*)', expr)
+    return bool(lead) and not lead.group(1).startswith("/") and not ABSOLUTE.match(expr)
+
+
 def base(scope):
     """The directory relative paths name: the pushd or cd directory, or b.src."""
     if not scope.cwd:
         return "b.src"
     cwd = scope.cwd[-1]
-    return cwd if ABSOLUTE.match(cwd) or not cwd.startswith('"') else f"(b:join b.src {cwd})"
+    return f"(b:join b.src {cwd})" if relative(cwd) else cwd
+
+
+def entered(scope, target):
+    """The directory a pushd or cd to `target` enters: a relative one is inside the current one."""
+    if scope.cwd and relative(target):
+        return concat([scope.cwd[-1], '"/"', target])
+    return target
 
 
 def anchor(expr, scope):
@@ -1525,7 +1538,7 @@ def _command(cmd, args, scope, stdin):
     if cmd == "pushd":
         if len(args) != 1:
             raise Unported("pushd arity")
-        scope.cwd.append(word(args[0], scope))
+        scope.cwd.append(entered(scope, word(args[0], scope)))
         return []
     if cmd == "popd":
         if not scope.cwd:
@@ -1536,7 +1549,7 @@ def _command(cmd, args, scope, stdin):
         if len(args) != 1:
             raise Unported("cd arity")
         if scope.cwd:
-            scope.cwd[-1] = word(args[0], scope)
+            scope.cwd[-1] = entered(scope, word(args[0], scope))
         else:
             scope.cwd.append(word(args[0], scope))
         return []

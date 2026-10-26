@@ -25,7 +25,7 @@
           (b:run ["make" "test"] {:cwd (.. "build/" (or (b:getenv "GTEST_TARGET") "")) :env {"CTEST_OUTPUT_ON_FAILURE" "1"}}))
  :install (fn [b]
           (b:run ["make" "install"] {:cwd (.. "build/" (or (b:getenv "GTEST_TARGET") ""))})
-          (b:copy (b:join (b:join b.src "../..") "googlemock/LICENSE") (.. b.prefix "/share/licenses/license.txt"))
+          (b:copy (b:join (b:join b.src (.. (.. "build/" (or (b:getenv "GTEST_TARGET") "")) "/../..")) "googlemock/LICENSE") (.. b.prefix "/share/licenses/license.txt"))
           (b:chmod (.. b.prefix "/share/licenses/license.txt") "644")
           (b:mkdir (.. b.prefix "/lib/pkgconfig"))
           (b:write (.. b.prefix "/lib/pkgconfig/libgmock.pc") (.. "Name: libgmock\nDescription: The Google C++ mocking framework.\nVersion: " b.version "\nCflags: -I" b.prefix "/include/gmock\nLibs: -L" b.prefix "/lib -lgmock -lgmock_main\n")))}

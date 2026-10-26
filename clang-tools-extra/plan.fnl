@@ -31,7 +31,7 @@
  :build (fn [b]
           (b:mkdir (b:join b.src "build"))
           (b:run ["cmake" (.. "-DCMAKE_INSTALL_PREFIX:PATH=" b.prefix) "-DCMAKE_BUILD_TYPE=Release" "-G" "Unix Makefiles" "../"] {:cwd "build"})
-          (b:run ["make" (.. "-j" (tostring b.jobs))] {:cwd "tools/extra"}))
+          (b:run ["make" (.. "-j" (tostring b.jobs))] {:cwd "build/tools/extra"}))
  :check (fn [b]
           (b:run ["make" "test"] {:cwd "build/tools/extra"}))
  :install (fn [b]

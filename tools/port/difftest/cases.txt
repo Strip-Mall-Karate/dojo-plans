@@ -346,3 +346,15 @@ rm -fv man/{dlltool,windres}*
 for b in {one,two}-x "{literal,braces}"; do
   mkdir -p "$pkg_prefix/share/$b"
 done
+
+== nested-directory-changes
+-- setup
+mkdir -p build/target/deep; echo lic > LICENSE; echo inner > build/target/deep/f
+-- body
+local target=target
+cd "build/${target}"
+pushd deep > /dev/null
+cp f f2
+popd > /dev/null
+cd ../..
+install -Dm644 LICENSE "$pkg_prefix/share/licenses/license.txt"

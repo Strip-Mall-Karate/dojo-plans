@@ -19,12 +19,12 @@
           (b:run ["find" "." "-type" "f" "-executable" "-exec" "sh" "-c" "file -i \"$1\" | grep -q \"x-pie-executable; charset=binary\"" "_" "{}" ";" "-print" "-exec" "patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") "{}" ";"]))
  :install (fn [b]
           (if (b:exists b.prefix)
-            (b:copy (b:join (.. "opt/microsoft/" b.name) "include") (b:join b.prefix (: (b:join (.. "opt/microsoft/" b.name) "include") :match "[^/]+$")))
-            (b:copy (b:join (.. "opt/microsoft/" b.name) "include") b.prefix))
-          (each [_ p (ipairs (b:glob (b:join (.. "opt/microsoft/" b.name) "lib64") "*"))] (b:copy p (b:join (.. b.prefix "/lib/") (: p :match "[^/]+$"))))
+            (b:copy (b:join (b:join b.src (.. "opt/microsoft/" b.name)) "include") (b:join b.prefix (: (b:join (b:join b.src (.. "opt/microsoft/" b.name)) "include") :match "[^/]+$")))
+            (b:copy (b:join (b:join b.src (.. "opt/microsoft/" b.name)) "include") b.prefix))
+          (each [_ p (ipairs (b:glob (b:join (b:join b.src (.. "opt/microsoft/" b.name)) "lib64") "*"))] (b:copy p (b:join (.. b.prefix "/lib/") (: p :match "[^/]+$"))))
           (if (b:exists b.prefix)
-            (b:copy (b:join (.. "opt/microsoft/" b.name) "share") (b:join b.prefix (: (b:join (.. "opt/microsoft/" b.name) "share") :match "[^/]+$")))
-            (b:copy (b:join (.. "opt/microsoft/" b.name) "share") b.prefix))
+            (b:copy (b:join (b:join b.src (.. "opt/microsoft/" b.name)) "share") (b:join b.prefix (: (b:join (b:join b.src (.. "opt/microsoft/" b.name)) "share") :match "[^/]+$")))
+            (b:copy (b:join (b:join b.src (.. "opt/microsoft/" b.name)) "share") b.prefix))
           (b:mkdir (.. b.prefix "/doc"))
           (each [_ p (ipairs (b:glob (b:join b.src (.. "usr/share/doc/" b.name)) "*"))] (b:copy p (b:join (.. b.prefix "/doc/") (: p :match "[^/]+$")))))
  :strip (fn [b]
