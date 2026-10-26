@@ -25,6 +25,7 @@ dojo-plans/coreutils
 dojo-plans/bison
 dojo-plans/flex
 dojo-plans/pcre
+dojo-plans/pcre2
 dojo-plans/grep
 dojo-plans/readline
 dojo-plans/bash
@@ -55,7 +56,6 @@ dojo-plans/expect
 dojo-plans/dejagnu
 dojo-plans/check
 dojo-plans/cacerts
-dojo-plans/openssl-fips
 dojo-plans/openssl
 dojo-plans/wget
 dojo-plans/unzip
@@ -74,6 +74,7 @@ dojo/components/doj
 dojo-plans/bats
 dojo/components/plan-build
 dojo-plans/vim
+dojo-plans/libmd
 dojo-plans/libbsd
 dojo-plans/clens
 dojo-plans/mg

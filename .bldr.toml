@@ -346,8 +346,6 @@ plan_path = "gdbm"
 plan_path = "gdk-pixbuf"
 [gecode]
 plan_path = "gecode"
-[geoip]
-plan_path = "geoip"
 [geos]
 plan_path = "geos"
 [gettext]
@@ -983,13 +981,8 @@ plan_path = "openjdk11"
 plan_path = "openresty"
 [openssh]
 plan_path = "openssh"
-[openssl-fips]
-plan_path = "openssl-fips"
 [openssl]
 plan_path = "openssl"
-paths = [
-  "openssl-fips/*"
-]
 [openssl-musl]
 plan_path = "openssl-musl"
 paths = [

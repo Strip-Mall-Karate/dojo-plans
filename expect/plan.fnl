@@ -1,4 +1,5 @@
 ;; expect, ported from its plan.sh.
+;; expect 5.45.4, the latest release on 2026-10-26.
 {:name "expect"
  :origin "karate"
  :version "5.45.4"
@@ -7,7 +8,7 @@
  :license ["custom"]
  :description "Expect is a tool for automating interactive applications such as telnet, ftp, passwd, fsck, rlogin, tip, etc. Expect really makes this stuff trivial. Expect is also useful for testing these same applications."
  :upstream_url "https://www.nist.gov/services-resources/software/expect"
- :source {:url "http://downloads.sourceforge.net/project/expect/Expect/5.45.4/expect5.45.4.tar.gz" :sha256 "49a7da83b0bdd9f46d04a04deec19c7767bb9a323e40c4781f89caf760b92c34" :dirname "expect5.45.4"}
+ :source {:url "https://downloads.sourceforge.net/project/expect/Expect/5.45.4/expect5.45.4.tar.gz" :sha256 "49a7da83b0bdd9f46d04a04deec19c7767bb9a323e40c4781f89caf760b92c34" :dirname "expect5.45.4"}
  :deps ["karate/gcc-libs" "karate/glibc" "karate/tcl" "karate/zlib"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/gcc" "karate/make" "karate/patch"]
  :bin_dirs ["bin"]

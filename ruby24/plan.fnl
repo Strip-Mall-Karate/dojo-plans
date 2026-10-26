@@ -1,14 +1,15 @@
 ;; ruby24, ported from its plan.sh.
+;; ruby24 2.4.10, the latest release on 2026-10-26: 2.4.5's source no longer downloads.
 ;; Built from the ruby plan, with its own changes.
 {:name "ruby24"
  :origin "karate"
- :version "2.4.5"
+ :version "2.4.10"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["Ruby"]
  :description "A dynamic, open source programming language with a focus on simplicity and productivity. It has an elegant syntax that is natural to read and easy to write."
  :upstream_url "https://www.ruby-lang.org/en/"
- :source {:url "https://cache.ruby-lang.org/pub/ruby/ruby-2.4.5.tar.gz" :sha256 "6737741ae6ffa61174c8a3dcdd8ba92bc38827827ab1d7ea1ec78bc3cefc5198" :dirname "ruby-2.4.5"}
+ :source {:url "https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.10.tar.xz" :sha256 "d5668ed11544db034f70aec37d11e157538d639ed0d0a968e2f587191fc530df" :filename "ruby-2.4.10.tar.xz" :dirname "ruby-2.4.10"}
  :deps ["karate/glibc" "karate/ncurses" "karate/zlib" "karate/openssl" "karate/libyaml" "karate/libffi" "karate/readline"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
  :bin_dirs ["bin"]

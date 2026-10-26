@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# A stand-in for `doj`, the two things doj-plan-build asks of it, until Dojo's own doj builds
+# with the current toolchain:
+#   doj pkg path <ident>                     the newest installed package matching ident
+#   doj pkg sign --origin <o> <src> <dest>   writes src with a header line: NOT A SIGNATURE
+set -euo pipefail
+
+root=${DOJ_ROOT_PATH:-/doj}
+
+if [[ $# -ge 3 && "$1" == pkg && "$2" == path ]]; then
+  # A package is a directory origin/name/version/release holding IDENT; a build that failed
+  # leaves its directory without one. The ident names two to four of those levels.
+  ident=${3%/}
+  levels=$(( 4 - $(tr -cd / <<< "${ident}" | wc -c) - 1 ))
+  (( levels >= 0 && levels <= 2 )) || exit 1
+  [[ -d "${root}/pkgs/${ident}" ]] || exit 1
+  found=$(find "${root}/pkgs/${ident}" -mindepth "${levels}" -maxdepth "${levels}" -type d \
+            -exec test -f '{}/IDENT' ';' -print | sort -V | tail -1)
+  [[ -n "${found}" ]] || exit 1
+  printf '%s\n' "${found}"
+  exit 0
+fi
+
+if [[ $# -ge 2 && "$1" == pkg && "$2" == sign ]]; then
+  # doj pkg sign --origin <origin> <src> <dest>
+  args=("$@")
+  n=${#args[@]}
+  (( n == 6 )) && [[ "${args[2]}" == --origin ]] \
+    || { echo "doj (stand-in): expected pkg sign --origin <origin> <src> <dest>" >&2; exit 2; }
+  { printf 'unsigned by the doj stand-in for origin %s\n' "${args[3]}"; cat "${args[4]}"; } > "${args[5]}"
+  exit 0
+fi
+
+echo "doj (stand-in): only 'pkg path' and 'pkg sign' are provided: $*" >&2
+exit 2

@@ -1,13 +1,14 @@
 ;; dejagnu, ported from its plan.sh.
+;; dejagnu 1.6.3, the latest release on 2026-10-26.
 {:name "dejagnu"
  :origin "karate"
- :version "1.6.1"
+ :version "1.6.3"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-3.0-or-later"]
  :description "A framework for testing other programs."
  :upstream_url "https://www.gnu.org/software/dejagnu/"
- :source {:url "https://ftp.gnu.org/gnu/dejagnu/dejagnu-1.6.1.tar.gz" :sha256 "bf5b28bb797e0ace4cfc0766a996339c795d8223bef54158be7887046bc01692"}
+ :source {:url "https://ftp.gnu.org/gnu/dejagnu/dejagnu-1.6.3.tar.gz" :sha256 "87daefacd7958b4a69f88c6856dbd1634261963c414079d0c371f589cd66a2e3"}
  :deps ["karate/expect" "karate/coreutils" "karate/sed" "karate/grep"]
  :build_deps ["karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]

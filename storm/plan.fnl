@@ -1,13 +1,14 @@
 ;; storm, ported from its plan.sh.
+;; storm 3.1.0, the latest release on 2026-10-26: 1.1.2's source no longer downloads.
 {:name "storm"
  :origin "karate"
- :version "1.1.2"
+ :version "3.1.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["Apache-2.0"]
  :description "Open source distributed realtime computation system."
  :upstream_url "http://storm.apache.org/index.html"
- :source {:url "http://apache.mediamirrors.org/storm/apache-storm-1.1.2/apache-storm-1.1.2.tar.gz" :sha256 "823dad47e2941e126caf1186047da1c6058076115589905033e87987db7bfa27" :dirname "apache-storm-1.1.2"}
+ :source {:url "https://dlcdn.apache.org/storm/apache-storm-3.1.0/apache-storm-3.1.0.tar.gz" :sha256 "4fd7853462cb591e94dc594f95effe8e107842d8d6041482cc0b3e01ece5198c" :dirname "apache-storm-3.1.0"}
  :deps ["karate/corretto8" "karate/python" "karate/bash"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]

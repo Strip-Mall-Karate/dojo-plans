@@ -1,4 +1,5 @@
 ;; rethinkdb, ported from its plan.sh.
+;; rethinkdb 2.4.4, the latest release on 2026-10-26: 2.3.6's source no longer downloads.
 (fn use-dependency-path [b path replacement]
   ;; The source project's studio linked a dependency's tool to `path` for the
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
@@ -16,13 +17,13 @@
           (when (> n 0) (b:write f fixed)))))))
 {:name "rethinkdb"
  :origin "karate"
- :version "2.3.6"
+ :version "2.4.4"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["Apache-2.0"]
  :description "The open-source database for the realtime web."
  :upstream_url "https://rethinkdb.com"
- :source {:url "https://download.rethinkdb.com/dist/rethinkdb-2.3.6.tgz" :sha256 "c42159666910ad01be295a57caf8839ec3a89227d8919be5418e3aa1f0a3dc28"}
+ :source {:url "https://download.rethinkdb.com/repository/raw/dist/rethinkdb-2.4.4.tgz" :sha256 "5091237602b62830db2cb3daaca6ab34632323741e6710c2f0de4d84f442711f"}
  :deps ["karate/openssl/1.0.2l" "karate/gcc-libs/5.2.0" "karate/protobuf/2.6.1/20170514031228" "karate/zlib/1.2.8" "karate/curl/7.54.1/20180329185356" "karate/ncurses/6.0"]
  :build_deps ["karate/gcc/5.2.0" "karate/make" "karate/python2" "karate/boost" "karate/coreutils" "karate/jemalloc" "karate/m4" "karate/patch"]
  :bin_dirs ["bin"]

@@ -1,4 +1,5 @@
 ;; wget, ported from its plan.sh.
+;; wget 1.25.0, the latest release on 2026-10-26.
 (fn v--wget-common-prepare [b]
   (each [v-f (: (b:capture ["grep" "-lr" "/usr/bin/env" "."]) :gmatch "[^
   ]+")]
@@ -12,13 +13,13 @@
     (b:write (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f)) (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))))
 {:name "wget"
  :origin "karate"
- :version "1.19.5"
+ :version "1.25.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-3.0+"]
  :description "GNU Wget is a free software package for retrieving files using HTTP, HTTPS, FTP and FTPS the most widely-used Internet protocols."
  :upstream_url "https://www.gnu.org/software/wget/"
- :source {:url "https://ftp.gnu.org/gnu/wget/wget-1.19.5.tar.gz" :sha256 "b39212abe1a73f2b28f4c6cb223c738559caac91d6e416a6d91d4b9d55c9faee"}
+ :source {:url "https://ftp.gnu.org/gnu/wget/wget-1.25.0.tar.gz" :sha256 "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784"}
  :deps ["karate/cacerts" "karate/glibc" "karate/openssl" "karate/pcre" "karate/zlib"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/flex" "karate/gcc" "karate/gettext" "karate/grep" "karate/make" "karate/patch" "karate/perl" "karate/pkg-config" "karate/sed"]
  :bin_dirs ["bin"]

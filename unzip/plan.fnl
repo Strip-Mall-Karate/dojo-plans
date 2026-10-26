@@ -1,4 +1,5 @@
 ;; unzip, ported from its plan.sh.
+;; unzip 6.0, the latest release on 2026-10-26.
 {:name "unzip"
  :origin "karate"
  :version "6.0"

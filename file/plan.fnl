@@ -1,13 +1,14 @@
 ;; file, ported from its plan.sh.
+;; file 5.48, the latest release on 2026-10-26.
 {:name "file"
  :origin "karate"
- :version "5.34"
+ :version "5.48"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["custom"]
  :description "file is a standard Unix program for recognizing the type of data contained in a computer file."
  :upstream_url "https://www.darwinsys.com/file/"
- :source {:url "ftp://ftp.astron.com/pub/file/file-5.34.tar.gz" :sha256 "f15a50dbbfa83fec0bd1161e8e191b092ec832720e30cd14536e044ac623b20a"}
+ :source {:url "https://astron.com/pub/file/file-5.48.tar.gz" :sha256 "ed14656883b23a364b4057c05595d93252da9bc473d30106519519d0da141283"}
  :deps ["karate/glibc" "karate/zlib"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]

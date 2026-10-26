@@ -1,6 +1,5 @@
 ;; cacerts, ported from its plan.sh.
-;; The source project's plan took the newest bundle and its date as the version,
-;; unverified. This is the bundle current on 10 April 2019, the fork date, pinned.
+;; cacerts 2026.10.20, the latest release on 2026-10-26.
 {:name "cacerts"
  :origin "karate"
  :maintainer "Strip Mall Karate Company"
@@ -8,8 +7,8 @@
  :license ["MPL-2.0"]
  :description "The Mozilla CA certificate store in PEM format (around 250KB uncompressed)."
  :upstream_url "https://curl.haxx.se/docs/caextract.html"
- :version "2019.01.23"
- :source {:url "https://curl.se/ca/cacert-2019-01-23.pem" :sha256 "c1fd9b235896b1094ee97bfb7e042f93530b5e300781f59b45edf84ee8c75000" :filename "cacert.pem"}
+ :version "2026.10.20"
+ :source {:url "https://curl.se/ca/cacert-2026-10-20.pem" :sha256 "796f1389bfea13c0ed78f663b765baaff54a508e5483786bd6ece73c5e3e3cbe" :filename "cacert.pem"}
  :unpack (fn [b]
           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version)))
           (if (b:exists (.. b.cache "/" (.. b.name "-" b.version)))

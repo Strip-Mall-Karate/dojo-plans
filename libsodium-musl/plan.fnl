@@ -1,14 +1,15 @@
 ;; libsodium-musl, ported from its plan.sh.
+;; libsodium-musl 1.0.22, the latest release on 2026-10-26: 1.0.16's source no longer downloads.
 ;; Built from the libsodium plan, with its own changes.
 {:name "libsodium-musl"
  :origin "karate"
- :version "1.0.16"
+ :version "1.0.22"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["libsodium"]
  :description "Sodium is a new, easy-to-use software library for encryption, decryption, signatures, password hashing and more. It is a portable, cross-compilable, installable, packageable fork of NaCl, with a compatible API, and an extended API to improve usability even further."
  :upstream_url "https://github.com/jedisct1/libsodium"
- :source {:url "https://download.libsodium.org/libsodium/releases/libsodium-1.0.16.tar.gz" :sha256 "eeadc7e1e1bcef09680fb4837d448fbdf57224978f865ac1c16745868fbd0533" :dirname "libsodium-1.0.16"}
+ :source {:url "https://download.libsodium.org/libsodium/releases/libsodium-1.0.22.tar.gz" :sha256 "adbdd8f16149e81ac6078a03aca6fc03b592b89ef7b5ed83841c086191be3349" :dirname "libsodium-1.0.22"}
  :deps ["karate/musl"]
  :build_deps ["karate/autoconf" "karate/automake" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
  :lib_dirs ["lib"]

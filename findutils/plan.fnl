@@ -1,13 +1,14 @@
 ;; findutils, ported from its plan.sh.
+;; findutils 4.11.0, the latest release on 2026-10-26.
 {:name "findutils"
  :origin "karate"
- :version "4.6.0"
+ :version "4.11.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv3+"]
  :description "The GNU Find Utilities are the basic directory searching utilities of the GNU operating system. These programs are typically used in conjunction with other programs to provide modular and powerful directory search and file locating capabilities to other commands."
  :upstream_url "http://www.gnu.org/software/findutils"
- :source {:url "http://ftp.gnu.org/gnu/findutils/findutils-4.6.0.tar.gz" :sha256 "ded4c9f73731cd48fec3b6bdaccce896473b6d8e337e9612e16cf1431bb1169d"}
+ :source {:url "https://ftp.gnu.org/gnu/findutils/findutils-4.11.0.tar.xz" :sha256 "bfd19cb06cc71f3352d567e90284d8cdac02ac89774bbeadf0b533b0c11432fd"}
  :deps ["karate/glibc"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
  :bin_dirs ["bin"]

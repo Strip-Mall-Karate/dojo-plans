@@ -1,0 +1,42 @@
+id: 0cf4b112-5a95-4698-9f42-e0162d9bd3fa
+name: build-wave
+description: Build one wave of plans, which depend only on earlier waves, two at a time
+tags: {}
+inputs:
+  type: object
+  properties:
+    plans:
+      type: array
+      items: { type: string }
+      minItems: 1
+    force:
+      type: boolean
+      default: false
+    runId:
+      type: string
+      description: The build-plans run, so only its own failures block a plan
+  required: ["plans"]
+jobs:
+  - name: build
+    description: Every plan in the wave; one failing does not stop the others
+    steps:
+      - name: build-${{ self.plan }}
+        description: doj-plan-build build, skipped when this plan's package is installed
+        forEach:
+          item: plan
+          in: ${{ inputs.plans }}
+        concurrency: 2
+        task:
+          type: behavior
+          behavior: dojo
+          methodName: build
+          inputs:
+            plan: ${{ self.plan }}
+            force: ${{ inputs.force }}
+            runId: ${{ inputs.runId }}
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+    dependsOn: []
+    weight: 0
+version: 1

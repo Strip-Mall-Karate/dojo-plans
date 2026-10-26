@@ -1,7 +1,7 @@
 # AGENTS.md — Dojo Plans
 
 Guidance for agents changing this repository. `README.md` says what it is; `CONTRIBUTING.md` how a
-plan is written; `tools/port/README.md` how the bash plans are being ported and what is left.
+plan is written; `tools/port/README.md` how the bash plans were ported.
 
 - Plans are Fennel (`plan.fnl`), loaded and built by `doj-plan-build` from Dojo's `components/plan`
   (StripMallKarateCompany/dojo). Plan code never runs a shell; a package's own scripts may be run.

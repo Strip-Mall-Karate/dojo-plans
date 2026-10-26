@@ -1,13 +1,14 @@
 ;; vim, ported from its plan.sh.
+;; vim 9.2.1245 (the newest tag; vim's tags are its releases), the latest release on 2026-10-26.
 {:name "vim"
  :origin "karate"
- :version "8.1.0577"
+ :version "9.2.1245"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["Vim"]
  :description "Vim is a highly configurable text editor built to make creating and changing any kind of text very efficient. It is included as vi with most UNIX systems and with Apple OS X."
  :upstream_url "http://www.vim.org/"
- :source {:url "http://github.com/vim/vim/archive/v8.1.0577.tar.gz" :sha256 "16a6a8590a36b9c114a2c4a171598a4d07ac9c214fb80bc490c76bfa7e6446dd"}
+ :source {:url "https://github.com/vim/vim/archive/refs/tags/v9.2.1245.tar.gz" :sha256 "4238a92338251c1ef9da0a2e0d3ebfa21e723038687d75878e964d64ff51e13d" :filename "vim-9.2.1245.tar.gz"}
  :deps ["karate/acl" "karate/attr" "karate/glibc" "karate/ncurses"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/autoconf"]
  :bin_dirs ["bin"]

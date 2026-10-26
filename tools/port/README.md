@@ -117,12 +117,16 @@ scaffolding-node and scaffolding-ruby are ported; chef, inspec, gradle and go17 
   is no Builder to ask); scaffolding-ruby reads Gemfile.lock in Fennel and needs one present.
 - A user and group with no service to run are left out of `svc` (chrony, systemd).
 
-## What is left (1 package, 2026-10-26)
+## What is left
 
-- geoip: its GeoLite download no longer exists; Jamie to decide.
+Nothing: every plan is Fennel. geoip, whose GeoLite download no longer exists, and openssl-fips,
+whose FIPS canister OpenSSL 3 replaced with a provider built from OpenSSL itself, were dropped
+(Jamie, 2026-10-26).
 
 ## Sources that no longer answer
 
 Of 548 committed source URLs, 71 failed a one-byte fetch on 2026-10-26 (ftp.gnupg.org's FTP,
-moved paths on cache.ruby-lang.org, php.net, storage.googleapis.com and others). Their checksums
-still name the right bytes; each needs a live mirror serving the same file.
+moved paths on cache.ruby-lang.org, php.net, storage.googleapis.com and others). Those packages, and
+every plan in `base-plans.txt`, take their latest upstream release instead (Jamie, 2026-10-26); each
+bumped plan says so in its second line and is in `handwritten.txt`, since its bash no longer
+describes it. A bumped plan loads; whether it builds is shown only by building it.

@@ -1,13 +1,14 @@
 ;; php, ported from its plan.sh.
+;; php 8.5.12, the latest release on 2026-10-26: 7.3.3's source no longer downloads.
 {:name "php"
  :origin "karate"
- :version "7.3.3"
+ :version "8.5.12"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["PHP-3.01"]
  :description "PHP is a popular general-purpose scripting language that is especially suited to web development."
  :upstream_url "http://php.net/"
- :source {:url "https://php.net/get/php-7.3.3.tar.xz/from/this/mirror" :sha256 "6bb03e79a183d0cb059a6d117bbb2e0679cab667fb713a13c6a16f56bebab9b3" :filename "php-7.3.3.tar.xz" :dirname "php-7.3.3"}
+ :source {:url "https://www.php.net/distributions/php-8.5.12.tar.xz" :sha256 "08bc2eba2a588654ade1357174aa646b761556c862dda0678345ee29ed481209"}
  :deps ["karate/bzip2" "karate/coreutils" "karate/curl" "karate/glibc" "karate/icu" "karate/libjpeg-turbo" "karate/libpng" "karate/libxml2" "karate/libzip" "karate/openssl" "karate/readline" "karate/zip" "karate/zlib" "karate/gcc-libs"]
  :build_deps ["karate/autoconf" "karate/bison2" "karate/gcc" "karate/libgd" "karate/make" "karate/re2c"]
  :bin_dirs ["bin" "sbin"]

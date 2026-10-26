@@ -1,18 +1,18 @@
 ;; shadow, ported from its plan.sh.
+;; shadow 4.20.3, the latest release on 2026-10-26.
 {:name "shadow"
  :origin "karate"
- :version "4.6"
+ :version "4.20.3"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["bsd"]
  :description "Password and account management tool suite."
  :upstream_url "https://github.com/shadow-maint/shadow"
- :source {:url "https://github.com/shadow-maint/shadow/releases/download/4.6/shadow-4.6.tar.xz" :sha256 "0998c8d84242a231ab0acb7f8613927ff5bcff095f8aa6b79478893a03f05583"}
+ :source {:url "https://github.com/shadow-maint/shadow/releases/download/4.20.3/shadow-4.20.3.tar.xz" :sha256 "623be9429f64fa2165bfc5957c6a642ec309c5cf23c0d53855c99f7591922297"}
  :deps ["karate/glibc" "karate/attr" "karate/acl"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]
  :prepare (fn [b]
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/dots-in-usernames.patch")])
           (let [text (b:read (b:join b.src "src/Makefile.in")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]

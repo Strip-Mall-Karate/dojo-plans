@@ -1,0 +1,16 @@
+manifestVersion: 1
+name: "@strip-mall-karate/dojo"
+version: "2026.10.26.1"
+license: MIT
+description: "Show and build Dojo plans with doj-plan-build, and order a plans checkout into dependency waves for building."
+repository: https://github.com/StripMallKarateCompany/dojo-plans
+paths:
+  base: manifest
+behaviors:
+  - dojo.ts
+additionalFiles:
+  - README.md
+  - LICENSE
+platforms:
+  - linux-x86_64
+  - linux-aarch64

@@ -1,13 +1,14 @@
 ;; less, ported from its plan.sh.
+;; less 710, the latest release on 2026-10-26.
 {:name "less"
  :origin "karate"
- :version "530"
+ :version "710"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv3+"]
  :description "A terminal pager program used to view (but not change) the contents of a text file."
  :upstream_url "http://www.greenwoodsoftware.com/less/index.html"
- :source {:url "http://www.greenwoodsoftware.com/less/less-530.tar.gz" :sha256 "503f91ab0af4846f34f0444ab71c4b286123f0044a4964f1ae781486c617f2e2"}
+ :source {:url "https://www.greenwoodsoftware.com/less/less-710.tar.gz" :sha256 "d1008fb78dcae1323ddab664bcb352a61f022b1b131bd8018548e021d975ec7a"}
  :deps ["karate/glibc" "karate/ncurses" "karate/pcre"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]

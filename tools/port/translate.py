@@ -137,6 +137,8 @@ class Scope:
         self.shared = set(shared)
         # Variables declared at the function's top; assigning one is a set.
         self.declared = set()
+        # Names `export NAME` marked before any value: an assignment exports them.
+        self.exported = set()
         # Fennel names whose value may be a relative path (a relative glob's names,
         # lines a find or grep -l printed): as a path for b, each is anchored.
         self.relative = set()
@@ -1154,6 +1156,8 @@ def assignment(stmt, scope, exported):
         scope.literal[var] = bytes(value[1:-1], "utf-8").decode("unicode_escape")
     else:
         scope.literal.pop(var, None)
+    if var in scope.exported and var not in scope.locals:
+        exported = True
     if exported or re.fullmatch(r"[A-Z][A-Z0-9_]*", var) and var not in scope.locals:
         if exported or var in ENV_LIKE:
             return [f"(b:env {fstr(var)} {value})"]
@@ -1365,7 +1369,9 @@ def statement(text, scope):
                 out += assignment(a, scope, exported=True)
             elif a in scope.locals:
                 out.append(f"(b:env {fstr(a)} {scope.locals[a]})")
-            # `export NAME` of a variable the build already exports: nothing to do.
+            else:
+                # `export NAME` before NAME has a value: the assignment exports it.
+                scope.exported.add(a)
         return out
     env = []
     while bashplan.ASSIGN.match(cmd) and args:

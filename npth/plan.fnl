@@ -1,11 +1,12 @@
 ;; npth, ported from its plan.sh.
+;; npth 1.8, the latest release on 2026-10-26: 1.2's source no longer downloads.
 {:name "npth"
  :origin "karate"
- :version "1.2"
+ :version "1.8"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["lgplv3+"]
- :source {:url "ftp://ftp.gnupg.org/gcrypt/npth/npth-1.2.tar.bz2" :sha256 "6ddbdddb2cf49a4723f9d1ad6563c480d6760dcb63cb7726b8fc3bc2e1b6c08a"}
+ :source {:url "https://www.gnupg.org/ftp/gcrypt/npth/npth-1.8.tar.bz2" :sha256 "8bd24b4f23a3065d6e5b26e98aba9ce783ea4fd781069c1b35d149694e90ca3e"}
  :deps ["karate/glibc"]
  :build_deps ["karate/gcc" "karate/coreutils" "karate/sed" "karate/bison" "karate/flex" "karate/grep" "karate/bash" "karate/gawk" "karate/libtool" "karate/diffutils" "karate/findutils" "karate/xz" "karate/gettext" "karate/gzip" "karate/make" "karate/patch" "karate/texinfo" "karate/util-linux"]
  :bin_dirs ["bin"]

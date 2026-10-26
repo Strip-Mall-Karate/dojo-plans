@@ -26,8 +26,8 @@
           (b:env "CPPFLAGS" (.. (or (b:getenv "CPPFLAGS") "") " -Wno-error=implicit-fallthrough")))
  :build (fn [b]
           (b:env "LD_LIBRARY_PATH" (.. (b:path_for "karate/libgcrypt") "/lib"))
-          (var v-gcrypt-include-dir (.. (b:path_for "karate/libgcrypt") "/lib"))
-          (var v-gcrypt-lib (b:path_for "karate/libgcrypt"))
+          (b:env "GCRYPT_INCLUDE_DIR" (.. (b:path_for "karate/libgcrypt") "/lib"))
+          (b:env "GCRYPT_LIB" (b:path_for "karate/libgcrypt"))
           (b:run ["cmake" "." (.. "-DCMAKE_PREFIX_PATH=" (b:path_for "karate/ncurses")) (.. "-DCMAKE_INSTALL_PREFIX=" b.prefix) "-DBUILD_CONFIG=xtrabackup_release" "-DWITH_MAN_PAGES=OFF" (.. "-DWITH_BOOST=" (b:path_for "karate/boost159") "/include") (.. "-DCURL_LIBRARY=" (b:path_for "karate/curl") "/lib/libcurl.so") (.. "-DCURL_INCLUDE_DIR=" (b:path_for "karate/curl") "/include") (.. "-DLIBEV_INCLUDE_DIRS=" (b:path_for "karate/libev") "/include") (.. "-DGCRYPT_LIB=" (b:path_for "karate/libgcrypt") "/lib/libgcrypt.so") (.. "-DGCRYPT_INCLUDE_DIR=" (b:path_for "karate/libgcrypt") "/include") (.. "-DGPG_ERROR_LIB=" (b:path_for "karate/libgpg-error") "/lib/libgpg-error.so") (.. "-DLIBEV_LIB=" (b:path_for "karate/libev") "/lib/libev.so") (.. "-DZLIB_LIBRARY=" (b:path_for "karate/zlib") "/lib/libz.so")])
           (b:run ["make"]))
  :install (fn [b]

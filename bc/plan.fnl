@@ -1,13 +1,14 @@
 ;; bc, ported from its plan.sh.
+;; bc 1.08.2, the latest release on 2026-10-26.
 {:name "bc"
  :origin "karate"
- :version "1.07.1"
+ :version "1.08.2"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-3.0"]
  :description "bc is an arbitrary precision numeric processing language. Syntax is similar to C, but differs in many substantial areas. It supports interactive execution of statements. bc is a utility included in the POSIX P1003.2/D11 draft standard."
  :upstream_url "https://www.gnu.org/software/bc/"
- :source {:url "https://ftp.gnu.org/gnu/bc/bc-1.07.1.tar.gz" :sha256 "62adfca89b0a1c0164c2cdca59ca210c1d44c3ffc46daf9931cf4942664cb02a"}
+ :source {:url "https://ftp.gnu.org/gnu/bc/bc-1.08.2.tar.gz" :sha256 "ae470fec429775653e042015edc928d07c8c3b2fc59765172a330d3d87785f86"}
  :deps ["karate/flex" "karate/glibc" "karate/ncurses" "karate/readline"]
  :build_deps ["karate/bison" "karate/coreutils" "karate/diffutils" "karate/gcc" "karate/make" "karate/patch" "karate/texinfo"]
  :bin_dirs ["bin"]

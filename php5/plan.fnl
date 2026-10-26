@@ -1,13 +1,14 @@
 ;; php5, ported from its plan.sh.
+;; php5 5.6.40, the latest release on 2026-10-26: 5.6.39's source no longer downloads.
 {:name "php5"
  :origin "karate"
- :version "5.6.39"
+ :version "5.6.40"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["PHP-3.01"]
  :description "PHP is a popular general-purpose scripting language that is especially suited to web development."
  :upstream_url "http://php.net/"
- :source {:url "https://php.net/get/php-5.6.39.tar.bz2/from/this/mirror" :sha256 "b3db2345f50c010b01fe041b4e0f66c5aa28eb325135136f153e18da01583ad5" :filename "php-5.6.39.tar.bz2" :dirname "php-5.6.39"}
+ :source {:url "https://www.php.net/distributions/php-5.6.40.tar.xz" :sha256 "1369a51eee3995d7fbd1c5342e5cc917760e276d561595b6052b21ace2656d1c" :dirname "php-5.6.40"}
  :deps ["karate/coreutils" "karate/curl" "karate/glibc" "karate/libxml2" "karate/openssl" "karate/readline" "karate/zlib"]
  :build_deps ["karate/bison2" "karate/gcc" "karate/make" "karate/re2c"]
  :bin_dirs ["bin" "sbin"]

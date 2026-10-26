@@ -1,4 +1,5 @@
 ;; gcc, ported from its plan.sh.
+;; gcc 16.2.0, the latest release on 2026-10-26.
 (var v-bash "")
 (var v-binutils "")
 (var v-build-cflags "")
@@ -29,13 +30,13 @@
   (b:chmod v-bin "755"))
 {:name "gcc"
  :origin "karate"
- :version "8.2.0"
+ :version "16.2.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-2.0"]
  :description "The GNU Compiler Collection (GCC) is a compiler system produced by the GNU Project supporting various programming languages. GCC is a key component of the GNU toolchain and the standard compiler for most Unix-like operating systems."
  :upstream_url "https://gcc.gnu.org/"
- :source {:url "http://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.xz" :sha256 "196c3c04ba2613f893283977e6011b2345d1cd1af9abeac58e916b1aab3e0080"}
+ :source {:url "https://ftp.gnu.org/gnu/gcc/gcc-16.2.0/gcc-16.2.0.tar.xz" :sha256 "e6738e29597f733270731aa90600f37ffdc045079dfc27ec7e8192cc81085c3e"}
  :deps ["karate/glibc" "karate/zlib" "karate/gmp" "karate/mpfr" "karate/libmpc" "karate/binutils"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/file" "karate/make" "karate/gcc" "karate/gawk" "karate/m4" "karate/texinfo" "karate/perl" "karate/inetutils" "karate/expect" "karate/dejagnu"]
  :bin_dirs ["bin"]
@@ -102,9 +103,11 @@
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src "gcc/config/i386/t-linux64") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          ;; Each file under the source (but its top-level dot files) naming /usr/bin/file names file.
-          (each [_ f (ipairs (b:find b.src "*"))]
-            (when (and (not (b:exists (b:join f "."))) (not (: (f:sub (+ (length b.src) 2)) :match "^%.")))
+          ;; Each file under the source naming /usr/bin/file names file. In gcc 16.2.0 those are
+          ;; the configure scripts and libtool's files; reading all of gcc's sources holds more
+          ;; than a plan may.
+          (each [_ name (ipairs ["configure" "configure.tgt" "ltmain.sh" "libtool.m4"])]
+            (each [_ f (ipairs (b:find b.src name))]
               (let [(fixed n) (: (b:read f) :gsub "/usr/bin/file" "file")]
                 (when (> n 0) (b:write f fixed)))))
           (set v-build-cflags "-O2")

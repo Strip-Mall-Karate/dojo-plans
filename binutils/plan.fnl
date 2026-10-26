@@ -1,4 +1,5 @@
 ;; binutils, ported from its plan.sh.
+;; binutils 2.47, the latest release on 2026-10-26.
 (var v-bash "")
 (var v-dynamic-linker "")
 (fn v--verify-tty [b]
@@ -32,13 +33,13 @@
   (b:chmod v-bin "755"))
 {:name "binutils"
  :origin "karate"
- :version "2.31.1"
+ :version "2.47"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gpl"]
  :description "The GNU Binary Utilities, or binutils, are a set of programming tools for creating and managing binary programs, object files, libraries, profile data, and assembly source code."
  :upstream_url "https://www.gnu.org/software/binutils/"
- :source {:url "http://ftp.gnu.org/gnu/binutils/binutils-2.31.1.tar.bz2" :sha256 "ffcc382695bf947da6135e7436b8ed52d991cf270db897190f19d6f9838564d0"}
+ :source {:url "https://ftp.gnu.org/gnu/binutils/binutils-2.47.tar.xz" :sha256 "154ab23b60070e8f27013c22977f1129425d67d1e8acd6e13010e617811e4cff"}
  :deps ["karate/glibc" "karate/zlib"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/texinfo" "karate/expect" "karate/dejagnu"]
  :bin_dirs ["bin"]
@@ -58,23 +59,10 @@
           (b:env "CPPFLAGS" (or (b:getenv "CFLAGS") ""))
           (b:log (.. "Updating CPPFLAGS=" (or (b:getenv "CPPFLAGS") "")))
           (set v-bash "/bin/bash")
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/new-dtags.patch")])
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/dt-needed-true.patch")])
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/more-deterministic-output.patch")])
-          (b:run ["patch" "-p1"] {:stdin (let [text (b:read (.. b.plan_dir "/disable_failing_tests.patch")) ends (= (text:sub -1) "\n") lines [] out []]
-            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l) (var deleted false) (local after [])
-              (when (not deleted) (set line (pick-values 1 (string.gsub line "@zlib_libs@" (.. (pick-values 1 (: (b:path_for "zlib") :gsub "%%" "%%%%")) "/lib")))))
-              (when (not deleted) (table.insert out line))
-              (each [_ x (ipairs after)] (table.insert out x)))
-            (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))})
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/0001-PR23428-x86-Add-a-GNU_PROPERTY_X86_ISA_1_USED-note-if-needed.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/0004-PR23486-Properly-merge-GNU_PROPERTY_X86_ISA_1_USED-x86_64.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/0005-PR23486-x86-Properly-merge-GNU_PROPERTY_X86_ISA_1_USED.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/0006-PR23428-x86-Properly-add-X86_ISA_1_NEEDED-property.patch")])
           (b:write (b:join b.src "ld/configure.tgt") (.. (if (b:exists (b:join b.src "ld/configure.tgt")) (b:read (b:join b.src "ld/configure.tgt")) "") "NATIVE_LIB_DIRS=\n"))
-          (each [_ v-f (ipairs ["binutils/Makefile.in" "gas/Makefile.in" "ld/Makefile.in" "gold/Makefile.in"])]
+          (each [_ v-f (ipairs ["binutils/Makefile.in" "gas/Makefile.in" "ld/Makefile.in"])]
             (let [text (b:read (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]
@@ -86,7 +74,7 @@
  :build (fn [b]
           (b:remove (b:join b.src (.. "../" b.name "-build")))
           (b:mkdir (b:join b.src (.. "../" b.name "-build")))
-          (b:run [(.. "../" (.. b.name "-" b.version) "/configure") (.. "--prefix=" b.prefix) "--enable-shared" "--enable-gold" "--enable-ld=default" "--enable-plugins" "--enable-deterministic-archives" "--enable-threads" "--disable-werror" "--with-system-zlib"] {:cwd (.. "../" b.name "-build")})
+          (b:run [(.. "../" (.. b.name "-" b.version) "/configure") (.. "--prefix=" b.prefix) "--enable-shared" "--enable-ld=default" "--enable-new-dtags" "--enable-plugins" "--enable-deterministic-archives" "--enable-threads" "--disable-werror" "--with-system-zlib"] {:cwd (.. "../" b.name "-build")})
           (b:run ["make" "configure-host"] {:cwd (.. "../" b.name "-build")})
           (b:run ["make" (.. "-j" (tostring b.jobs)) (.. "tooldir=" b.prefix)] {:cwd (.. "../" b.name "-build")}))
  :check (fn [b]

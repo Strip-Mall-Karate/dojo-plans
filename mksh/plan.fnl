@@ -1,13 +1,14 @@
 ;; mksh, ported from its plan.sh.
+;; mksh R59c, the latest release on 2026-10-26: R56c's source no longer downloads.
 {:name "mksh"
  :origin "karate"
- :version "R56c"
+ :version "R59c"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["MirOS" "ISC" "BSD-3-Clause"]
  :description "The MirBSD Korn Shell"
  :upstream_url "http://www.mirbsd.org/mksh.htm"
- :source {:url "https://www.mirbsd.org/MirOS/dist/mir/mksh/mksh-R56c.tgz" :sha256 "dd86ebc421215a7b44095dc13b056921ba81e61b9f6f4cdab08ca135d02afb77" :dirname "mksh"}
+ :source {:url "https://deb.debian.org/debian/pool/main/m/mksh/mksh_59c.orig.tar.gz" :sha256 "77ae1665a337f1c48c61d6b961db3e52119b38e58884d1c89684af31f87bc506" :filename "mksh-R59c.tar.gz" :dirname "mksh"}
  :deps ["karate/glibc"]
  :build_deps ["karate/make" "karate/gcc" "karate/gawk" "karate/wget"]
  :bin_dirs ["bin"]

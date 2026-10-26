@@ -1,13 +1,14 @@
 ;; linux-headers, ported from its plan.sh.
+;; linux-headers 7.3, the latest release on 2026-10-26.
 {:name "linux-headers"
  :origin "karate"
- :version "4.17.12"
+ :version "7.3"
  :targets ["x86_64-linux" "x86_64-linux-kernel2"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv2"]
  :description "The Linux kernel headers"
  :upstream_url "https://kernel.org"
- :source {:url "https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.17.12.tar.xz" :sha256 "c098e2e4dcb64f8e3fb5cec35e872ff383edefa18532744ddf35bbba829cb5a3" :dirname "linux-4.17.12"}
+ :source {:url "https://www.kernel.org/pub/linux/kernel/v7.x/linux-7.3.tar.xz" :sha256 "87363c24f10e06321eb362765521094e94471f6bff8bce2d6b3e40f39f004953" :dirname "linux-7.3"}
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :include_dirs ["include"]
  :build (fn [b]

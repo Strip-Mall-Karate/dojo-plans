@@ -1,12 +1,13 @@
 ;; gnupg-static, ported from its plan.sh.
+;; gnupg-static 1.4.23, the latest release on 2026-10-26: 1.4.20's source no longer downloads.
 ;; Built from the gnupg plan, with its own changes.
 {:name "gnupg-static"
  :origin "karate"
- :version "1.4.20"
+ :version "1.4.23"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv3+"]
- :source {:url "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-1.4.20.tar.bz2" :sha256 "04988b1030fa28ddf961ca8ff6f0f8984e0cddcb1eb02859d5d8fe0fe237edcc" :dirname "gnupg-1.4.20"}
+ :source {:url "https://www.gnupg.org/ftp/gcrypt/gnupg/gnupg-1.4.23.tar.bz2" :sha256 "c9462f17e651b6507848c08c430c791287cd75491f8b5a8b50c6ed46b12678ba" :dirname "gnupg-1.4.23"}
  :build_deps ["karate/glibc" "karate/zlib" "karate/bzip2" "karate/readline" "karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/findutils"]
  :bin_dirs ["bin"]
  :prepare (fn [b]
