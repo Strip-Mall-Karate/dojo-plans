@@ -1,0 +1,12 @@
+type: '@strip-mall-karate/dojo'
+typeVersion: 2026.10.26.1
+id: d33d48a9-4c68-4811-90b9-3da04f449d75
+name: dojo
+version: 1
+tags: {}
+globalArguments:
+  checkout: ..
+  planBuild: doj-plan-build
+  target: x86_64-linux
+  baseOrder: base-plans.txt
+methods: {}

@@ -12,6 +12,9 @@ only.
 `base-plans.txt` lists the base toolchain in the order it is built. `.bldr.toml` tells Builder where
 each plan lives.
 
+[swamp](swamp/README.md) builds a plan and everything it depends on, in dependency order, with
+`doj-plan-build`.
+
 ## License
 
 New work in Dojo Plans is MIT licensed: see [LICENSE](LICENSE). The plans and files inherited from

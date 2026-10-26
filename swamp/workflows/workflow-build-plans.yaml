@@ -1,0 +1,55 @@
+id: 9485515d-3686-4ac1-871e-55d5fd1ed9a6
+name: build-plans
+description: Build plans and everything they depend on, in dependency order, one wave at a time
+tags: {}
+inputs:
+  type: object
+  properties:
+    plans:
+      type: array
+      items: { type: string }
+      default: []
+      description: Plans to build, by directory name; empty builds every plan
+    force:
+      type: boolean
+      default: false
+      description: Rebuild plans whose package is already installed
+jobs:
+  - name: order
+    description: Read the plans and order them into waves
+    steps:
+      - name: order
+        task:
+          type: behavior
+          behavior: dojo
+          methodName: order
+          inputs:
+            plans: ${{ inputs.plans }}
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+    dependsOn: []
+    weight: 0
+  - name: build
+    description: Each wave in turn, after the waves before it
+    steps:
+      - name: wave-${{ string(self._index) }}
+        forEach:
+          item: wave
+          in: ${{ data.latest("dojo", "order").attributes.waves }}
+        concurrency: 1
+        task:
+          type: workflow
+          workflowIdOrName: build-wave
+          inputs:
+            plans: ${{ self.wave }}
+            force: ${{ inputs.force }}
+            runId: ${{ run.id }}
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+    dependsOn:
+      - job: order
+        condition: { type: succeeded }
+    weight: 0
+version: 1
