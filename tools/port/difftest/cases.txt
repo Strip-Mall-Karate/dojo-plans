@@ -272,3 +272,9 @@ echo "$(basename "$p") $(dirname "$p") $(basename "$q") $(dirname "$q")" > names
 printf '#SSL=/usr\n#_ssl x\n#other\n#c -lssl\n' > Setup.dist
 -- body
 sed -i -re "/(SSL=|_ssl|-DUSE_SSL|-lssl).*/ s|^#||" Setup.dist
+
+== sed-repeated-single-group
+-- setup
+printf '    node "$@"\n\tnode x\nnodejs y\n' > node-gyp
+-- body
+sed -e "s#^\([[:space:]]\)\+node\([[:space:]]\)#\1/opt/bin/node\2#" -i node-gyp

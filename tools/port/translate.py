@@ -640,6 +640,13 @@ SED_EXPR = re.compile(r"^s(.)(.*?)(?<!\\)\1(.*?)(?<!\\)\1([gI0-9]*)$", re.S)
 
 def sed_to_lua(pattern, extended):
     """A sed regex as a Lua pattern, for the forms both can say."""
+    # \(X\)\+ with X one character class: sed captures the last repetition, which
+    # is X*(X): any run of X, then the last X captured.
+    single = r"(\[\[:\w+:\]\]|\[[^\]\[]+\]|\.)"
+    if extended:
+        pattern = re.sub(r"\(" + single + r"\)\+", r"\1*(\1)", pattern)
+    else:
+        pattern = re.sub(r"\\\(" + single + r"\\\)\\\+", r"\1*\\(\1\\)", pattern)
     out = []
     i = 0
     n = len(pattern)
