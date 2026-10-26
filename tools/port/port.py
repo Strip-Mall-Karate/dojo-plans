@@ -172,7 +172,8 @@ def metadata(plan, name, emitter):
                      ("pkg_include_dirs", "include_dirs"), ("pkg_pconfig_dirs", "pconfig_dirs"),
                      ("pkg_interpreters", "interpreters")):
         if a.get(var):
-            put(key, emitter.strings(key, a[var]))
+            # The source project joined each to the prefix, so a leading / named the same place.
+            put(key, emitter.strings(key, [v.lstrip("/") for v in a[var]]))
     if s.get("pkg_svc_run"):
         fields = [f":run {emitter.value('svc.run', svc_path(name, s['pkg_svc_run']))}"]
         if s.get("pkg_svc_user"):

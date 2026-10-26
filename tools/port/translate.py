@@ -140,7 +140,7 @@ def word(text, scope):
         elif c == "$":
             expr, i = _param(text, i, scope)
             parts.append(expr)
-        elif c in "*?[" :
+        elif c in "*?[" and not re.search(r"[:@=]", text):
             raise Unported("glob in " + text)
         elif c == "~":
             raise Unported("~ in " + text)
@@ -1114,7 +1114,7 @@ def _command(cmd, args, scope, stdin):
         if cmd == "return" and args and args[0] not in ("0",):
             raise Unported("return " + args[0])
         return []
-    if cmd in ("build_line", "warn", "echo") and stdin is None:
+    if cmd in ("build_line", "warn", "info", "debug", "echo") and stdin is None:
         if cmd == "echo" and args and args[0].startswith("-"):
             raise Unported("echo flags")
         return [f"(b:log {concat([word(a, scope) if a not in ('\" \"',) else fstr(' ') for a in _join_words(args)])})"]

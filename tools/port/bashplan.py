@@ -331,7 +331,7 @@ def _parameter(text, i, env):
         if m:
             body = m.group(3)
             return (body if m.group(1) else _expand_dquoted(body, env)), j
-        raise Unresolved(text[i:j])
+        return _text_pipeline(text[i + 2:j - 1].strip(), env, text[i:j]), j
     if text.startswith("${", i):
         j = _skip_balanced(text, i + 1, "{", "}")
         return _braced(text[i + 2:j - 1], env), j
@@ -341,6 +341,33 @@ def _parameter(text, i, env):
     if i + 1 < len(text) and text[i + 1] in "0123456789@*#?$!":
         raise Unresolved(text[i:i + 2])
     return "$", i + 1
+
+
+TEXT_SOURCE = re.compile(r"""(?:printf\s+(?:"%s"\s+|'%s'\s+)?|echo\s+)("[^"]*"|\S+)\s*\|\s*(.+)""", re.S)
+
+
+def _text_pipeline(command, env, whole):
+    """A text-only pipeline of echo or printf into tr or cut, worked out without running it."""
+    m = TEXT_SOURCE.fullmatch(command)
+    if not m:
+        raise Unresolved(whole)
+    value = expand(m.group(1), env)
+    for stage in m.group(2).split("|"):
+        words = split_words(stage.strip())
+        if len(words) == 3 and words[0] == "tr":
+            a, b = expand(words[1], env), expand(words[2], env)
+            if len(a) != len(b):
+                raise Unresolved(whole)
+            value = value.translate(str.maketrans(a, b))
+            continue
+        cut = re.fullmatch(r"cut\s+-d\s*(?:'(.)'|\"(.)\"|(.))\s+-f\s*(\d+)(?:-(\d+))?", stage.strip())
+        if cut:
+            delim = cut.group(1) or cut.group(2) or cut.group(3)
+            lo, hi = int(cut.group(4)), int(cut.group(5) or cut.group(4))
+            value = delim.join(value.split(delim)[lo - 1:hi])
+            continue
+        raise Unresolved(whole)
+    return value
 
 
 def _lookup(name, env):
