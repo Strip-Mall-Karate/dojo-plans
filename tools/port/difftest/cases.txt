@@ -331,3 +331,18 @@ true
 -- body
 eval "$(perl -Mlocal::lib=/tmp/difftest-local-lib)"
 echo "$PERL5LIB|$PERL_LOCAL_LIB_ROOT|$PERL_MB_OPT|$PERL_MM_OPT" > perl-env
+
+== brace-expansion
+-- setup
+mkdir -p pkg/linux_amd64 pkg/tool; echo a > pkg/linux_amd64/a; echo t > pkg/tool/t
+mkdir -p man; echo 1 > man/dlltool.1; echo 2 > man/windres.1; echo 3 > man/keep.1
+-- body
+local arch=amd64
+mkdir -p "$pkg_prefix/pkg" "$pkg_prefix/bin"
+cp -r pkg/{linux_$arch,tool} "$pkg_prefix/pkg/"
+touch "$pkg_prefix/bin/"{bunzip2,bzcat,bzip2}
+rm -f "$pkg_prefix"/bin/{bunzip2,bzcat}
+rm -fv man/{dlltool,windres}*
+for b in {one,two}-x "{literal,braces}"; do
+  mkdir -p "$pkg_prefix/share/$b"
+done

@@ -3,18 +3,6 @@
 ;; The plan's do_clean is not ported: a build empties its source directory before
 ;; unpacking and starts with no state from an earlier one.
 (var v-ext-postgis-cache-path "")
-(fn v--copy-service-files [b]
-  (b:log "Copying hooks")
-  (b:copy (.. b.plan_dir "/../postgresql/hooks") (b:join (.. b.plan_dir "/") (: (.. b.plan_dir "/../postgresql/hooks") :match "[^/]+$")))
-  (b:log "Copying config")
-  (b:copy (.. b.plan_dir "/../postgresql/config") (b:join (.. b.plan_dir "/") (: (.. b.plan_dir "/../postgresql/config") :match "[^/]+$")))
-  (b:log "Copying default.toml")
-  (b:copy (.. b.plan_dir "/../postgresql/default.toml") (b:join (.. b.plan_dir "/") (: (.. b.plan_dir "/../postgresql/default.toml") :match "[^/]+$"))))
-(fn v--cleanup-copied-service-files [b]
-  (b:log "Removing copied files")
-  (b:remove (.. b.plan_dir "/config"))
-  (b:remove (.. b.plan_dir "/hooks"))
-  (b:remove (.. b.plan_dir "/default.toml")))
 {:name "postgresql93-client"
  :origin "karate"
  :version "9.3.23"

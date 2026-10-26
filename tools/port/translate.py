@@ -389,6 +389,46 @@ def argv(words, scope):
 
 GLOB = re.compile(r"[*?]")
 
+
+def brace_words(word_text):
+    """A word's brace expansion: `a{b,c}d` is `abd acd`. Quoted braces and `${...}` are not one."""
+    masked = _unquoted(word_text)
+    for i, c in enumerate(masked):
+        if c != "{" or (i and masked[i - 1] == "$"):
+            continue
+        depth = 0
+        commas = []
+        for j in range(i, len(masked)):
+            if masked[j] == "{":
+                depth += 1
+            elif masked[j] == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            elif masked[j] == "," and depth == 1:
+                commas.append(j)
+        else:
+            return [word_text]
+        if not commas:
+            if ".." in masked[i:j]:
+                raise Unported("brace sequence " + word_text)
+            continue
+        cuts = [i] + commas + [j]
+        head, tail = word_text[:i], word_text[j + 1:]
+        out = []
+        for a, b in zip(cuts, cuts[1:]):
+            out += brace_words(head + word_text[a + 1:b] + tail)
+        return out
+    return [word_text]
+
+
+def split(text):
+    """bashplan.split_words with each word's braces expanded, as the shell does before anything else."""
+    out = []
+    for w in bashplan.split_words(text):
+        out += [w] if bashplan.ASSIGN.match(w) else brace_words(w)
+    return out
+
 ABSOLUTE = re.compile(r'^(\(\.\. )?("/|b\.(prefix|src|cache|plan_dir)\b|\(b:path_for |\(b:join b\.)')
 
 
@@ -1038,7 +1078,7 @@ def assignment(stmt, scope, exported):
     value_text = stmt[m.end():]
     if value_text.startswith("("):
         inner = value_text[1:bashplan._skip_balanced(value_text, 0, "(", ")") - 1]
-        items = [word(w, scope) for w in bashplan.split_words(inner)]
+        items = [word(w, scope) for w in split(inner)]
         fennel = "[" + " ".join(items) + "]"
         name = _local(var)
         if var in scope.locals or var in scope.declared:
@@ -1117,7 +1157,7 @@ READ_LOOP = re.compile(r"(.+?)\|\s*while\s+(?:IFS=\S*\s+)?read\s+(?:-r\s+)?([A-Z
 
 def read_loop(loop, scope):
     """`cmd | while read -r x; do ...; done`: the body for each line cmd prints."""
-    words = bashplan.split_words(loop.group(1).strip())
+    words = split(loop.group(1).strip())
     if not words or any(w.startswith(("<", ">")) for w in words):
         raise Unported("while read after " + loop.group(1).strip()[:30])
     var = loop.group(2)
@@ -1211,7 +1251,7 @@ def statement(text, scope):
     array_local = re.match(r"(local|declare|readonly|typeset)\s+(?:-\w+\s+)*([A-Za-z_][A-Za-z0-9_]*\+?=\()", stmt)
     if array_local:
         return assignment(stmt[array_local.start(2):], scope, exported=False)
-    words = bashplan.split_words(stmt)
+    words = split(stmt)
     stdin = None
     stdout = None
     append = False
@@ -1322,7 +1362,7 @@ def pipeline_forms(stmt, scope):
     segments = [seg.strip() for seg in
                 (stmt[a:b] for a, b in zip([0] + [c + 1 for c in cuts], cuts + [len(stmt)]))]
     # A line continued before or after the | leaves a backslash at a segment's edge.
-    words = [bashplan.split_words(seg.replace("\\\n", " ").strip().removesuffix("\\")) for seg in segments]
+    words = [split(seg.replace("\\\n", " ").strip().removesuffix("\\")) for seg in segments]
     if any(not w for w in words):
         return None
     first, *middle, last = words
@@ -1671,7 +1711,7 @@ def block(text, scope):
         var = m.group(1)
         items_text = m.group(2)
         name = _local(var)
-        words = bashplan.split_words(items_text)
+        words = split(items_text)
         relative_glob = len(words) == 1 and GLOB.search(_unquoted(words[0])) and "/" not in _unquoted(words[0])
         literal_relative = words and all(not w.startswith(("/", '"/', "$", '"$')) and not GLOB.search(_unquoted(w))
                                          for w in words)
@@ -1879,8 +1919,15 @@ def callbacks(plan, emitter):
     if dropped_clean:
         before_plan.insert(0, ";; The plan's do_clean is not ported: a build empties its source directory before\n"
                               ";; unpacking and starts with no state from an earlier one.")
+    # A function no phase reaches, as one a sourced plan defines for its own phases, is left out.
+    reached = [fn for fn in functions if fn in PHASE_OF or fn in FOLDED or fn == "pkg_version"]
+    for fn in reached:
+        for other in functions:
+            if other not in reached and re.search(r"(^|[\s;&|(`])" + re.escape(other) + r"(?=[\s;&|)`]|$)",
+                                                  plan.functions[fn], re.M):
+                reached.append(other)
     for fn in functions:
-        if fn in PHASE_OF or fn in FOLDED or fn == "do_clean":
+        if fn in PHASE_OF or fn in FOLDED or fn == "do_clean" or fn not in reached:
             continue
         if fn == "pkg_version":
             # A version function returns what it echoes; that is ported by hand.

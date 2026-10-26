@@ -38,7 +38,7 @@
           (b:run ["make"]))
  :install (fn [b]
           (b.default.install b)
-          (each [_ v-bin (ipairs ["{depmod,insmod,lsmod,modinfo,modprobe,rmmod}"])]
+          (each [_ v-bin (ipairs ["depmod" "insmod" "lsmod" "modinfo" "modprobe" "rmmod"])]
             (b:symlink "kmod" (if (= (: v-bin :sub 1 1) "/") v-bin (b:join (.. b.prefix "/bin") v-bin)))))
  :strip (fn [b]
           (b.default.strip b)

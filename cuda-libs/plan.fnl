@@ -15,22 +15,6 @@
               escaped (pick-values 1 (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]" "%%%0"))
               (fixed n) (: text :gsub escaped (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
-(fn v--fix-interpreter-in-path [b a1 a2 a3 a4]
-  (var v-fileending "")
-  (var v-int "")
-  (var v-path "")
-  (var v-pkg "")
-  (set v-path a1)
-  (set v-fileending a2)
-  (set v-pkg a3)
-  (set v-int a4)
-  ;; Each text file under path named like fileending whose #! names int, pointed
-  ;; at the dependency's: b:fix_interpreter rewrites only a #! line that names it.
-  (each [_ f (ipairs (b:find v-path v-fileending))]
-    (when (not (b:exists (b:join f ".")))
-      (b:fix_interpreter [f] v-pkg v-int)))
-  ;; The files the find above listed are fixed there.
-  )
 {:name "cuda-libs"
  :origin "karate"
  :version "9.2.148"
