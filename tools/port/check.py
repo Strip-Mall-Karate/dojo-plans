@@ -21,7 +21,9 @@ OLD_NAME = re.compile(r"habitat|\bhab\b|\bHAB_", re.I)
 # target may be anywhere.
 OUTSIDE = re.compile(r'\(b:(?:write|remove|mkdir|chmod|copy|move) (?:"[^"]*" )?"/(?!doj/)[^"]*"'
                      r'|\(b:symlink "[^"]*" "/(?!doj/)[^"]*"')
-SHELL_RUN = re.compile(r'\(b:(run|capture)\s+\[\s*"(bash|sh|zsh|eval|/bin/sh|/bin/bash)"')
+# A shell given code to run (`-c`): plan code is Fennel. A shell running the
+# package's own script, as ./configure is, is the package's code.
+SHELL_RUN = re.compile(r'\(b:(run|capture)\s+\[\s*"(bash|sh|zsh|/bin/sh|/bin/bash)"\s+"-c"|\(b:(run|capture)\s+\[\s*"eval"')
 
 
 def packages(root):

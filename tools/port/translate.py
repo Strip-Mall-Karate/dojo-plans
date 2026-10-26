@@ -510,9 +510,16 @@ def cmd_install(words, scope):
             directory = True
         elif w == "-D":
             create_parents = True
-        elif re.fullmatch(r"-D?v?m[0-7]{3,4}", w) or re.fullmatch(r"-v?D?m[0-7]{3,4}", w):
+        elif re.fullmatch(r"-[Dvdc]*m[0-7]{3,4}", w):
             create_parents = create_parents or "D" in w
+            directory = directory or "d" in w
             mode = re.search(r"[0-7]{3,4}", w).group(0)
+        elif re.fullmatch(r"-[Dvdc]*m", w):
+            create_parents = create_parents or "D" in w
+            directory = directory or "d" in w
+            mode = next(it)
+            if not re.fullmatch(r"[0-7]{3,4}", mode):
+                raise Unported("install -m " + mode)
         elif w in ("-m", "--mode"):
             mode = next(it)
             if not re.fullmatch(r"[0-7]{3,4}", mode):
@@ -528,7 +535,12 @@ def cmd_install(words, scope):
     if mode is None and not directory:
         mode = "755"  # install's own default.
     if directory:
-        return [f"(b:mkdir {path(w, scope)})" for w in rest]
+        out = []
+        for w in rest:
+            out.append(f"(b:mkdir {path(w, scope)})")
+            if mode:
+                out.append(f"(b:chmod {path(w, scope)} {fstr(mode)})")
+        return out
     if len(rest) < 2:
         raise Unported("install arity")
     *sources, dest = rest
@@ -673,17 +685,59 @@ def cmd_sed(words, scope):
         if not rest:
             raise Unported("sed arity")
         exprs.append(rest.pop(0))
-    subs = [sed_substitution(word_parts(e, scope), extended) for e in exprs]
-    # sed edits a line at a time: each substitution runs on each line, so `.*`
-    # stops at the line's end and ^ and $ anchor the line.
-    edits = " ".join(f"(set line (pick-values 1 (string.gsub line {pat} {rep}{count})))"
-                     for pat, rep, count in subs)
-    out = []
-    for f in rest:
-        body = ("(let [text (b:read {p})] (b:write {p} (pick-values 1 (string.gsub text \"[^\\n]+\" "
-                f"(fn [l] (var line l) {edits} line)))))")
-        out.append(each_path(f, scope, body))
-    return out
+    ops = [sed_operation(word_parts(e, scope), extended) for e in exprs]
+    body = ("(let [text (b:read {p}) ends (= (text:sub -1) \"\\n\") lines [] out []]\n"
+            "  (each [l (string.gmatch (if ends text (.. text \"\\n\")) \"(.-)\\n\")] (table.insert lines l))\n"
+            "  (each [n l (ipairs lines)]\n"
+            "    (var line l) (var deleted false) (local after [])\n"
+            + "".join(f"    (when (not deleted) {op})\n" for op in ops) +
+            "    (when (not deleted) (table.insert out line))\n"
+            "    (each [_ x (ipairs after)] (table.insert out x)))\n"
+            "  (b:write {p} (.. (table.concat out \"\\n\") (if (and ends (> (length out) 0)) \"\\n\" \"\"))))")
+    return [each_path(f, scope, body) for f in rest]
+
+
+SED_ADDRESS = re.compile(r"(\d+)(?:,(\d+|\$))?|\$|/((?:[^/\\]|\\.)*)/")
+
+
+def sed_operation(parts, extended):
+    """One sed expression as a Fennel form run on each `line` (numbered `n`, of `lines`)."""
+    if not parts or parts[0][0] != "lit":
+        raise Unported("sed expression")
+    text = parts[0][1]
+    cond = None
+    m = SED_ADDRESS.match(text)
+    if m and m.end() > 0:
+        if m.group(3) is not None:
+            cond = f"(string.find line {fstr(sed_to_lua(m.group(3), extended))})"
+        elif m.group(0) == "$":
+            cond = "(= n (length lines))"
+        elif m.group(2) == "$":
+            cond = f"(>= n {m.group(1)})"
+        elif m.group(2):
+            cond = f"(and (>= n {m.group(1)}) (<= n {m.group(2)}))"
+        else:
+            cond = f"(= n {m.group(1)})"
+        text = text[m.end():].lstrip()
+    parts = [("lit", text)] + parts[1:]
+    if not text:
+        raise Unported("sed expression")
+    command = text[0]
+    if command == "s":
+        pat, rep, count = sed_substitution(parts, extended)
+        form = f"(set line (pick-values 1 (string.gsub line {pat} {rep}{count})))"
+    elif command == "d" and text.strip() == "d" and len(parts) == 1:
+        form = "(set deleted true)"
+    elif command in "ia" and len(parts) == 1:
+        rest = text[1:]
+        rest = rest[1:] if rest.startswith("\\") else rest
+        rest = rest[1:] if rest.startswith("\n") else rest.lstrip()
+        if "\n" in rest:
+            raise Unported("sed multi-line text")
+        form = (f"(table.insert out {fstr(rest)})" if command == "i" else f"(table.insert after {fstr(rest)})")
+    else:
+        raise Unported("sed " + text[:30])
+    return form if cond is None else f"(when {cond} {form})"
 
 
 # A variable's value inside a sed pattern or replacement: Lua's magic
@@ -848,11 +902,43 @@ def is_test(segment):
     return segment.startswith(("[[ ", "[ ", "! [[ ", "! [ ", "test "))
 
 
+GREP_Q = re.compile(r"(.+?)\|\s*grep\s+(-[qsE]+\s+)+(\S+)\s*(?:>\s*/dev/null)?\s*$", re.S)
+
+
+def grep_found(left, pattern, scope):
+    """Fennel that is true when `left | grep -q pattern` would succeed."""
+    lw = bashplan.split_words(left.strip())
+    if not lw:
+        raise Unported("grep pipeline")
+    if lw[0] == "echo" and not any(w.startswith("-") for w in lw[1:2]):
+        source = concat([word(w, scope) if i == 0 else concat(['" "', word(w, scope)]) for i, w in enumerate(lw[1:])] or ['""'])
+    else:
+        source = f"(b:capture {argv(lw, scope)}{scope_cwd(scope)})"
+    pat = bashplan.expand(pattern, {}) if "$" not in pattern else None
+    if pat is None:
+        parts = word_parts(pattern, scope)
+        lua = concat([fstr(sed_to_lua(t, False)) if k == "lit" else f"(pick-values 1 (: {t} :gsub {LUA_MAGIC} \"%%%0\"))"
+                      for k, t in parts if t])
+    else:
+        lua = fstr(sed_to_lua(pat, False))
+    return f"(string.find {source} {lua})"
+
+
 def statement(text, scope):
     """One simple statement as Fennel forms."""
     stmt = text.strip()
     if not stmt or stmt.startswith("#"):
         return []
+    if stmt.startswith("(") and stmt.endswith(")") and not stmt.startswith("(("):
+        # A subshell: its cd stays inside it.
+        saved = list(scope.cwd)
+        try:
+            return body_forms(stmt[1:-1], scope)
+        finally:
+            scope.cwd = saved
+    grep = GREP_Q.fullmatch(stmt)
+    if grep and "|" not in _unquoted(grep.group(1)):
+        return [f"(when (not {grep_found(grep.group(1), grep.group(3), scope)}) (error {fstr('grep -q ' + grep.group(3) + ' found nothing')}))"]
     parts = split_list(stmt) if re.search(r"&&|\|\|", _unquoted(stmt)) else None
     if parts:
         return list_forms(parts, scope)
@@ -873,6 +959,8 @@ def statement(text, scope):
         return [f"(b:write {dest} {content})"]
     if "<<" in _unquoted(stmt):
         raise Unported("heredoc")
+    if re.match(r"[A-Za-z_][A-Za-z0-9_]*\+?=\(", stmt):
+        return assignment(stmt, scope, exported=False)
     array_local = re.match(r"(local|declare|readonly|typeset)\s+(?:-\w+\s+)*([A-Za-z_][A-Za-z0-9_]*\+?=\()", stmt)
     if array_local:
         return assignment(stmt[array_local.start(2):], scope, exported=False)
@@ -1002,6 +1090,11 @@ def _echo_args(args):
 
 
 def _command(cmd, args, scope, stdin):
+    if cmd in ("exit", "exit_with", "die"):
+        if cmd == "exit" and (not args or args[0] == "0"):
+            raise Unported("exit 0 ends the build successfully")
+        message = word(args[0], scope) if cmd != "exit" and args else fstr(f"{cmd} {' '.join(args)}".strip())
+        return [f"(error {message})"]
     if cmd in ("return", "true", ":"):
         if cmd == "return" and args and args[0] not in ("0",):
             raise Unported("return " + args[0])
@@ -1054,6 +1147,15 @@ def _command(cmd, args, scope, stdin):
         return cmd_patch(args, scope, stdin)
     if cmd in simple:
         return simple[cmd](args, scope)
+    if cmd in ("source", ".") and len(args) == 1 and _unquoted(args[0]).rstrip('"').endswith("bin/activate"):
+        # A virtualenv's activate: VIRTUAL_ENV, and its bin first on PATH.
+        venv = word(args[0], scope)
+        venv = venv[:-len('/bin/activate"')] + '"' if venv.endswith('/bin/activate"') else f'(: {venv} :gsub "/bin/activate$" "")'
+        return [f'(b:env "VIRTUAL_ENV" {venv})',
+                f'(b:env "PATH" (.. {venv} "/bin:" (or (b:getenv "PATH") "")))']
+    if cmd in ("sh", "bash") and args and not args[0].startswith("-"):
+        # The package's own script, as ./configure is; a plan's code is never shell.
+        return [f"(b:run {argv([cmd] + args, scope)}{scope_cwd(scope)})"]
     if cmd in ("bash", "sh", "eval", "source", "."):
         raise Unported(cmd)
     if cmd.startswith(("pkg_", "_")) or cmd in scope.plan.functions:
@@ -1087,6 +1189,10 @@ def condition(text, scope):
     negate = False
     if t.startswith("! "):
         negate, t = True, t[2:].strip()
+    grep = GREP_Q.fullmatch(t)
+    if grep and "|" not in _unquoted(grep.group(1)):
+        expr = grep_found(grep.group(1), grep.group(3), scope)
+        return f"(not {expr})" if negate else expr
     m = CONDITION.fullmatch(t)
     if not m:
         raise Unported("condition " + t)

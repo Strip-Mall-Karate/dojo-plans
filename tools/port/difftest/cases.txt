@@ -215,3 +215,30 @@ else
   where="missing"
 fi
 echo "$where" > result
+
+== sed-line-commands
+-- setup
+printf 'first\nkeyboard_lookup_key x\nPATH=/a\nm64=../lib64\nlast\n' > f
+printf 'no newline at end' > g
+-- body
+sed -i '/keyboard_lookup_key/d' f
+sed -i '1iBuildFlavour = perf' f
+sed -i '/^PATH/ s/^/#/' f
+sed -i '/m64=/s/lib64/lib/' f
+sed -i '$a appended' f
+sed -i '2,3d' f
+sed -i 's/end/END/' g
+
+== subshell-and-grep
+-- setup
+mkdir -p sub; echo inner > sub/in.txt; printf 'version 1.2\n' > ver
+-- body
+( cd sub || exit
+  cp in.txt copy.txt
+)
+cp ver top-copy
+local v="1.2"
+cat ver | grep -q "$v"
+if echo "-I/x -L/y" | grep -q "^-I"; then
+  echo inc > found
+fi

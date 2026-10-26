@@ -81,6 +81,8 @@ def fennel_string(value):
 # The tree's rename (Habitat to Dojo, hab to doj, core to karate), applied to
 # what the port writes. Quoted bash in an UNPORTED block keeps the original.
 RENAME = [
+    (re.compile(r"https?://github\.com/habitat-sh/core-plans"), "https://github.com/Strip-Mall-Karate/dojo-plans"),
+    (re.compile(r"https?://github\.com/habitat-sh/habitat"), "https://github.com/Strip-Mall-Karate/dojo"),
     (re.compile(r"\bHAB_"), "DOJ_"),
     (re.compile(r"(?<![\w.])/hab(?=/|\b)"), "/doj"),
     (re.compile(r"\bv-hab-"), "v-doj-"),
