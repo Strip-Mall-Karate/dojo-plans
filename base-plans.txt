@@ -19,6 +19,8 @@ dojo-plans/acl
 dojo-plans/libcap
 dojo-plans/sed
 dojo-plans/libxcrypt
+dojo-plans/libmd
+dojo-plans/libbsd
 dojo-plans/shadow
 dojo-plans/psmisc
 dojo-plans/procps-ng
@@ -75,8 +77,6 @@ dojo/components/doj
 dojo-plans/bats
 dojo/components/plan-build
 dojo-plans/vim
-dojo-plans/libmd
-dojo-plans/libbsd
 dojo-plans/clens
 dojo-plans/mg
 dojo/components/backline
