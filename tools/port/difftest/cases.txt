@@ -1,0 +1,169 @@
+# Each case: `== name`, then `-- setup` (bash run first in both trees, with
+# $pkg_prefix set), then `-- body` (a callback body, run by bash in one tree
+# and translated to Fennel for the other). The body runs in the source
+# directory, as a callback did.
+
+== cp-file-into-dir
+-- setup
+echo tool > tool
+-- body
+mkdir -p "$pkg_prefix/bin"
+cp tool "$pkg_prefix/bin"
+
+== cp-r-tree
+-- setup
+mkdir -p share/a/b; echo x > share/a/b/f; echo y > share/top
+-- body
+cp -r share "$pkg_prefix/share"
+
+== cp-glob-into-dir
+-- setup
+echo 1 > a.conf; echo 2 > b.conf; echo 3 > c.txt
+-- body
+mkdir -p "$pkg_prefix/etc"
+cp ./*.conf "$pkg_prefix/etc/"
+
+== mv-and-rm
+-- setup
+echo keep > keep; echo gone > gone; mkdir -p d/e; echo z > d/e/f
+-- body
+mv keep kept
+rm -f gone
+rm -rf d
+rm -f does-not-exist
+
+== ln-s-and-rs
+-- setup
+mkdir -p p/bin; echo py > p/bin/python3.7
+-- body
+mkdir -p "$pkg_prefix/bin"
+cp p/bin/python3.7 "$pkg_prefix/bin/python3.7"
+ln -rs "$pkg_prefix/bin/python3.7" "$pkg_prefix/bin/python"
+ln -sf python3.7 "$pkg_prefix/bin/py"
+
+== install-modes
+-- setup
+echo a > a; echo b > b
+-- body
+install -D a "$pkg_prefix/bin/a"
+mkdir -p "$pkg_prefix/share"
+install -m 0644 b "$pkg_prefix/share"
+install -Dm600 b "$pkg_prefix/etc/secret"
+
+== chmod-octal
+-- setup
+echo s > script
+-- body
+chmod 0750 script
+
+== sed-first-per-line
+-- setup
+printf 'aa aa\nbb aa\naa\n' > f
+-- body
+sed -i 's/aa/X/' f
+
+== sed-global
+-- setup
+printf 'a-b a-b\nc.d\n' > f
+-- body
+sed -i 's/a-b/Y/g' f
+
+== sed-anchors-and-dotstar
+-- setup
+printf '#zlib here\nkeep #zlib\n#other line\nfoo bar baz\n' > f
+-- body
+sed -i 's/^#zlib/zlib/' f
+sed -i 's/bar.*/END/' f
+
+== sed-ampersand-and-class
+-- setup
+printf 'v1 v22 x\n' > f
+-- body
+sed -i 's/v[0-9]*/<&>/g' f
+
+== heredoc-write
+-- setup
+mkdir -p etc
+-- body
+cat > etc/conf <<EOF
+name=$pkg_name
+literal \$HOME
+EOF
+
+== heredoc-quoted
+-- setup
+mkdir -p etc
+-- body
+cat <<'EOF' > etc/raw
+keep $pkg_name as written
+EOF
+
+== echo-redirects
+-- setup
+echo first > log
+-- body
+echo "second line" >> log
+echo "fresh" > new
+
+== for-relative-glob
+-- setup
+echo 1 > tool-a; echo 2 > tool-b; echo 3 > other
+-- body
+mkdir -p "$pkg_prefix/bin"
+for bin in tool-*; do
+  install -v -D "$bin" "$pkg_prefix/bin/$bin"
+done
+
+== for-list
+-- setup
+true
+-- body
+for d in alpha beta; do
+  mkdir -p "$pkg_prefix/share/$d"
+done
+
+== if-file-test
+-- setup
+echo here > present
+-- body
+if [[ -f present ]]; then
+  echo yes > answer
+else
+  echo no > answer
+fi
+if [ -d nowhere ]; then
+  echo wrong > answer2
+fi
+
+== list-and-or
+-- setup
+echo x > there
+-- body
+[[ -f there ]] && cp there copied
+[[ -f missing ]] || echo absent > note
+
+== pushd-relative-run
+-- setup
+mkdir -p sub; echo inner > sub/in.txt
+-- body
+pushd sub > /dev/null
+  cat in.txt > out.txt
+popd > /dev/null
+
+== local-vars-and-expansion
+-- setup
+true
+-- body
+local minor=3.7
+local major=${minor%.*}
+mkdir -p "$pkg_prefix/lib/python$minor" "$pkg_prefix/lib/v$major"
+
+== cp-onto-new-and-into-existing
+-- setup
+mkdir -p tree/x; echo t > tree/x/f; echo single > one
+-- body
+mkdir -p "$pkg_prefix/lib"
+cp -r tree "$pkg_prefix/newname"
+cp -r tree "$pkg_prefix/lib"
+cp one "$pkg_prefix/lib"
+cp one "$pkg_prefix/renamed"
