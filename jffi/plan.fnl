@@ -12,7 +12,14 @@
  :build_deps ["karate/jdk8" "karate/ant" "karate/pkg-config" "karate/make" "karate/gcc" "karate/file" "karate/diffutils" "karate/maven"]
  :prepare (fn [b]
           (b:log (.. "replacing /usr/bin/file with " (b:path_for "karate/file") "/bin/file"))
-          (let [text (b:read (b:join b.src "jni/libffi/configure"))] (b:write (b:join b.src "jni/libffi/configure") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/usr/bin/file" (.. (pick-values 1 (: (b:path_for "karate/file") :gsub "%%" "%%%%")) "/bin/file")))) line)))))
+          (let [text (b:read (b:join b.src "jni/libffi/configure")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/file" (.. (pick-values 1 (: (b:path_for "karate/file") :gsub "%%" "%%%%")) "/bin/file")))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "jni/libffi/configure") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (b:env "USE_SYSTEM_LIBFFI" "1")
           (var v-java-home (b:path_for "jdk8")))
  :build (fn [b]

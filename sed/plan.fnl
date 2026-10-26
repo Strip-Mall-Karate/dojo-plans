@@ -13,6 +13,13 @@
  :bin_dirs ["bin"]
  :prepare (fn [b]
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/fix-test-getopt-posix-with-glibc-2.26.patch")])
-          (let [text (b:read (b:join b.src "Makefile.in"))] (b:write (b:join b.src "Makefile.in") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "testsuite.panic%-tests.sh" "" 1))) line))))))
+          (let [text (b:read (b:join b.src "Makefile.in")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "testsuite.panic%-tests.sh" "" 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "Makefile.in") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :check (fn [b]
           (b:run ["make" "check"]))}

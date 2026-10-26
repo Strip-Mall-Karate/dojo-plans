@@ -59,6 +59,29 @@ class Unported(Exception):
     """A statement with no faithful translation."""
 
 
+# Statements ported by a person (handported.txt): the bash, whitespace
+# normalized, and the Fennel that does what it did.
+def _load_hand():
+    import os
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "handported.txt")
+    entries = {}
+    if not os.path.isfile(path):
+        return entries
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    for chunk in re.split(r"(?m)^== ", text)[1:]:
+        bash, _, fennel = chunk.partition("\n--\n")
+        entries[normalize(bash)] = fennel.strip("\n")
+    return entries
+
+
+def normalize(bash):
+    return re.sub(r"\s+", " ", bash).strip()
+
+
+HAND = {}
+
+
 def fstr(value):
     out = ['"']
     for c in value:
@@ -91,6 +114,9 @@ class Scope:
         self.shared = set(shared)
         # Variables declared at the function's top; assigning one is a set.
         self.declared = set()
+        # Fennel names whose value may be a relative path (a relative glob's names,
+        # lines a find or grep -l printed): as a path for b, each is anchored.
+        self.relative = set()
         self.params = params
         # The value of each local that is a plain string, for expansions on it.
         self.literal = {}
@@ -329,6 +355,9 @@ def anchor(expr, scope):
     """`expr` as an absolute path. b's writes take a relative path inside the
     prefix and its reads from b.src; the shell took both from its working
     directory, so a literal relative path is joined to it."""
+    head = re.match(r"\(\.\. ([\w-]+)|([\w-]+)$", expr)
+    if head and (head.group(1) or head.group(2)) in scope.relative:
+        return f'(if (= (: {expr} :sub 1 1) "/") {expr} (b:join {base(scope)} {expr}))'
     if ABSOLUTE.match(expr) or not (expr.startswith('"') or expr.startswith('(.. "')):
         return expr
     if expr in ('"."', '"./"'):
@@ -365,7 +394,10 @@ def _unquoted(text):
     while i < len(text):
         c = text[i]
         if c in "'\"" or text.startswith("$(", i) or text.startswith("${", i):
-            j = bashplan._skip_quoted(text, i)
+            try:
+                j = bashplan._skip_quoted(text, i)
+            except (ValueError, IndexError):
+                j = len(text)  # A quote this piece of text does not close runs to its end.
             out.append("_" * (j - i))
             i = j
         else:
@@ -858,6 +890,7 @@ def cmd_fix_interpreter(words, scope):
         files = (f'(icollect [p (: {word(target, scope)} :gmatch "%S+")] '
                  f'(if (= (p:sub 1 1) "/") p (b:join {base(scope)} p)))')
     elif GLOB.search(bare):
+        bare = bare.replace('"', "")
         slash = bare.rfind("/")
         directory, pattern = (bare[:slash], bare[slash + 1:]) if slash >= 0 else ("", bare)
         if GLOB.search(directory) or "$(" in pattern or not pattern:
@@ -973,6 +1006,31 @@ def is_test(segment):
 GREP_Q = re.compile(r"(.+?)\|\s*grep\s+(-[qsE]+\s+)+(\S+)\s*(?:>\s*/dev/null)?\s*$", re.S)
 
 
+READ_LOOP = re.compile(r"(.+?)\|\s*while\s+(?:IFS=\S*\s+)?read\s+(?:-r\s+)?([A-Za-z_]\w*)\s*;?\s*do\b(.*)\bdone\s*$", re.S)
+
+
+def read_loop(loop, scope):
+    """`cmd | while read -r x; do ...; done`: the body for each line cmd prints."""
+    words = bashplan.split_words(loop.group(1).strip())
+    if not words or any(w.startswith(("<", ">")) for w in words):
+        raise Unported("while read after " + loop.group(1).strip()[:30])
+    var = loop.group(2)
+    name = _local(var)
+    saved = scope.locals.get(var)
+    scope.locals[var] = name
+    if words[0] in ("find", "ls") or words[0] == "grep" and any(re.match(r"-\w*[lLr]", w) for w in words[1:]):
+        scope.relative.add(name)
+    try:
+        body = body_forms(loop.group(3), scope)
+    finally:
+        if saved is None:
+            scope.locals.pop(var, None)
+        else:
+            scope.locals[var] = saved
+    source = f"(b:capture {argv(words, scope)}{scope_cwd(scope)})"
+    return [f'(each [{name} (: {source} :gmatch "[^\n]+")]\n  {" ".join(body) or "nil"})']
+
+
 def grep_found(left, pattern, scope):
     """Fennel that is true when `left | grep -q pattern` would succeed."""
     lw = bashplan.split_words(left.strip())
@@ -1022,6 +1080,9 @@ def statement(text, scope):
     grep = GREP_Q.fullmatch(stmt)
     if grep and "|" not in _unquoted(grep.group(1)):
         return [f"(when (not {grep_found(grep.group(1), grep.group(3), scope)}) (error {fstr('grep -q ' + grep.group(3) + ' found nothing')}))"]
+    loop = READ_LOOP.fullmatch(stmt)
+    if loop and "|" not in _unquoted(loop.group(1)):
+        return read_loop(loop, scope)
     parts = split_list(stmt) if re.search(r"&&|\|\|", _unquoted(stmt)) else None
     if parts:
         return list_forms(parts, scope)
@@ -1311,11 +1372,11 @@ STUDIO_LINK = re.compile(
     r'ln\s+-s[vf]*\s+"\$\(pkg_path_for\s+([\w/.-]+)\)/((?:s?bin)/[\w.+-]+)"\s+\1\s*'
     r'(?:_clean_\w+=true|_clean_cmds\+=\(\1\))?\s*fi$', re.S)
 STUDIO_UNLINK = re.compile(
-    r'(if\s+\[\[?\s+-n\s+"\$\{?_clean_\w+\}?"\s+\]\]?\s*;?\s*then\s+rm\s+-f?v?f?\s+/\S+\s*fi'
+    r'(if\s+\[\[?\s+-n\s+"\$\{?_clean_\w+\}?"\s+\]\]?\s*;?\s*then\s+rm(?:\s+-[fv]+)?\s+/\S+\s*fi'
     r'|for\s+cmd\s+in\s+"\$\{_clean_cmds\[@\]\}"\s*;?\s*do\s+rm\s+-fv\s+"\$cmd"\s*;?\s*done)$', re.S)
 
 STUDIO_UNLINK_EXISTS = re.compile(
-    r'if\s+\[\[?\s+-[er]\s+(/(?:usr/)?(?:s?bin)/[\w.+-]+)\s+\]\]?\s*;?\s*then\s+rm\s+-f?v?f?\s+\1\s*fi$', re.S)
+    r'if\s+\[\[?\s+-[er]\s+(/(?:usr/)?(?:s?bin)/[\w.+-]+)\s+\]\]?\s*;?\s*then\s+rm(?:\s+-[fv]+)?\s+\1\s*fi$', re.S)
 
 USE_DEPENDENCY_PATH = """(fn use-dependency-path [b path replacement]
   ;; The source project's studio linked a dependency's tool to `path` for the
@@ -1359,8 +1420,14 @@ def block(text, scope):
         var = m.group(1)
         items_text = m.group(2)
         name = _local(var)
+        words = bashplan.split_words(items_text)
+        relative_glob = len(words) == 1 and GLOB.search(_unquoted(words[0])) and "/" not in _unquoted(words[0])
+        literal_relative = words and all(not w.startswith(("/", '"/', "$", '"$')) and not GLOB.search(_unquoted(w))
+                                         for w in words)
         saved = scope.locals.get(var)
         scope.locals[var] = name
+        if relative_glob or literal_relative:
+            scope.relative.add(name)
         try:
             body = body_forms(m.group(3), scope)
         finally:
@@ -1368,10 +1435,9 @@ def block(text, scope):
                 scope.locals.pop(var, None)
             else:
                 scope.locals[var] = saved
-        words = bashplan.split_words(items_text)
         if len(words) == 1 and GLOB.search(_unquoted(words[0])):
             kind, expr = paths(words[0], scope)
-            if "/" not in _unquoted(words[0]):
+            if relative_glob:
                 # A relative glob gives names, not paths.
                 return [f'(each [_ p (ipairs {expr})]\n  (let [{name} (: p :match "[^/]+$")]\n    {" ".join(body)}))']
             return [f"(each [_ {name} (ipairs {expr})]\n  {' '.join(body)})"]
@@ -1432,6 +1498,12 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
             else:
                 forms.extend(statement(stmt, scope))
         except (Unported, ValueError, IndexError, StopIteration, bashplan.Unresolved) as e:
+            if not HAND:
+                HAND.update(_load_hand())
+            hand = HAND.get(normalize(stmt))
+            if hand is not None:
+                forms.extend([hand] if hand else [])
+                continue
             if re.match(r"\s*(pushd|cd|popd)\b", stmt) or re.search(r"\b(pushd|cd)\b", stmt.split("\n")[0]):
                 scope.lost_cwd = True
             unported.append((str(e), stmt.strip()))

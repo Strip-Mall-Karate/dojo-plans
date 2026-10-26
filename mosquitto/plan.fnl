@@ -15,7 +15,14 @@
  :include_dirs ["include"]
  :svc {:run "mosquitto -c /doj/svc/mosquitto/config/mosquitto.conf"}
  :prepare (fn [b]
-          (let [text (b:read (b:join b.src "config.mk"))] (b:write (b:join b.src "config.mk") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "prefix=/usr/local" "prefix=" 1))) line)))))
+          (let [text (b:read (b:join b.src "config.mk")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "prefix=/usr/local" "prefix=" 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "config.mk") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (b:env "DESTDIR" b.prefix))
  :build (fn [b]
           (b:run ["make"]))

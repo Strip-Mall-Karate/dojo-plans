@@ -12,7 +12,14 @@
  :bin_dirs ["bin"]
  :download (fn [b]
           (b:run ["curl" "https://raw.githubusercontent.com/moby/moby/master/contrib/download-frozen-image-v2.sh" "-o" (.. b.cache "/download-frozen-image-v2.sh")])
-          (let [text (b:read (.. b.cache "/download-frozen-image-v2.sh"))] (b:write (.. b.cache "/download-frozen-image-v2.sh") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "#!/usr/bin/env bash" "#!/bin/bash" 1))) line)))))
+          (let [text (b:read (.. b.cache "/download-frozen-image-v2.sh")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "#!/usr/bin/env bash" "#!/bin/bash" 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (.. b.cache "/download-frozen-image-v2.sh") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (b:chmod (.. b.cache "/download-frozen-image-v2.sh") "+x")
           (b:run [(.. b.cache "/download-frozen-image-v2.sh") (.. b.cache "/envoy") (.. "envoyproxy/envoy:" b.version)]))
  :verify (fn [b]

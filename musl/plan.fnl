@@ -16,7 +16,14 @@
           (var v-stack-size "")
           (set v-stack-size "2097152")
           (b:log (.. "Setting default stack size to '" v-stack-size "' from default '81920'"))
-          (let [text (b:read (b:join b.src "src/internal/pthread_impl.h"))] (b:write (b:join b.src "src/internal/pthread_impl.h") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "#define DEFAULT_STACK_SIZE .*" (.. "#define DEFAULT_STACK_SIZE " (pick-values 1 (: v-stack-size :gsub "%%" "%%%%"))) 1))) line))))))
+          (let [text (b:read (b:join b.src "src/internal/pthread_impl.h")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "#define DEFAULT_STACK_SIZE .*" (.. "#define DEFAULT_STACK_SIZE " (pick-values 1 (: v-stack-size :gsub "%%" "%%%%"))) 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "src/internal/pthread_impl.h") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) (.. "--syslibdir=" b.prefix "/lib")])
           (b:run ["make" "-j" (tostring b.jobs)]))

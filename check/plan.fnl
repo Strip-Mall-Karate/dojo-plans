@@ -15,13 +15,34 @@
  :include_dirs ["include"]
  :pconfig_dirs ["lib/pkgconfig"]
  :prepare (fn [b]
-          (let [text (b:read (b:join b.src "configure"))] (b:write (b:join b.src "configure") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/usr/bin/file" "file"))) line))))))
+          (let [text (b:read (b:join b.src "configure")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/file" "file"))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "configure") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :check (fn [b]
           (var v--interpreter "")
           (set v--interpreter (.. (b:path_for "karate/coreutils") "/bin/env"))
-          (let [text (b:read (b:join b.src "checkmk/test/check_checkmk"))] (b:write (b:join b.src "checkmk/test/check_checkmk") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "#!/usr/bin/env" (.. "#!" (pick-values 1 (: v--interpreter :gsub "%%" "%%%%"))) 1))) line)))))
+          (let [text (b:read (b:join b.src "checkmk/test/check_checkmk")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "#!/usr/bin/env" (.. "#!" (pick-values 1 (: v--interpreter :gsub "%%" "%%%%"))) 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "checkmk/test/check_checkmk") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (each [_ v-f (ipairs (b:glob (b:join b.src "tests") "test_*"))]
-            (let [text (b:read v-f)] (b:write v-f (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "#!/usr/bin/env" (.. "#!" (pick-values 1 (: v--interpreter :gsub "%%" "%%%%"))) 1))) line))))))
+            (let [text (b:read v-f) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "#!/usr/bin/env" (.. "#!" (pick-values 1 (: v--interpreter :gsub "%%" "%%%%"))) 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write v-f (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
           (b:run ["make" "check"]))
  :install (fn [b]
           (b.default.install b)

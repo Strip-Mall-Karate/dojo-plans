@@ -20,6 +20,20 @@
           (each [_ p (ipairs (b:glob b.src "*"))] (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$"))))
           (each [_ v-binstub (ipairs (b:glob (.. b.prefix "/bin") "*"))]
             (when (b:exists v-binstub)
-            (let [text (b:read v-binstub)] (b:write v-binstub (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/usr/bin/env bash" (.. (pick-values 1 (: (b:path_for "bash") :gsub "%%" "%%%%")) "/bin/bash") 1))) line)))))) (when (b:exists v-binstub)
-            (let [text (b:read v-binstub)] (b:write v-binstub (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/usr/bin/env jruby" (.. (pick-values 1 (: b.prefix :gsub "%%" "%%%%")) "/bin/jruby") 1))) line)))))))
+            (let [text (b:read v-binstub) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/env bash" (.. (pick-values 1 (: (b:path_for "bash") :gsub "%%" "%%%%")) "/bin/bash") 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write v-binstub (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))) (when (b:exists v-binstub)
+            (let [text (b:read v-binstub) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/env jruby" (.. (pick-values 1 (: b.prefix :gsub "%%" "%%%%")) "/bin/jruby") 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write v-binstub (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))))
           (b:run ["find" (.. b.prefix "/lib/jni/") "-maxdepth" "1" "-mindepth" "1" "-type" "d" "-not" "-name" "x86_64-Linux" "-exec" "rm" "-rf" "{}" ";"]))}

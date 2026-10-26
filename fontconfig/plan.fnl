@@ -25,8 +25,22 @@
           (b:run ["autoreconf" "-fi"])
           (set v--file-path (.. (b:path_for "file") "/bin/file"))
           (set v--uname-path (.. (b:path_for "coreutils") "/bin/uname"))
-          (let [text (b:read (b:join b.src "configure"))] (b:write (b:join b.src "configure") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/usr/bin/file" (pick-values 1 (: v--file-path :gsub "%%" "%%%%"))))) line)))))
-          (let [text (b:read (b:join b.src "configure"))] (b:write (b:join b.src "configure") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/usr/bin/uname" (pick-values 1 (: v--uname-path :gsub "%%" "%%%%"))))) line)))))
+          (let [text (b:read (b:join b.src "configure")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/file" (pick-values 1 (: v--file-path :gsub "%%" "%%%%"))))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "configure") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
+          (let [text (b:read (b:join b.src "configure")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/uname" (pick-values 1 (: v--uname-path :gsub "%%" "%%%%"))))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "configure") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/glibc-2.25+.patch")]))
  :build (fn [b]
           (b:run ["./configure" (.. "--sysconfdir=" b.prefix "/etc") (.. "--prefix=" b.prefix) "--disable-static" (.. "--mandir=" b.prefix "/man")])

@@ -7,11 +7,18 @@
   (var v-files-to-fix-env "")
   (var v-interpreter-new "")
   (var v-interpreter-old "")
-  (b:run ["contrib/check-code.py" "tests/bundles/rebase.sh" "tests/check-perf-code.py" "tests/dumbhttp.py" "tests/dummysmtpd.py" "tests/dummyssh" "tests/f" "tests/filterpyflakes.py" "tests/get-with-headers.py" "tests/hghave" "tests/killdaemons.py" "tests/md5sum.py" "tests/printenv.py" "tests/readlink.py" "tests/revlog-formatv0.py" "tests/run-tests.py" "tests/seq.py" "tests/svn-safe-append.py" "tests/test-bisect.t" "tests/test-extdiff.t" "tests/test-extension.t" "tests/test-filelog.py" "tests/test-highlight.t" "tests/test-largefiles-cache.t" "tests/test-merge-symlinks.t" "tests/test-newcgi.t" "tests/test-newercgi.t" "tests/test-oldcgi.t" "tests/test-run-tests.t" "tests/test-status-inprocess.py" "tests/tinyproxy.py)"] {:env {"files_to_fix_env" "(contrib/check-commit"}})
+  (set v-files-to-fix-env ["contrib/check-commit" "contrib/check-code.py" "tests/bundles/rebase.sh" "tests/check-perf-code.py" "tests/dumbhttp.py" "tests/dummysmtpd.py" "tests/dummyssh" "tests/f" "tests/filterpyflakes.py" "tests/get-with-headers.py" "tests/hghave" "tests/killdaemons.py" "tests/md5sum.py" "tests/printenv.py" "tests/readlink.py" "tests/revlog-formatv0.py" "tests/run-tests.py" "tests/seq.py" "tests/svn-safe-append.py" "tests/test-bisect.t" "tests/test-extdiff.t" "tests/test-extension.t" "tests/test-filelog.py" "tests/test-highlight.t" "tests/test-largefiles-cache.t" "tests/test-merge-symlinks.t" "tests/test-newcgi.t" "tests/test-newercgi.t" "tests/test-oldcgi.t" "tests/test-run-tests.t" "tests/test-status-inprocess.py" "tests/tinyproxy.py"])
   (set v-interpreter-old "/usr/bin/env")
   (set v-interpreter-new (.. (b:path_for "coreutils") "/bin/env"))
   (each [_ v-f (ipairs v-files-to-fix-env)]
-    (b:log (.. "Fixing interpreter on " v-f)) (let [text (b:read v-f)] (b:write v-f (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line (.. "#!" (pick-values 1 (: v-interpreter-old :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]" "%%%0"))) (.. "#!" (pick-values 1 (: v-interpreter-new :gsub "%%" "%%%%"))) 1))) line)))))))
+    (b:log (.. "Fixing interpreter on " v-f)) (let [text (b:read v-f) ends (= (text:sub -1) "\n") lines [] out []]
+    (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+    (each [n l (ipairs lines)]
+      (var line l) (var deleted false) (local after [])
+      (when (not deleted) (set line (pick-values 1 (string.gsub line (.. "#!" (pick-values 1 (: v-interpreter-old :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]" "%%%0"))) (.. "#!" (pick-values 1 (: v-interpreter-new :gsub "%%" "%%%%"))) 1))))
+      (when (not deleted) (table.insert out line))
+      (each [_ x (ipairs after)] (table.insert out x)))
+    (b:write v-f (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))))
 {:name "mercurial"
  :origin "karate"
  :version "3.9.1"

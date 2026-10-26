@@ -1,0 +1,5 @@
+# Statements a person ported: each entry is `== ` and the bash statement as the
+# plan has it (whitespace does not matter), a line `--`, and the Fennel that does
+# what it did. port.py uses an entry wherever the statement appears, so one entry
+# serves a plan and every plan that sources it. An empty Fennel part drops the
+# statement; its reason is a Fennel comment.

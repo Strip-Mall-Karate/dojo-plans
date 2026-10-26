@@ -16,4 +16,11 @@
           (b:run ["make" "check"]))
  :install (fn [b]
           (b.default.install b)
-          (let [text (b:read (.. b.prefix "/bin/runtest"))] (b:write (.. b.prefix "/bin/runtest") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "expectbin=expect" (.. "expectbin=" (pick-values 1 (: (b:path_for "expect") :gsub "%%" "%%%%")) "/bin/expect")))) line))))))}
+          (let [text (b:read (.. b.prefix "/bin/runtest")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "expectbin=expect" (.. "expectbin=" (pick-values 1 (: (b:path_for "expect") :gsub "%%" "%%%%")) "/bin/expect")))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (.. b.prefix "/bin/runtest") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))}

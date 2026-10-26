@@ -14,7 +14,14 @@
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :prepare (fn [b]
-          (let [text (b:read (b:join b.src "scripts/zsh.pl"))] (b:write (b:join b.src "scripts/zsh.pl") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/usr/bin/perl" (.. (pick-values 1 (: (b:path_for "perl") :gsub "%%" "%%%%")) "/bin/perl")))) line))))))
+          (let [text (b:read (b:join b.src "scripts/zsh.pl")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/perl" (.. (pick-values 1 (: (b:path_for "perl") :gsub "%%" "%%%%")) "/bin/perl")))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "scripts/zsh.pl") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) (.. "--with-ca-bundle=" (b:path_for "cacerts") "/ssl/certs/cacert.pem") (.. "--with-ssl=" (b:path_for "openssl")) (.. "--with-zlib=" (b:path_for "zlib")) (.. "--with-nghttp2=" (b:path_for "nghttp2")) "--disable-manual" "--disable-ldap" "--disable-ldaps" "--disable-rtsp" "--enable-proxy" "--enable-optimize" "--disable-dependency-tracking" "--enable-ipv6" "--without-libidn" "--without-gnutls" "--without-librtmp"])
           (b:run ["make"]))}

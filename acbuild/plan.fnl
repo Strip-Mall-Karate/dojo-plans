@@ -14,8 +14,22 @@
  :prepare (fn [b]
           (b.default.prepare b)
           (b:log "Modifying 'build' file")
-          (let [text (b:read (b:join b.src "build"))] (b:write (b:join b.src "build") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "#!/usr/bin/env" (.. "#!" (pick-values 1 (: (b:path_for "karate/coreutils") :gsub "%%" "%%%%")) "/bin/env") 1))) line)))))
-          (let [text (b:read (b:join b.src "build"))] (b:write (b:join b.src "build") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "VERSION=$%(cd \"${DIR}\" && git describe %-%-dirty%)" (.. "VERSION=" (pick-values 1 (: b.version :gsub "%%" "%%%%"))) 1))) line))))))
+          (let [text (b:read (b:join b.src "build")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "#!/usr/bin/env" (.. "#!" (pick-values 1 (: (b:path_for "karate/coreutils") :gsub "%%" "%%%%")) "/bin/env") 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "build") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
+          (let [text (b:read (b:join b.src "build")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "VERSION=$%(cd \"${DIR}\" && git describe %-%-dirty%)" (.. "VERSION=" (pick-values 1 (: b.version :gsub "%%" "%%%%"))) 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "build") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
           (b:run ["./build"]))
  :install (fn [b]

@@ -28,8 +28,15 @@
             (b:copy (b:join b.src "opt/mssql/lib") (b:join b.prefix (: (b:join b.src "opt/mssql/lib") :match "[^/]+$")))
             (b:copy (b:join b.src "opt/mssql/lib") b.prefix))
           (var v-pythonpath (b:path_for "karate/python2"))
-          (let [text (b:read (.. b.prefix "/lib/mssql-conf/mssql-conf.py"))] (b:write (.. b.prefix "/lib/mssql-conf/mssql-conf.py") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/usr/bin/python" (.. (pick-values 1 (: v-pythonpath :gsub "%%" "%%%%")) "/bin/python") 1))) line)))))
-          (b:run [(.. b.prefix "/bin/paldumper") (.. b.prefix "/bin/sqlservr") ")"] {:env {"elfs_to_patch" "("}})
+          (let [text (b:read (.. b.prefix "/lib/mssql-conf/mssql-conf.py")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/python" (.. (pick-values 1 (: v-pythonpath :gsub "%%" "%%%%")) "/bin/python") 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (.. b.prefix "/lib/mssql-conf/mssql-conf.py") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
+          (set v-elfs-to-patch [(.. b.prefix "/bin/paldumper") (.. b.prefix "/bin/sqlservr")])
           (each [_ v-elf (ipairs v-elfs-to-patch)]
             (b:run ["patchelf" "--interpreter" (.. (b:path_for "glibc") "/lib/ld-linux-x86-64.so.2") "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") v-elf]))
           (b:run ["find" (.. b.prefix "/lib") "-type" "f" "-name" "*.so*" "-exec" "patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") "{}" ";"]))

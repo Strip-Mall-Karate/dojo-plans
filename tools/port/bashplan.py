@@ -158,6 +158,10 @@ def statements(text):
             i = end
             continue
         end = _statement_end(text, i)
+        # A loop or if after a pipe (`find ... | while read f; do ... done`) is
+        # part of this statement: it runs to its done, fi or esac.
+        while end < n and _unbalanced(text[start:end]):
+            end = _statement_end(text, end + 1)
         out.append(("simple", None, text[start:end]))
         i = end
     return out
@@ -198,6 +202,45 @@ def _block_end(text, i, opener, closer):
                 continue
         j += 1
     raise ValueError(f"{opener} block is not closed")
+
+
+def _masked(text):
+    """`text` with quoted strings, substitutions and comments blanked out."""
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        c = text[i]
+        if c in "'\"`" or text.startswith("$(", i) or text.startswith("${", i) or text.startswith("$'", i):
+            try:
+                j = _skip_quoted(text, i)
+            except (ValueError, IndexError):
+                j = n
+            out.append(" " * (j - i))
+            i = j
+        elif c == "#" and (i == 0 or text[i - 1] in " \t\n;"):
+            j = text.find("\n", i)
+            j = n if j < 0 else j
+            out.append(" " * (j - i))
+            i = j
+        else:
+            out.append(c)
+            i += 1
+    return "".join(out)
+
+
+def _unbalanced(statement):
+    """Whether a statement opens a do, then or case it does not close."""
+    words = re.findall(r"(?<![\w-])(while|until|for|select|done|if|fi|case|esac)(?![\w-])", _masked(statement))
+    depth = {"loop": 0, "if": 0, "case": 0}
+    for w in words:
+        if w in ("while", "until", "for", "select"):
+            depth["loop"] += 1
+        elif w in ("if", "case"):
+            depth[w] += 1
+        else:
+            depth[{"done": "loop", "fi": "if", "esac": "case"}[w]] -= 1
+    return any(v > 0 for v in depth.values())
 
 
 def _statement_end(text, i):

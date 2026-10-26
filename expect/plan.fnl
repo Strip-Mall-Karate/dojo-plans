@@ -15,7 +15,14 @@
  :include_dirs ["include"]
  :prepare (fn [b]
           (b.default.prepare b)
-          (let [text (b:read (b:join b.src "configure"))] (b:write (b:join b.src "configure") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "/bin/stty" (.. (pick-values 1 (: (b:path_for "coreutils") :gsub "%%" "%%%%")) "/bin/stty")))) line))))))
+          (let [text (b:read (b:join b.src "configure")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "/bin/stty" (.. (pick-values 1 (: (b:path_for "coreutils") :gsub "%%" "%%%%")) "/bin/stty")))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "configure") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) (.. "--exec-prefix=" b.prefix) (.. "--with-tcl=" (b:path_for "tcl") "/lib") (.. "--with-tclinclude=" (b:path_for "tcl") "/include")])
           (b:run ["make"]))

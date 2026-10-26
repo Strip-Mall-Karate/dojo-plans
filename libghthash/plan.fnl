@@ -13,7 +13,14 @@
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :build (fn [b]
-          (let [text (b:read (b:join b.src "configure.in"))] (b:write (b:join b.src "configure.in") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "AM_PROG_LIBTOOL%(%)" "LT_INIT"))) line)))))
+          (let [text (b:read (b:join b.src "configure.in")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "AM_PROG_LIBTOOL%(%)" "LT_INIT"))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "configure.in") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (b:write (b:join b.src "configure.in") (.. (if (b:exists (b:join b.src "configure.in")) (b:read (b:join b.src "configure.in")) "") "AC_CONFIG_MACRO_DIRS([m4])\n"))
           (b:run ["libtoolize"])
           (b:run ["aclocal" "-I" "m4"])

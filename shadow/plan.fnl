@@ -13,9 +13,23 @@
  :bin_dirs ["bin"]
  :prepare (fn [b]
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/dots-in-usernames.patch")])
-          (let [text (b:read (b:join b.src "src/Makefile.in"))] (b:write (b:join b.src "src/Makefile.in") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "groups$%(EXEEXT%) " "" 1))) line)))))
+          (let [text (b:read (b:join b.src "src/Makefile.in")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "groups$%(EXEEXT%) " "" 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "src/Makefile.in") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (b:run ["find" "man" "-name" "Makefile.in" "-exec" "sed" "-i" "s/groups\\.1 / /" "{}" ";"])
-          (let [text (b:read (b:join b.src "etc/login.defs"))] (b:write (b:join b.src "etc/login.defs") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "#ENCRYPT_METHOD DES" "ENCRYPT_METHOD SHA512" 1))) line))))))
+          (let [text (b:read (b:join b.src "etc/login.defs")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "#ENCRYPT_METHOD DES" "ENCRYPT_METHOD SHA512" 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "etc/login.defs") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--with-acl" "--with-attr" "--with-group-name-max-length=32" "--without-selinux" "--without-libpam"])
           (b:run ["make"]))

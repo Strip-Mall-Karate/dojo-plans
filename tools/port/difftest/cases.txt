@@ -250,3 +250,11 @@ seq 1 12 > numbers
 false || true
 ls does-not-exist || :
 sed -i '2,3 d; 5 d; $ d' numbers
+
+== piped-while-read
+-- setup
+mkdir -p d; printf '#!/usr/bin/env node\n' > d/a; printf 'plain\n' > d/b; printf '#!/usr/bin/env node\n' > d/c
+-- body
+grep -rl '^#!/usr/bin/env' d | while read -r target; do
+  sed -e "s#/usr/bin/env node#/opt/node#" -i "$target"
+done

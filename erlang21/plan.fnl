@@ -33,8 +33,22 @@
           (use-dependency-path b "/bin/pwd" (b:path_for "coreutils" "bin/pwd"))
           (use-dependency-path b "/bin/rm" (b:path_for "coreutils" "bin/rm")))
  :build (fn [b]
-          (let [text (b:read (b:join b.src "erts/configure.in"))] (b:write (b:join b.src "erts/configure.in") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "std_ssl_locations=.*" "std_ssl_locations=\"\"" 1))) line)))))
-          (let [text (b:read (b:join b.src "erts/configure"))] (b:write (b:join b.src "erts/configure") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "std_ssl_locations=.*" "std_ssl_locations=\"\"" 1))) line)))))
+          (let [text (b:read (b:join b.src "erts/configure.in")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "std_ssl_locations=.*" "std_ssl_locations=\"\"" 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "erts/configure.in") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
+          (let [text (b:read (b:join b.src "erts/configure")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "std_ssl_locations=.*" "std_ssl_locations=\"\"" 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "erts/configure") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--enable-threads" "--enable-smp-support" "--enable-kernel-poll" "--enable-dynamic-ssl-lib" "--enable-shared-zlib" "--enable-hipe" (.. "--with-ssl=" (b:path_for "openssl")) (.. "--with-ssl-include=" (b:path_for "openssl") "/include") "--without-javac"] {:env {"CFLAGS" (.. (or (b:getenv "CFLAGS") "") " -O2")}})
           (b:run ["make"]))
  :strip (fn [b]
