@@ -16,7 +16,10 @@
  :prepare (fn [b]
           (b.default.prepare b)
           (b:env "LDFLAGS" (.. (or (b:getenv "LDFLAGS") "") " -Wl,-rpath=" (or (b:getenv "LD_RUN_PATH") "") ",--enable-new-dtags"))
-          (b:log (.. "Updating LDFLAGS=" (or (b:getenv "LDFLAGS") ""))))
+          (b:log (.. "Updating LDFLAGS=" (or (b:getenv "LDFLAGS") "")))
+          ;; gmp 6.3.0's configure declares functions with () and calls them with arguments,
+          ;; which C23, gcc 15's default, rejects.
+          (b:env "CFLAGS" (.. (or (b:getenv "CFLAGS") "") " -std=gnu17")))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--build=x86_64-unknown-linux-gnu"])
           (b:run ["make" (.. "-j" (tostring b.jobs))]))
