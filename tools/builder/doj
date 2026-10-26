@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# The container's bash by path: a build's PATH may lead to a package's own bash first
+# (busybox-static's is ash).
 # A stand-in for `doj`, the two things doj-plan-build asks of it, until Dojo's own doj builds
 # with the current toolchain:
 #   doj pkg path <ident>                     the newest installed package matching ident

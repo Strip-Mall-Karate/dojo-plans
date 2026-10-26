@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# The container's bash by path: a build's PATH may lead to a package's own bash first
+# (busybox-static's is ash).
 # The container's gcc, g++, cc and c++ for a first build, before karate's gcc exists. A program
 # linked against a karate glibc runs only with that glibc's dynamic linker, and the host compiler
 # names the host's, so when the build's LD_RUN_PATH holds a karate glibc this adds that glibc's
