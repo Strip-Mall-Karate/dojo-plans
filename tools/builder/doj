@@ -8,14 +8,16 @@ set -euo pipefail
 root=${DOJ_ROOT_PATH:-/doj}
 
 if [[ $# -ge 3 && "$1" == pkg && "$2" == path ]]; then
-  dir="${root}/pkgs/$3"
-  [[ -d "${dir}" ]] || exit 1
-  while [[ ! -f "${dir}/IDENT" ]]; do
-    next=$(find "${dir}" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
-    [[ -n "${next}" ]] || exit 1
-    dir=${next}
-  done
-  printf '%s\n' "${dir}"
+  # A package is a directory origin/name/version/release holding IDENT; a build that failed
+  # leaves its directory without one. The ident names two to four of those levels.
+  ident=${3%/}
+  levels=$(( 4 - $(tr -cd / <<< "${ident}" | wc -c) - 1 ))
+  (( levels >= 0 && levels <= 2 )) || exit 1
+  [[ -d "${root}/pkgs/${ident}" ]] || exit 1
+  found=$(find "${root}/pkgs/${ident}" -mindepth "${levels}" -maxdepth "${levels}" -type d \
+            -exec test -f '{}/IDENT' ';' -print | sort -V | tail -1)
+  [[ -n "${found}" ]] || exit 1
+  printf '%s\n' "${found}"
   exit 0
 fi
 
