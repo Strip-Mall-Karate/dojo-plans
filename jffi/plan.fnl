@@ -21,7 +21,7 @@
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src "jni/libffi/configure") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
           (b:env "USE_SYSTEM_LIBFFI" "1")
-          (var v-java-home (b:path_for "corretto8")))
+          (b:env "JAVA_HOME" (b:path_for "corretto8")))
  :build (fn [b]
           (b:run ["ant" "jar"])
           (b:run ["ant" (.. "-Djava.library.path=" (or (b:getenv "LD_RUN_PATH") "")) "archive-platform-jar"])

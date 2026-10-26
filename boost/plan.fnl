@@ -16,6 +16,6 @@
           (b:run ["./bootstrap.sh" (.. "--prefix=" b.prefix)]))
  :install (fn [b]
           (b:env "NO_BZIP2" "1")
-          (var v-zlib-libpath (.. (b:path_for "karate/zlib") "/lib"))
-          (var v-zlib-include (.. (b:path_for "karate/zlib") "/include"))
+          (b:env "ZLIB_LIBPATH" (.. (b:path_for "karate/zlib") "/lib"))
+          (b:env "ZLIB_INCLUDE" (.. (b:path_for "karate/zlib") "/include"))
           (b:run ["./b2" "install" (.. "--prefix=" b.prefix) "-q" "--debug-configuration"]))}

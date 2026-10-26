@@ -14,7 +14,7 @@
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :build (fn [b]
-          (var v-java-home (b:path_for "karate/corretto8"))
+          (b:env "JAVA_HOME" (b:path_for "karate/corretto8"))
           (b:run ["./mvnw"]))
  :install (fn [b]
           (each [_ p (ipairs (b:glob b.src "*"))] (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$"))))

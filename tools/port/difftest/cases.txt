@@ -418,3 +418,11 @@ printf 'HOSTLDFLAGS := x\nend\n' > Makefile
 local extra="-L/opt/lib"
 sed -i "1s|$| $extra|" Makefile
 echo "cost: 5$ each" > price
+
+== export-before-assignment
+-- setup
+true
+-- body
+export LATER_VALUE
+LATER_VALUE="set after export"
+sh -c 'echo "$LATER_VALUE"' > seen
