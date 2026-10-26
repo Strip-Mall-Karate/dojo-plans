@@ -464,3 +464,55 @@
 == LD_LIBRARY_PATH=$(join_by ':' "${ld_library_path_part[@]}")
 --
 (b:env "LD_LIBRARY_PATH" (table.concat v-ld-library-path-part ":"))
+
+== install -m0755 dist/Linux*/bin/{*util,derdump,pp,shlibsign,signtool,signver,ssltap,vfychain,vfyserv} "${pkg_prefix}"/bin
+--
+;; Each tool from the build's dist/Linux* directory, executable, into bin.
+(each [_ dist (ipairs (b:glob (b:join b.src "dist") "Linux*"))]
+  (let [tools (b:glob (.. dist "/bin") "*util")]
+    (each [_ name (ipairs ["derdump" "pp" "shlibsign" "signtool" "signver" "ssltap" "vfychain" "vfyserv"])]
+      (table.insert tools (.. dist "/bin/" name)))
+    (each [_ f (ipairs tools)]
+      (b:copy f (.. b.prefix "/bin/" (f:match "[^/]+$")))
+      (b:chmod (.. b.prefix "/bin/" (f:match "[^/]+$")) "755"))))
+
+== install -m0755 dist/Linux*/lib/*.so "${pkg_prefix}"/lib
+--
+;; Each shared library from the build's dist/Linux* directory, into lib.
+(each [_ dist (ipairs (b:glob (b:join b.src "dist") "Linux*"))]
+  (each [_ f (ipairs (b:glob (.. dist "/lib") "*.so"))]
+    (b:copy f (.. b.prefix "/lib/" (f:match "[^/]+$")))
+    (b:chmod (.. b.prefix "/lib/" (f:match "[^/]+$")) "755")))
+
+== install -m0644 dist/Linux*/lib/{*.chk,libcrmf.a} "${pkg_prefix}"/lib
+--
+;; Each library check file and libcrmf.a from the build's dist/Linux* directory, into lib.
+(each [_ dist (ipairs (b:glob (b:join b.src "dist") "Linux*"))]
+  (let [files (b:glob (.. dist "/lib") "*.chk")]
+    (table.insert files (.. dist "/lib/libcrmf.a"))
+    (each [_ f (ipairs files)]
+      (b:copy f (.. b.prefix "/lib/" (f:match "[^/]+$")))
+      (b:chmod (.. b.prefix "/lib/" (f:match "[^/]+$")) "644"))))
+
+== find "$pkg_prefix/lib" -name "*.so" -print0 \
+    | xargs -0 -I '%' patchelf \
+      --set-rpath "$LD_RUN_PATH" \
+      %
+--
+(each [_ f (ipairs (b:find (b:join b.prefix "lib") "*.so"))]
+  (b:run ["patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") f]))
+
+== for i in $(seq 0 $((${#_target_sources[@]} - 1))); do
+    dir="$(basename "${_target_sources[$i]/%.tar.gz/}")"
+    pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname/$dir" > /dev/null
+      build_line "Installing $dir target for Rust"
+      ./install.sh --prefix="$("$pkg_prefix/bin/rustc" --print sysroot)"
+    popd > /dev/null
+  done
+--
+;; Each extra target's standard library, unpacked beside the source, installed into rustc's sysroot.
+(let [sysroot (b:capture [(.. b.prefix "/bin/rustc") "--print" "sysroot"])]
+  (each [_ source (ipairs ["https://static.rust-lang.org/dist/rust-std-1.33.0-x86_64-unknown-linux-musl.tar.gz"])]
+    (let [dir (pick-values 1 (: (source:match "[^/]+$") :gsub "%.tar%.gz$" ""))]
+      (b:log (.. "Installing " dir " target for Rust"))
+      (b:run ["./install.sh" (.. "--prefix=" sysroot)] {:cwd (b:join b.src dir)}))))
