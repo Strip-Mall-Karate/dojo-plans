@@ -6,7 +6,7 @@ configuration templates, `default.toml`, tests). Builder is `https://bldr.karate
 
 The tree starts from the source project's package plans as of 10 April 2019, the same point Dojo
 itself forked from, with their history. Plans are written in Fennel, one `plan.fnl` per package (see
-Dojo's `components/plan`); the bash plans they replace are being ported. Plans build for Linux
+Dojo's `components/plan`), ported from the bash plans by `tools/port`. Plans build for Linux
 only.
 
 `base-plans.txt` lists the base toolchain in the order it is built. `.bldr.toml` tells Builder where

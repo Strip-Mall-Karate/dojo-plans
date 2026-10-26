@@ -56,7 +56,6 @@ dojo-plans/expect
 dojo-plans/dejagnu
 dojo-plans/check
 dojo-plans/cacerts
-dojo-plans/openssl-fips
 dojo-plans/openssl
 dojo-plans/wget
 dojo-plans/unzip

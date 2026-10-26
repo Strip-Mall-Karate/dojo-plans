@@ -117,9 +117,11 @@ scaffolding-node and scaffolding-ruby are ported; chef, inspec, gradle and go17 
   is no Builder to ask); scaffolding-ruby reads Gemfile.lock in Fennel and needs one present.
 - A user and group with no service to run are left out of `svc` (chrony, systemd).
 
-## What is left (1 package, 2026-10-26)
+## What is left
 
-- geoip: its GeoLite download no longer exists; Jamie to decide.
+Nothing: every plan is Fennel. geoip, whose GeoLite download no longer exists, and openssl-fips,
+whose FIPS canister OpenSSL 3 replaced with a provider built from OpenSSL itself, were dropped
+(Jamie, 2026-10-26).
 
 ## Sources that no longer answer
 

@@ -175,8 +175,6 @@
   fi
 --
 ;; The plan linked coreutils' rm to /bin/rm, which OpenSSL's build scripts name.
-;; Its comment held that the scripts must not change for the FIPS build; the
-;; validated part is openssl-fips's canister, which this does not touch.
 (use-dependency-path b "/bin/rm" (b:path_for "karate/coreutils" "bin/rm"))
 
 == if [[ $BINLINKED_RM == true ]]; then
