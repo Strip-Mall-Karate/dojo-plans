@@ -107,7 +107,6 @@
           (b:run ["make" "install" (.. "sysconfdir=" b.prefix "/etc") (.. "sbindir=" b.prefix "/bin")] {:cwd (.. "../" b.name "-build")})
           (each [_ p (ipairs (b:glob (.. b.prefix "/sbin") "*"))] (b:move p (b:join (.. b.prefix "/bin/") (: p :match "[^/]+$"))))
           (b:remove (.. b.prefix "/sbin"))
-          (each [_ p (ipairs (b:glob (.. b.prefix "/include/rpcsvc") "*.x"))] (b:remove p))
           (b:remove (.. b.prefix "/lib/ld-linux.so.2"))
           (b:remove (.. b.prefix "/bin/sln"))
           (each [_ v-b (ipairs ["ldd" "sotruss" "tzselect" "xtrace"])]
