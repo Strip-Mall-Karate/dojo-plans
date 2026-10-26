@@ -569,3 +569,9 @@
 == PLAN_CONTEXT=$(abspath ../bash)
 --
 ;; The plan pointed its plan directory at bash's; nothing it runs reads from there.
+
+== download_file "https://raw.github.com/technomancy/${pkg_name}/${pkg_version}/bin/lein-pkg" "lein"
+--
+;; Checked against the SHA-256 the plan's do_verify gave it.
+(b:download (.. "https://raw.github.com/technomancy/" b.name "/" b.version "/bin/lein-pkg")
+            "9108095b5f377bdfb630a5c65bd963ea288b11ab08e868473cbd7763eaa96472" "lein")
