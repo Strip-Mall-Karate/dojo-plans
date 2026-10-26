@@ -18,5 +18,5 @@
           (b:run ["./mvnw"]))
  :install (fn [b]
           (each [_ p (ipairs (b:glob b.src "*"))] (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$"))))
-          (b:fix_interpreter [(.. b.prefix "/bin/*")] "karate/bash" "bash")
+          (b:fix_interpreter (b:glob (.. b.prefix "/bin") "*") "karate/bash" "bash")
           (b:run ["find" (.. b.prefix "/lib/jni/") "-maxdepth" "1" "-mindepth" "1" "-type" "d" "-not" "-name" "x86_64-Linux" "-exec" "rm" "-rf" "{}" ";"]))}

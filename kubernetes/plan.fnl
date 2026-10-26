@@ -12,7 +12,7 @@
  :build_deps ["karate/git" "karate/make" "karate/gcc" "karate/go" "karate/diffutils" "karate/which" "karate/rsync" "karate/coreutils"]
  :bin_dirs ["bin"]
  :prepare (fn [b]
-          (b:fix_interpreter [(b:capture ["find" "hack" "-name" "*.sh"])] "karate/coreutils" "bin/env"))
+          (b:fix_interpreter (icollect [p (: (b:capture ["find" "hack" "-name" "*.sh"]) :gmatch "%S+")] (if (= (p:sub 1 1) "/") p (b:join b.src p))) "karate/coreutils" "bin/env"))
  :build (fn [b]
           (b:run ["make"]))
  :install (fn [b]

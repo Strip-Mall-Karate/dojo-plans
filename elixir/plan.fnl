@@ -19,6 +19,6 @@
  :build (fn [b]
           (b:fix_interpreter [(b:join b.src "rebar")] "karate/coreutils" "bin/env")
           (b:fix_interpreter [(b:join b.src "rebar3")] "karate/coreutils" "bin/env")
-          (b:fix_interpreter [(b:join b.src "bin/*")] "karate/coreutils" "bin/env")
+          (b:fix_interpreter (b:glob (b:join b.src "bin") "*") "karate/coreutils" "bin/env")
           (b:fix_interpreter [(b:join b.src "lib/elixir/generate_app.escript")] "karate/coreutils" "bin/env")
           (b:run ["make"]))}

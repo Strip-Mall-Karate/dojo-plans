@@ -24,6 +24,6 @@
             (b:move (.. b.prefix "/config") (b:join (.. b.prefix "/settings") (: (.. b.prefix "/config") :match "[^/]+$")))
             (b:move (.. b.prefix "/config") (.. b.prefix "/settings")))
           (b:run ["find" (.. b.prefix "/vendor/jruby/lib/jni/") "-mindepth" "1" "-maxdepth" "1" "-type" "d" "-not" "-name" "x86_64-Linux" "-exec" "rm" "-rf" "{}" ";"])
-          (b:fix_interpreter [(.. b.prefix "/bin/*")] "karate/bash" "bin/sh")
-          (b:fix_interpreter [(.. b.prefix "/vendor/jruby/bin/*")] "karate/coreutils" "bin/env")
+          (b:fix_interpreter (b:glob (.. b.prefix "/bin") "*") "karate/bash" "bin/sh")
+          (b:fix_interpreter (b:glob (.. b.prefix "/vendor/jruby/bin") "*") "karate/coreutils" "bin/env")
           (b:copy (.. b.plan_dir "/log4j2.properties") (b:join (.. b.prefix "/settings/") (: (.. b.plan_dir "/log4j2.properties") :match "[^/]+$"))))}

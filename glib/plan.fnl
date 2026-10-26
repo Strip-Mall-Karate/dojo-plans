@@ -38,6 +38,6 @@
  :strip (fn [b]
           (b.default.strip b)
           ;; From do_after.
-          (b:fix_interpreter [(.. b.prefix "/bin/*")] "karate/coreutils" "bin/env")
+          (b:fix_interpreter (b:glob (.. b.prefix "/bin") "*") "karate/coreutils" "bin/env")
           ;; From do_end.
           )}

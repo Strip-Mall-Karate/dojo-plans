@@ -839,8 +839,21 @@ def cmd_fix_interpreter(words, scope):
     if len(words) != 3:
         raise Unported("fix_interpreter arity")
     target, dep, interp = words
-    kind, expr = paths(target, scope)
-    files = expr if kind == "*" else f"[{expr}]"  # paths() anchors both forms.
+    # fix_interpreter split its first argument on spaces and expanded each piece as a
+    # glob, quoted or not: a pattern is globbed, a command's output is a list.
+    bare = target[1:-1] if target.startswith('"') and target.endswith('"') else target
+    if bare.startswith("$(") and bare.endswith(")"):
+        files = (f'(icollect [p (: {word(target, scope)} :gmatch "%S+")] '
+                 f'(if (= (p:sub 1 1) "/") p (b:join {base(scope)} p)))')
+    elif GLOB.search(bare):
+        slash = bare.rfind("/")
+        directory, pattern = (bare[:slash], bare[slash + 1:]) if slash >= 0 else ("", bare)
+        if GLOB.search(directory) or "$(" in pattern or not pattern:
+            raise Unported("fix_interpreter pattern " + target)
+        where = base(scope) if directory in ("", ".") else anchor(word('"' + directory + '"', scope), scope)
+        files = f"(b:glob {where} {fstr(pattern)})"
+    else:
+        files = f"[{path(target, scope)}]"
     return [f"(b:fix_interpreter {files} {_dep(dep, scope)} {word(interp, scope)})"]
 
 
@@ -1155,12 +1168,10 @@ def _command(cmd, args, scope, stdin):
         if len(rest) != 2:
             raise Unported(cmd + " arity")
         return [f"({env_helper[cmd]} {word(rest[0], scope)} {word(rest[1], scope)})"]
-    if cmd in BUILDER_HELPERS:
+    if cmd in BUILDER_HELPERS and cmd not in ("fix_interpreter", "download_file"):
         raise Unported("the source project's builder function " + cmd)
     if cmd == "unset" and args and all(a in scope.locals for a in args if not a.startswith("-")):
         return [f'(set {scope.locals[a]} "")' for a in args if not a.startswith("-")]
-    if cmd in SHELL_BUILTINS:
-        raise Unported("the shell's " + cmd)
     if cmd.startswith("do_default_") and not args:
         phase = cmd[len("do_default_"):]
         if phase not in ORDER:
@@ -1216,6 +1227,8 @@ def _command(cmd, args, scope, stdin):
         raise Unported(cmd)
     if cmd.startswith(("pkg_", "_")) or cmd in scope.plan.functions:
         return [f"({_local(cmd)} b {' '.join(word(a, scope) for a in args)})".replace(" )", ")")]
+    if cmd in SHELL_BUILTINS:
+        raise Unported("the shell's " + cmd)
     for a in args:
         # A glob character in a package spec (name:version, name@version, key=value) is literal.
         if GLOB.search(_unquoted(a)) and not re.search(r"[:@=]", _unquoted(a)):

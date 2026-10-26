@@ -15,7 +15,7 @@
  :build (fn [b]
           nil)
  :install (fn [b]
-          (b:fix_interpreter [(b:join b.src "bin/*")] "karate/coreutils" "bin/env")
+          (b:fix_interpreter (b:glob (b:join b.src "bin") "*") "karate/coreutils" "bin/env")
           (b:copy (b:join b.src "bin") (b:join b.prefix (: (b:join b.src "bin") :match "[^/]+$")))
           (b:copy (b:join b.src "lib") (b:join b.prefix (: (b:join b.src "lib") :match "[^/]+$")))
           (b:copy (b:join b.src (.. "dist-maven/" (.. b.name "-" b.version) ".jar")) (b:join b.prefix (: (b:join b.src (.. "dist-maven/" (.. b.name "-" b.version) ".jar")) :match "[^/]+$"))))}

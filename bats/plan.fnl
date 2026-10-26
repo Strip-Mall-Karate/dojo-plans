@@ -12,7 +12,7 @@
  :bin_dirs ["bin"]
  :build (fn [b]
           (b:fix_interpreter [(b:join b.src "install.sh")] "karate/coreutils" "bin/env")
-          (b:fix_interpreter [(b:join b.src "libexec/*")] "karate/coreutils" "bin/env"))
+          (b:fix_interpreter (b:glob (b:join b.src "'libexec") "*'") "karate/coreutils" "bin/env"))
  :check (fn [b]
           (b:run ["./bin/bats" "--tap" "test"]))
  :install (fn [b]

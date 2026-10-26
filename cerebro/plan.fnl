@@ -18,4 +18,4 @@
  :install (fn [b]
           (each [_ p (ipairs (b:glob b.src "*"))] (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$"))))
           (b:mkdir (.. b.prefix "/logs"))
-          (b:fix_interpreter [(.. b.prefix "/bin/*")] "karate/coreutils" "bin/env"))}
+          (b:fix_interpreter (b:glob (.. b.prefix "/bin") "*") "karate/coreutils" "bin/env"))}

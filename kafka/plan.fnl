@@ -12,7 +12,7 @@
  :bin_dirs ["bin"]
  :binds {"zookeeper" ["port"]}
  :build (fn [b]
-          (b:fix_interpreter [(b:join b.src "bin/*")] "karate/bash-static" "bin/bash"))
+          (b:fix_interpreter (b:glob (b:join b.src "bin") "*") "karate/bash-static" "bin/bash"))
  :install (fn [b]
           (b:copy (b:join b.src "libs") (b:join b.prefix (: (b:join b.src "libs") :match "[^/]+$")))
           (b:copy (b:join b.src "bin") (b:join b.prefix (: (b:join b.src "bin") :match "[^/]+$"))))}

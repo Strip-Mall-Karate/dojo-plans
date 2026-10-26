@@ -18,4 +18,4 @@
           (b:run ["make" "check" "USE_PYTHON=no"]))
  :install (fn [b]
           (b.default.install b)
-          (b:fix_interpreter [(.. b.prefix "/bin/*")] "karate/bash" "bin/bash"))}
+          (b:fix_interpreter (b:glob (.. b.prefix "/bin") "*") "karate/bash" "bin/bash"))}

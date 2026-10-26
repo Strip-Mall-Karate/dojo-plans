@@ -13,7 +13,7 @@
  :build (fn [b]
           nil)
  :install (fn [b]
-          (b:fix_interpreter [(b:join b.src "src/*.py")] "karate/coreutils" "bin/env")
+          (b:fix_interpreter (b:glob (b:join b.src "src") "*.py") "karate/coreutils" "bin/env")
           (b:run ["python3" "setup.py" "--freedom=partial" (.. "--prefix=" b.prefix) "--without-info-manual" "--without-man-manual" "--without-shared-cache" "--without-shell-completion" "install"])
           (b:fix_interpreter [(.. b.prefix "/bin/ponysay")] "karate/coreutils" "bin/env"))
  :strip (fn [b]
