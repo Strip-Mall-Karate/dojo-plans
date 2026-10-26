@@ -14,10 +14,6 @@
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :pconfig_dirs ["lib/pkgconfig"]
- :prepare (fn [b]
-          (when (not (b:exists "/usr/bin/file"))
-            (let [link (if (b:exists (b:join "/usr/bin/file" ".")) (b:join "/usr/bin/file" (: (.. (b:path_for "karate/file") "/bin/file") :match "[^/]+$")) "/usr/bin/file")]
-            (b:symlink (.. (b:path_for "karate/file") "/bin/file") link)) (var v--clean-file "true")))
  :check (fn [b]
           (b:run ["make" "check"]))
  :install (fn [b]

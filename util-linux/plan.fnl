@@ -16,7 +16,7 @@
  :include_dirs ["include"]
  :pconfig_dirs ["lib/pkgconfig"]
  :build (fn [b]
-          (b:run ["./configure" (.. "--prefix=" b.prefix) (.. "--sbindir=" b.prefix "/bin") "--localstatedir=/doj/svc/util-linux/var/run" "--without-python" "--without-slang" "--without-systemd" "--without-systemdsystemunitdir" "--disable-use-tty-group" "--disable-chfn-chsh" "--disable-login" "--disable-nologin" "--disable-su" "--disable-setpriv" "--disable-runuser" "--disable-pylibmount"])
+          (b:run ["./configure" (.. "--prefix=" b.prefix) (.. "--sbindir=" b.prefix "/bin") "--localstatedir=/doj/svc/util-linux/var/run" "--without-python" "--without-slang" "--without-systemd" "--without-systemdsystemunitdir" "--disable-use-tty-group" "--disable-chfn-chsh" "--disable-login" "--disable-nologin" "--disable-su" "--disable-setpriv" "--disable-runuser" "--disable-pylibmount" "--disable-makeinstall-chown" "--disable-makeinstall-setuid"])
           (b:run ["make"]))
  :install (fn [b]
           (b:run ["make" "install" (.. "usrsbin_execdir=" b.prefix "/bin")]))}

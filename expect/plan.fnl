@@ -25,6 +25,9 @@
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src "configure") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
+          ;; expect 5.45.4's configure probes use implicit declarations, which gcc 14 and later
+          ;; reject; with them failing it cannot pick a pty implementation.
+          (b:env "CFLAGS" (.. (or (b:getenv "CFLAGS") "") " -std=gnu17 -fpermissive"))
           (b:run ["./configure" (.. "--prefix=" b.prefix) (.. "--exec-prefix=" b.prefix) (.. "--with-tcl=" (b:path_for "tcl") "/lib") (.. "--with-tclinclude=" (b:path_for "tcl") "/include")])
           (b:run ["make"]))
  :check (fn [b]

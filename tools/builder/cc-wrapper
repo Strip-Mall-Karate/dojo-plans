@@ -12,6 +12,8 @@ linking=yes
 for arg in "$@"; do
   case "${arg}" in
     -c | -S | -E | -M | -MM) linking=no ;;
+    # musl-gcc links against musl, with its own dynamic linker.
+    *musl-gcc.specs) linking=no ;;
   esac
 done
 

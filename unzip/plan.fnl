@@ -15,6 +15,6 @@
  :build (fn [b]
           (var v-prefix "")
           (var v-defines "-DACORN_FTYPE_NFS -DWILD_STOP_AT_DIR -DLARGE_FILE_SUPPORT     -DUNICODE_SUPPORT -DUNICODE_WCHAR -DUTF8_MAYBE_NATIVE -DNO_LCHMOD     -DDATE_FORMAT=DF_YMD -DUSE_BZIP2 -DNOMEMCPY -DNO_WORKING_ISPRINT")
-          (b:run ["make" "-f" "unix/Makefile" (.. "prefix=" b.prefix) "D_USE_BZ2=-DUSE_BZIP2" "L_BZ2=-lbz2" (.. "LF2=" (or (b:getenv "LDFLAGS") "")) (.. "CF=" (or (b:getenv "CFLAGS") "") " " (or (b:getenv "CPPFLAGS") "") " -I. " v-defines) "unzips"]))
+          (b:run ["make" "-f" "unix/Makefile" (.. "prefix=" b.prefix) "D_USE_BZ2=-DUSE_BZIP2" "L_BZ2=-lbz2" (.. "LF2=" (or (b:getenv "LDFLAGS") "")) (.. "CF=" (or (b:getenv "CFLAGS") "") " " (or (b:getenv "CPPFLAGS") "") " -std=gnu17 -I. " v-defines) "unzips"]))
  :install (fn [b]
           (b:run ["make" "-f" "unix/Makefile" (.. "prefix=" b.prefix) "install"]))}
