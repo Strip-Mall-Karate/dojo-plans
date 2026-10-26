@@ -157,7 +157,8 @@
           (b:run [(.. "../" (.. b.name "-" b.version) "/contrib/test_summary")] {:cwd (.. "../" b.name "-build")}))
  :install (fn [b]
           (b:mkdir (.. b.prefix "/lib"))
-          (b:symlink "lib" (b:join (.. b.prefix "/lib64") "lib"))
+          (let [link (if (b:exists (b:join (.. b.prefix "/lib64") ".")) (b:join (.. b.prefix "/lib64") "lib") (.. b.prefix "/lib64"))]
+            (b:symlink "lib" link))
           (b:run ["make" "install"] {:cwd (.. "../" b.name "-build")})
           (b:copy (b:join (b:join b.src (.. "../" b.name "-build")) "libiberty/pic/libiberty.a") (b:join (.. b.prefix "/lib") (: (b:join (b:join b.src (.. "../" b.name "-build")) "libiberty/pic/libiberty.a") :match "[^/]+$")))
           (b:chmod (b:join (.. b.prefix "/lib") (: (b:join (b:join b.src (.. "../" b.name "-build")) "libiberty/pic/libiberty.a") :match "[^/]+$")) "644")

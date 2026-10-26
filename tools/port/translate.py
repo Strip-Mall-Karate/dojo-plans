@@ -76,7 +76,8 @@ def _load_hand():
 
 
 def normalize(bash):
-    return re.sub(r"\s+", " ", bash).strip()
+    """A statement's text for matching a hand port: comment lines out, whitespace collapsed."""
+    return re.sub(r"\s+", " ", re.sub(r"(?m)^\s*#.*$", "", bash)).strip()
 
 
 HAND = {}
@@ -634,7 +635,8 @@ def cmd_ln(words, scope):
         link_expr = anchor(basename(target_expr), scope)
     else:
         link_expr = path(link, scope)
-        if into_dir(link) or link.strip("\"'") in (".", ".."):
+        bare = link.replace('"', "").replace("'", "")
+        if bare.endswith("/") or bare in (".", "..") or bare.endswith(("/.", "/..")):
             link_expr = f"(b:join {link_expr} {basename(target_expr)})"
         elif not found & {"T", "n", "r"}:
             # The link goes inside the destination when that is a directory, as ln did.

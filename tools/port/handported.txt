@@ -316,3 +316,110 @@
     (when (and (b:exists bin) (= gxx (b:read bin)))
       (b:remove bin)
       (b:symlink "g++" bin))))
+
+== if [[ ! -r /bin/pwd ]]; then
+    if [[ "$STUDIO_TYPE" = "stage1" ]]; then
+      ln -sv /tools/bin/pwd /bin/pwd
+    else
+      ln -sv "$(pkg_path_for coreutils)/bin/pwd" /bin/pwd
+    fi
+    _clean_pwd=true
+  fi
+--
+;; The plan linked coreutils' pwd to /bin/pwd (/tools' in the source project's
+;; stage1 studio, which Dojo does not have).
+(use-dependency-path b "/bin/pwd" (b:path_for "karate/coreutils" "bin/pwd"))
+
+== if [[ ! -r /bin/echo ]]; then
+      if [[ "$STUDIO_TYPE" = "stage1" ]]; then
+        ln -sv /tools/bin/echo /bin/echo
+      else
+        ln -sv "$(pkg_path_for coreutils)/bin/echo" /bin/echo
+      fi
+      _clean_echo=true
+    fi
+--
+;; The plan linked coreutils' echo to /bin/echo (/tools' in the source project's
+;; stage1 studio, which Dojo does not have).
+(use-dependency-path b "/bin/echo" (b:path_for "karate/coreutils" "bin/echo"))
+
+== if [[ ! -r /bin/cat ]]; then
+      ln -sv "$(command -v cat)" /bin/cat
+      _clean_cat=true
+    fi
+--
+;; The plan linked the cat on PATH, coreutils', to /bin/cat.
+(use-dependency-path b "/bin/cat" (b:path_for "karate/coreutils" "bin/cat"))
+
+== if [[ "$STUDIO_TYPE" = "stage1" ]]; then
+      if [ -f /tools/lib/libgcc_s.so.1 ]; then
+        cp -v /tools/lib/libgcc_s.so.1 "$pkg_prefix/lib/"
+        cp -av /tools/lib/libgcc_s.so "$pkg_prefix/lib/"
+      fi
+    fi
+--
+;; In the source project's stage1 studio, which Dojo does not have, the plan copied
+;; the bootstrap toolchain's libgcc_s into the package.
+
+== ln -sv $(ls -d $(pkg_path_for linux-headers)/include/* | grep -v 'scsi$') .
+--
+;; Each of linux-headers' include entries but scsi/, which glibc provides, linked here.
+(each [_ entry (ipairs (b:glob (.. (b:path_for "karate/linux-headers") "/include") "*"))]
+  (when (not= (entry:match "[^/]+$") "scsi")
+    (b:symlink entry (b:join (.. b.prefix "/include") (entry:match "[^/]+$")))))
+
+== (source "$PLAN_CONTEXT/../$plan/plan.sh"
+    pkg_filename="$(basename $pkg_source)"
+    pkg_dirname="${pkg_name}-${pkg_version}"
+    CACHE_PATH="$HAB_CACHE_SRC_PATH/$pkg_dirname"
+
+    build_line "Downloading $pkg_source"
+    do_download
+    build_line "Verifying $pkg_filename"
+    do_verify
+    build_line "Clean the cache"
+    do_clean
+    build_line "Unpacking $pkg_filename"
+    do_unpack
+    mv -v "$HAB_CACHE_SRC_PATH/$pkg_dirname" \
+      "$HAB_CACHE_SRC_PATH/$build_dirname/$plan"
+  )
+--
+;; The plan sourced the named plan to download and unpack its source into the
+;; build directory. glibc names only tzdata; these are its source and unpacking.
+(when (not= v-plan "tzdata")
+  (error (.. "extract_src: no source known for " v-plan)))
+(let [url "https://www.iana.org/time-zones/repository/releases/tzdata2018g.tar.gz"
+      dir (.. b.cache "/" b.name "-build/tzdata")]
+  (b:log (.. "Downloading " url))
+  (b:download url "02dfde534872f6513ae4553a3388fdae579441e31b862ea99170dfc447f46a16" "tzdata2018g.tar.gz")
+  (b:remove dir)
+  (b:mkdir dir)
+  (b:run ["tar" "xf" (.. b.cache "/tzdata2018g.tar.gz")] {:cwd dir}))
+
+== (source "$PLAN_CONTEXT/../../$plan/plan.sh"
+    pkg_filename="$(basename $pkg_source)"
+    pkg_dirname="${pkg_name}-${pkg_version}"
+    CACHE_PATH="$HAB_CACHE_SRC_PATH/$pkg_dirname"
+    build_line "Downloading $pkg_source"
+    do_download
+    build_line "Verifying $pkg_filename"
+    do_verify
+    build_line "Clean the cache"
+    do_clean
+    build_line "Unpacking $pkg_filename"
+    do_unpack
+    mv -v "$HAB_CACHE_SRC_PATH/$pkg_dirname" "$HAB_CACHE_SRC_PATH/$build_dirname/$plan"
+  )
+--
+;; The plan sourced the named plan to download and unpack its source into the
+;; build directory. glibc names only tzdata; these are its source and unpacking.
+(when (not= v-plan "tzdata")
+  (error (.. "extract_src: no source known for " v-plan)))
+(let [url "https://www.iana.org/time-zones/repository/releases/tzdata2018g.tar.gz"
+      dir (.. b.cache "/" b.name "-build/tzdata")]
+  (b:log (.. "Downloading " url))
+  (b:download url "02dfde534872f6513ae4553a3388fdae579441e31b862ea99170dfc447f46a16" "tzdata2018g.tar.gz")
+  (b:remove dir)
+  (b:mkdir dir)
+  (b:run ["tar" "xf" (.. b.cache "/tzdata2018g.tar.gz")] {:cwd dir}))

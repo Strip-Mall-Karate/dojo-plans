@@ -402,3 +402,11 @@ ln -sf ../target e
 ln -sf target newlink
 ln -s target newlink2
 ln -sv /etc/hostname .
+
+== ln-onto-a-directory-name
+-- setup
+mkdir -p lib
+-- body
+ln -sv lib "$pkg_prefix/lib64"
+mkdir -p "$pkg_prefix/bin"
+ln -sv ../lib "$pkg_prefix/bin"
