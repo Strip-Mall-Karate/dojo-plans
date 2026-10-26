@@ -423,3 +423,44 @@
   (b:remove dir)
   (b:mkdir dir)
   (b:run ["tar" "xf" (.. b.cache "/tzdata2018g.tar.gz")] {:cwd dir}))
+
+== if [[ ! -e /bin/pwd ]]; then
+    hab pkg binlink core/coreutils pwd -d /bin
+    _pwd_binlink=true
+  fi
+--
+;; The plan linked coreutils' pwd to /bin/pwd for the build. Linux 4.16.7 names
+;; /bin/pwd only in its documentation, so nothing takes its place.
+
+== if [[ -v $_pwd_binlink ]]; then
+    rm -f /bin/pwd
+  fi
+--
+
+== trimmed=$(trim "$data")
+--
+(set v-trimmed (v-data:match "^%s*(.-)%s*$"))
+
+== for dep in "${pkg_build_deps[@]}"; do
+    local dep_path
+    dep_path=$(pkg_path_for "$dep");
+
+    if [[ -f "$dep_path/LD_RUN_PATH" ]]; then
+      local data
+      local trimmed
+      data=$(cat "$dep_path/LD_RUN_PATH")
+      trimmed=$(trim "$data")
+      ld_library_path_part+=("$trimmed")
+    fi
+  done
+--
+;; Each build dependency's LD_RUN_PATH, trimmed.
+(each [_ dep (ipairs ["karate/bc" "karate/bison" "karate/diffutils" "karate/elfutils" "karate/findutils" "karate/gcc"
+                      "karate/inetutils" "karate/make" "karate/perl" "karate/openssl"])]
+  (let [file (.. (b:path_for dep) "/LD_RUN_PATH")]
+    (when (b:exists file)
+      (table.insert v-ld-library-path-part ((b:read file):match "^%s*(.-)%s*$")))))
+
+== LD_LIBRARY_PATH=$(join_by ':' "${ld_library_path_part[@]}")
+--
+(b:env "LD_LIBRARY_PATH" (table.concat v-ld-library-path-part ":"))

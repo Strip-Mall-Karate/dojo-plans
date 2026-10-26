@@ -213,6 +213,9 @@ def word_parts(text, scope):
                     nxt = body[k + 1]
                     lit(nxt if nxt in '$`"\\' else ch + nxt)
                     k += 2
+                elif ch == "$" and _lone_dollar(body, k):
+                    lit("$")
+                    k += 1
                 elif ch == "$":
                     expr, k = _param(body, k, scope)
                     parts.append(("expr", expr))
@@ -223,6 +226,9 @@ def word_parts(text, scope):
         elif c == "\\" and i + 1 < n:
             lit(text[i + 1])
             i += 2
+        elif c == "$" and _lone_dollar(text, i):
+            lit("$")
+            i += 1
         elif c == "$":
             expr, i = _param(text, i, scope)
             parts.append(("expr", expr))
@@ -230,6 +236,11 @@ def word_parts(text, scope):
             lit(c)
             i += 1
     return parts
+
+
+def _lone_dollar(text, i):
+    """Whether the $ at i begins no expansion, as before | or a space: the shell keeps it."""
+    return i + 1 >= len(text) or not re.match(r"[A-Za-z0-9_{(?!#@*$-]", text[i + 1])
 
 
 def _dquoted(body, scope):
@@ -245,6 +256,9 @@ def _dquoted(body, scope):
             elif nxt != "\n":
                 parts.append(fstr(c + nxt))
             i += 2
+        elif c == "$" and _lone_dollar(body, i):
+            parts.append(fstr("$"))
+            i += 1
         elif c == "$":
             expr, i = _param(body, i, scope)
             parts.append(expr)
@@ -1130,7 +1144,7 @@ def assignment(stmt, scope, exported):
 
 # Functions of the source project's builder: none is a program, so a call to
 # one is translated or left for a person, never run.
-BUILDER_HELPERS = {"update_pkg_version", "pkg_interpreter_for", "abspath", "trim", "record", "exists_in_path",
+BUILDER_HELPERS = {"join_by", "update_pkg_version", "pkg_interpreter_for", "abspath", "trim", "record", "exists_in_path",
                    "add_path_env", "add_env", "pkg_path_for", "fix_interpreter", "download_file", "attach",
                    "exit_with", "build_line", "warn", "info", "debug", "set_runtime_env", "push_runtime_env",
                    "set_buildtime_env", "push_buildtime_env", "_resolve_dependency", "_render_metadata_FILES",

@@ -410,3 +410,11 @@ mkdir -p lib
 ln -sv lib "$pkg_prefix/lib64"
 mkdir -p "$pkg_prefix/bin"
 ln -sv ../lib "$pkg_prefix/bin"
+
+== lone-dollar
+-- setup
+printf 'HOSTLDFLAGS := x\nend\n' > Makefile
+-- body
+local extra="-L/opt/lib"
+sed -i "1s|$| $extra|" Makefile
+echo "cost: 5$ each" > price
