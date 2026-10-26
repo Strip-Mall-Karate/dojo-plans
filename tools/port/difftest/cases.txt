@@ -286,3 +286,15 @@ printf '#!/bin/sh\necho ran > ran.txt\n' > tool-1.run; chmod +x tool-1.run; mkdi
 ./tool-*.run --flag
 local d="sub"
 rm -f "$d/rm-me-"*.sh
+
+== arrays-as-arguments-and-echo-sed
+-- setup
+true
+-- body
+local opts=(--one "two words" --three)
+printf '%s\n' "${opts[@]}" > args
+echo "joined ${opts[*]}" > joined
+local inc="-I/a/include -I/b/include"
+echo "$(echo "$inc" | sed -e "s@-I@@g")" > cleaned
+mkdir sub || true
+mkdir sub || true

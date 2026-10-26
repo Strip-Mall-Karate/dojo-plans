@@ -14,9 +14,9 @@
  :build (fn [b]
           nil)
  :install (fn [b]
-          (b:run ["zic" "-y" "./yearistype" "-d" (.. b.prefix "/share/zoneinfo") "africa antarctica asia australasia europe northamerica southamerica pacificnew etcetera backward systemv factory"])
-          (b:run ["zic" "-y" "./yearistype" "-d" (.. b.prefix "/share/zoneinfo/posix") "africa antarctica asia australasia europe northamerica southamerica pacificnew etcetera backward systemv factory"])
-          (b:run ["zic" "-y" "./yearistype" "-d" (.. b.prefix "/share/zoneinfo/right") "-L" "leapseconds" "africa antarctica asia australasia europe northamerica southamerica pacificnew etcetera backward systemv factory"])
+          (b:run ["zic" "-y" "./yearistype" "-d" (.. b.prefix "/share/zoneinfo") "africa" "antarctica" "asia" "australasia" "europe" "northamerica" "southamerica" "pacificnew" "etcetera" "backward" "systemv" "factory"])
+          (b:run ["zic" "-y" "./yearistype" "-d" (.. b.prefix "/share/zoneinfo/posix") "africa" "antarctica" "asia" "australasia" "europe" "northamerica" "southamerica" "pacificnew" "etcetera" "backward" "systemv" "factory"])
+          (b:run ["zic" "-y" "./yearistype" "-d" (.. b.prefix "/share/zoneinfo/right") "-L" "leapseconds" "africa" "antarctica" "asia" "australasia" "europe" "northamerica" "southamerica" "pacificnew" "etcetera" "backward" "systemv" "factory"])
           (b:run ["zic" "-y" "./yearistype" "-d" (.. b.prefix "/share/zoneinfo") "-p" "America/New_York"])
           (b:copy (b:join b.src "iso3166.tab") (b:join (.. b.prefix "/share/zoneinfo/") (: (b:join b.src "iso3166.tab") :match "[^/]+$")))
           (b:chmod (b:join (.. b.prefix "/share/zoneinfo/") (: (b:join b.src "iso3166.tab") :match "[^/]+$")) "444")

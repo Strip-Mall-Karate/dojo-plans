@@ -130,6 +130,8 @@ class Scope:
             return self.locals[name]
         if name in BUILD_VARS:
             return BUILD_VARS[name]
+        if name in ("pkg_svc_user", "pkg_svc_group") and name not in self.plan.scalars:
+            return '"doj"'  # The service user and group a plan does not name.
         if name == "PWD":
             return base(self)  # The shell's directory, not the builder's environment.
         if name in SVC_VARS:
@@ -258,6 +260,9 @@ def _param(text, i, scope):
     if text.startswith("${", i):
         j = bashplan._skip_balanced(text, i + 1, "{", "}")
         inner = text[i + 2:j - 1]
+        joined = re.fullmatch(r"(\w+)\[[*@]\]", inner)
+        if joined:
+            return f'(table.concat {array_expr(joined.group(1), scope)} " ")', j
         unset_check = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*):?\?.*", inner, re.S)
         if unset_check:
             inner = unset_check.group(1)  # The build fails on an unset variable anyway.
@@ -322,6 +327,10 @@ def substitution(command, scope):
         raise Unported(f"$({command})")
     if words[0] in BUILDER_HELPERS:
         raise Unported(f"the source project's builder function {words[0]}")
+    echo_sed = re.fullmatch(r"""echo\s+("[^"]*"|\S+)\s*\|\s*sed\s+(?:-e\s+)?("[^"]*"|'[^']*')\s*""", command)
+    if echo_sed:
+        pat, rep, count = sed_substitution(word_parts(echo_sed.group(2), scope), False)
+        return f"(pick-values 1 (string.gsub {word(echo_sed.group(1), scope)} {pat} {rep}{count}))"
     if words[0] in ("basename", "dirname") and len(words) == 2:
         # Text only: the last part of a path, or what is before it.
         value = word(words[1], scope)
@@ -342,8 +351,40 @@ def _dep(text, scope):
     return value
 
 
+ARRAY_WORD = re.compile(r'"?\$\{(\w+)\[@\]\}"?')
+
+
+def array_expr(name, scope):
+    if name in scope.locals:
+        return scope.locals[name]
+    if name in scope.plan.arrays:
+        return "[" + " ".join(fstr(v) for v in scope.plan.arrays[name]) + "]"
+    raise Unported("${" + name + "[@]}")
+
+
 def argv(words, scope):
-    return "[" + " ".join(word(w, scope) for w in words) + "]"
+    if not any(ARRAY_WORD.fullmatch(w) for w in words):
+        return "[" + " ".join(word(w, scope) for w in words) + "]"
+    # "${a[@]}" is each of a's items as an argument of its own.
+    if all(not ARRAY_WORD.fullmatch(w) or ARRAY_WORD.fullmatch(w).group(1) not in scope.locals for w in words):
+        items = []
+        for w in words:
+            whole = ARRAY_WORD.fullmatch(w)
+            if whole:
+                if whole.group(1) not in scope.plan.arrays:
+                    raise Unported("${" + whole.group(1) + "[@]}")
+                items += [fstr(v) for v in scope.plan.arrays[whole.group(1)]]
+            else:
+                items.append(word(w, scope))
+        return "[" + " ".join(items) + "]"
+    adds = []
+    for w in words:
+        whole = ARRAY_WORD.fullmatch(w)
+        if whole:
+            adds.append(f"(each [_ x (ipairs {array_expr(whole.group(1), scope)})] (table.insert args x))")
+        else:
+            adds.append(f"(table.insert args {word(w, scope)})")
+    return "(let [args []] " + " ".join(adds) + " args)"
 
 
 GLOB = re.compile(r"[*?]")
@@ -1233,6 +1274,8 @@ def list_forms(parts, scope):
     if ops == ["||"] and parts[1][1] in ("true", ":") and not is_test(parts[0][1]):
         # A failure the plan tolerates: the program's exit code, and the build goes on.
         forms = statement(parts[0][1], scope)
+        if forms and all(f.startswith(("(b:mkdir ", "(b:remove ")) for f in forms):
+            return forms  # b:mkdir takes a directory that is there, b:remove a path that is not.
         if len(forms) != 1 or not forms[0].startswith("(b:run ["):
             raise Unported("|| true after " + parts[0][1].split()[0])
         run = forms[0]
@@ -1311,6 +1354,8 @@ def _command(cmd, args, scope, stdin):
                 out.append(f"(b:unsetenv {fstr(a)})")
             # A lowercase name not set here (a loop's variable, gone with its loop) is already unset.
         return out
+    if cmd in ("do_default_begin", "do_default_end", "do_default_before", "do_default_after"):
+        return []  # The source project's builder did nothing there by default.
     if cmd.startswith("do_default_") and not args:
         phase = cmd[len("do_default_"):]
         if phase not in ORDER:
