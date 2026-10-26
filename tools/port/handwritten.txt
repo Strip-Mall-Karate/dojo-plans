@@ -21,3 +21,4 @@ helm
 foulkon
 traefik
 runc
+scaffolding-node
