@@ -12,8 +12,6 @@
  :deps ["karate/glibc" "karate/acl" "karate/attr"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
  :bin_dirs ["bin"]
- :prepare (fn [b]
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/skip-test.patch")]))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix)] {:env {"FORCE_UNSAFE_CONFIGURE" "1"}})
           (b:run ["make"]))
