@@ -124,5 +124,7 @@ scaffolding-node and scaffolding-ruby are ported; chef, inspec, gradle and go17 
 ## Sources that no longer answer
 
 Of 548 committed source URLs, 71 failed a one-byte fetch on 2026-10-26 (ftp.gnupg.org's FTP,
-moved paths on cache.ruby-lang.org, php.net, storage.googleapis.com and others). Their checksums
-still name the right bytes; each needs a live mirror serving the same file.
+moved paths on cache.ruby-lang.org, php.net, storage.googleapis.com and others). Those packages, and
+every plan in `base-plans.txt`, take their latest upstream release instead (Jamie, 2026-10-26); each
+bumped plan says so in its second line and is in `handwritten.txt`, since its bash no longer
+describes it. A bumped plan loads; whether it builds is shown only by building it.

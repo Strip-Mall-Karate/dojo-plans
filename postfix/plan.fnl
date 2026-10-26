@@ -1,13 +1,14 @@
 ;; postfix, ported from its plan.sh.
+;; postfix 3.11.7, the latest release on 2026-10-26: 3.3.2's source no longer downloads.
 {:name "postfix"
  :origin "karate"
- :version "3.3.2"
+ :version "3.11.7"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["IPL-1.0"]
  :description "Postfix is a free and open-source mail transfer agent that routes and delivers electronic mail."
  :upstream_url "http://www.postfix.org/"
- :source {:url "http://cdn.postfix.johnriley.me/mirrors/postfix-release/official/postfix-3.3.2.tar.gz" :sha256 "3c93f31eee49a58e592c31e62a058701cadde11e8e066ea441da19fddad7b35b"}
+ :source {:url "https://postfix.mirrors.ovh.net/postfix-release/official/postfix-3.11.7.tar.gz" :sha256 "a2f3242345753448072177fae83c322a403c9263696996406201145dab8e8625"}
  :deps ["karate/coreutils" "karate/cyrus-sasl" "karate/db" "karate/glibc" "karate/libnsl" "karate/openssl" "karate/pcre" "karate/zlib" "karate/shadow" "karate/iana-etc"]
  :build_deps ["karate/make" "karate/gcc" "karate/sed" "karate/gawk" "karate/m4"]
  :bin_dirs ["bin" "sbin"]

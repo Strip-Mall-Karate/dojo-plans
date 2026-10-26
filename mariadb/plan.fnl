@@ -1,13 +1,14 @@
 ;; mariadb, ported from its plan.sh.
+;; mariadb 13.0.2, the latest release on 2026-10-26: 10.1.24's source no longer downloads.
 {:name "mariadb"
  :origin "karate"
- :version "10.1.24"
+ :version "13.0.2"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-2.0"]
  :description "An open source monitoring software for networks and applications"
  :upstream_url "https://mariadb.org/"
- :source {:url "http://ftp.hosteurope.de/mirror/archive.mariadb.org//mariadb-10.1.24/source/mariadb-10.1.24.tar.gz" :sha256 "b3df99ae5b1ec8cf6cede4cbc4ae3f54ce66464549cba6d56d9ff4d24e4d551e"}
+ :source {:url "https://archive.mariadb.org/mariadb-13.0.2/source/mariadb-13.0.2.tar.gz" :sha256 "8ee8d955530faedcea344535de85495afb5b98128bbf660e56893e93e21ee8f7"}
  :deps ["karate/gcc-libs" "karate/ncurses" "karate/zlib"]
  :build_deps ["karate/gcc" "karate/make" "karate/coreutils" "karate/cmake"]
  :bin_dirs ["bin"]

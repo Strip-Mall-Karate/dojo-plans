@@ -1,4 +1,5 @@
 ;; go, ported from its plan.sh.
+;; go 1.19.13, the latest release on 2026-10-26: 1.12's source no longer downloads.
 (fn use-dependency-path [b path replacement]
   ;; The source project's studio linked a dependency's tool to `path` for the
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
@@ -16,13 +17,13 @@
           (when (> n 0) (b:write f fixed)))))))
 {:name "go"
  :origin "karate"
- :version "1.12"
+ :version "1.19.13"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["BSD"]
  :description "Go is an open source programming language that makes it easy to\nbuild simple, reliable, and efficient software."
  :upstream_url "https://golang.org/"
- :source {:url "https://storage.googleapis.com/golang/go1.12.src.tar.gz" :sha256 "09c43d3336743866f2985f566db0520b36f4992aea2b4b2fd9f52f17049e88f2" :dirname "go"}
+ :source {:url "https://go.dev/dl/go1.19.13.src.tar.gz" :sha256 "ccf36b53fb0024a017353c3ddb22c1f00bc7a8073c6aac79042da24ee34434d3" :filename "go1.19.13.src.tar.gz" :dirname "go"}
  :deps ["karate/glibc" "karate/iana-etc" "karate/cacerts"]
  :build_deps ["karate/coreutils" "karate/inetutils" "karate/bash" "karate/patch" "karate/gcc" "karate/go17" "karate/perl"]
  :bin_dirs ["bin"]
@@ -42,8 +43,8 @@
           (b:log (.. "Setting GOROOT_FINAL=" (or (b:getenv "GOROOT_FINAL") "")))
           (b:env "PATH" (.. (or (b:getenv "GOBIN") "") ":" (or (b:getenv "PATH") "")))
           (b:log (.. "Updating PATH=" (or (b:getenv "PATH") "")))
-          (var v-goroot-bootstrap (b:path_for "go17"))
-          (b:log (.. "Setting GOROOT_BOOTSTRAP=" v-goroot-bootstrap))
+          (b:env "GOROOT_BOOTSTRAP" (b:path_for "go17"))
+          (b:log (.. "Setting GOROOT_BOOTSTRAP=" (or (b:getenv "GOROOT_BOOTSTRAP") "")))
           (b:run ["patch" "-p1"] {:stdin (let [text (b:read (.. b.plan_dir "/cacerts.patch")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]
@@ -90,8 +91,6 @@
           (b:copy (b:join b.src "pkg/tool") (b:join (.. b.prefix "/pkg/") (: (b:join b.src "pkg/tool") :match "[^/]+$")))
           (when (b:exists (b:join b.src (.. "pkg/linux_" (or (b:getenv "GOARCH") "") "_race")))
             (b:copy (b:join b.src (.. "pkg/linux_" (or (b:getenv "GOARCH") "") "_race")) (b:join (.. b.prefix "/pkg/") (: (b:join b.src (.. "pkg/linux_" (or (b:getenv "GOARCH") "") "_race")) :match "[^/]+$"))))
-          (b:copy (b:join b.src "favicon.ico") (.. b.prefix "/favicon.ico"))
-          (b:chmod (.. b.prefix "/favicon.ico") "644")
           (b:copy (b:join b.src "LICENSE") (.. b.prefix "/share/licenses/LICENSE"))
           (b:chmod (.. b.prefix "/share/licenses/LICENSE") "644")
           (b:remove (.. b.prefix "/src/*.bat"))

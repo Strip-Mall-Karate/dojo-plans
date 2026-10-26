@@ -1,4 +1,5 @@
 ;; go17, ported from its plan.sh.
+;; go17 1.7.6, the latest release on 2026-10-26: 1.7.5's source no longer downloads.
 (fn use-dependency-path [b path replacement]
   ;; The source project's studio linked a dependency's tool to `path` for the
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
@@ -16,13 +17,13 @@
           (when (> n 0) (b:write f fixed)))))))
 {:name "go17"
  :origin "karate"
- :version "1.7.5"
+ :version "1.7.6"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["BSD"]
  :description "Go is an open source programming language that makes it easy to\nbuild simple, reliable, and efficient software."
  :upstream_url "https://golang.org/"
- :source {:url "https://storage.googleapis.com/golang/go1.7.5.src.tar.gz" :sha256 "4e834513a2079f8cbbd357502cccaac9507fd00a1efe672375798858ff291815" :dirname "go"}
+ :source {:url "https://go.dev/dl/go1.7.6.src.tar.gz" :sha256 "1a67a4e688673fdff7ba41e73482b0e59ac5bd0f7acf703bc6d50cc775c5baba" :filename "go1.7.6.src.tar.gz" :dirname "go"}
  :deps ["karate/glibc" "karate/iana-etc" "karate/cacerts"]
  :build_deps ["karate/coreutils" "karate/inetutils" "karate/bash" "karate/patch" "karate/gcc" "karate/go14" "karate/perl"]
  :bin_dirs ["bin"]
@@ -42,8 +43,8 @@
           (b:log (.. "Setting GOROOT_FINAL=" (or (b:getenv "GOROOT_FINAL") "")))
           (b:env "PATH" (.. (or (b:getenv "GOBIN") "") ":" (or (b:getenv "PATH") "")))
           (b:log (.. "Updating PATH=" (or (b:getenv "PATH") "")))
-          (var v-goroot-bootstrap (b:path_for "go14"))
-          (b:log (.. "Setting GOROOT_BOOTSTRAP=" v-goroot-bootstrap))
+          (b:env "GOROOT_BOOTSTRAP" (b:path_for "go14"))
+          (b:log (.. "Setting GOROOT_BOOTSTRAP=" (or (b:getenv "GOROOT_BOOTSTRAP") "")))
           (b:run ["patch" "-p1"] {:stdin (let [text (b:read (.. b.plan_dir "/cacerts.patch")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]

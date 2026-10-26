@@ -1,4 +1,5 @@
 ;; go14, ported from its plan.sh.
+;; go14 1.4.3, the latest release of its series on 2026-10-26: its old source URL no longer downloads.
 (fn use-dependency-path [b path replacement]
   ;; The source project's studio linked a dependency's tool to `path` for the
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
@@ -22,7 +23,7 @@
  :license ["BSD"]
  :description "Go is an open source programming language that makes it easy to build simple, reliable, and efficient software."
  :upstream_url "https://golang.org/"
- :source {:url "https://storage.googleapis.com/golang/go1.4.3.src.tar.gz" :sha256 "9947fc705b0b841b5938c48b22dc33e9647ec0752bae66e50278df4f23f64959" :dirname "go"}
+ :source {:url "https://go.dev/dl/go1.4.3.src.tar.gz" :sha256 "9947fc705b0b841b5938c48b22dc33e9647ec0752bae66e50278df4f23f64959" :filename "go1.4.3.src.tar.gz" :dirname "go"}
  :deps ["karate/glibc" "karate/iana-etc" "karate/cacerts"]
  :build_deps ["karate/coreutils" "karate/inetutils" "karate/bash" "karate/patch" "karate/gcc" "karate/perl"]
  :bin_dirs ["bin"]

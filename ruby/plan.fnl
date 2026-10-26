@@ -1,13 +1,14 @@
 ;; ruby, ported from its plan.sh.
+;; ruby 4.0.9, the latest release on 2026-10-26: 2.5.5's source no longer downloads.
 {:name "ruby"
  :origin "karate"
- :version "2.5.5"
+ :version "4.0.9"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["Ruby"]
  :description "A dynamic, open source programming language with a focus on simplicity and productivity. It has an elegant syntax that is natural to read and easy to write."
  :upstream_url "https://www.ruby-lang.org/en/"
- :source {:url "https://cache.ruby-lang.org/pub/ruby/ruby-2.5.5.tar.gz" :sha256 "28a945fdf340e6ba04fc890b98648342e3cccfd6d223a48f3810572f11b2514c"}
+ :source {:url "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-4.0.9.tar.xz" :sha256 "a8057adb39f51ad6dc3106237504c93dd792bb515837b4fe7817ae21ed7e51f4"}
  :deps ["karate/glibc" "karate/ncurses" "karate/zlib" "karate/openssl" "karate/libyaml" "karate/libffi" "karate/readline"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
  :bin_dirs ["bin"]

@@ -1,15 +1,16 @@
 ;; grub, ported from its plan.sh.
+;; grub 2.14, the latest release on 2026-10-26: 2.02's source no longer downloads.
 ;; The plan's do_setup and the do_after cleanup it armed are not ported: the source
 ;; project's builder never called do_setup, so neither ever ran.
 {:name "grub"
  :origin "karate"
- :version "2.02"
+ :version "2.14"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-3.0"]
  :description "GNU GRUB is a Multiboot boot loader."
  :upstream_url "https://www.gnu.org/software/grub/"
- :source {:url "ftp://ftp.gnu.org/gnu/grub/grub-2.02.tar.xz" :sha256 "810b3798d316394f94096ec2797909dbf23c858e48f7b3830826b8daa06b7b0f"}
+ :source {:url "https://ftp.gnu.org/gnu/grub/grub-2.14.tar.xz" :sha256 "bc8d3c73535b8838d8c8e2654d73edc4e6ae8c8acdb45d5df5dc9a1547446d43"}
  :deps ["karate/glibc" "karate/xz" "karate/gettext" "karate/pcre" "karate/gcc-libs" "karate/devicemapper" "karate/elfutils" "karate/bzip2" "karate/libcap"]
  :build_deps ["karate/autoconf" "karate/automake" "karate/binutils" "karate/bison" "karate/cacerts" "karate/diffutils" "karate/dosfstools" "karate/flex" "karate/freetype" "karate/gcc" "karate/gettext" "karate/git" "karate/m4" "karate/make" "karate/python" "karate/qemu" "karate/rsync" "karate/texinfo" "karate/patch"]
  :bin_dirs ["bin" "sbin"]

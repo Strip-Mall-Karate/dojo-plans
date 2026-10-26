@@ -1,13 +1,14 @@
 ;; graphviz, ported from its plan.sh.
+;; graphviz 16.1.0, the latest release on 2026-10-26: 2.40.1's source no longer downloads.
 {:name "graphviz"
  :origin "karate"
- :version "2.40.1"
+ :version "16.1.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["EPL-1.0"]
  :description "Graphviz - Graph Visualization Software"
  :upstream_url "https://graphviz.gitlab.io/"
- :source {:url "https://gitlab.com/graphviz/graphviz/-/archive/stable_release_2.40.1/graphviz-stable_release_2.40.1.tar.bz2" :sha256 "92f654c95b412920777ceddf90e6564ffa871a77e4f6155ab437a2d3a2129e2b" :dirname "graphviz-stable_release_2.40.1"}
+ :source {:url "https://gitlab.com/graphviz/graphviz/-/archive/16.1.0/graphviz-16.1.0.tar.bz2" :sha256 "f6ae3cafc0c4778bb1eaf6f1ee7cd0410208089b239099186f87cf04f60cc5d4"}
  :deps ["karate/glibc" "karate/libtool"]
  :build_deps ["karate/autoconf" "karate/automake" "karate/bison" "karate/coreutils" "karate/diffutils" "karate/flex" "karate/gcc" "karate/make" "karate/pkg-config"]
  :bin_dirs ["bin"]

@@ -1,13 +1,14 @@
 ;; cyrus-sasl, ported from its plan.sh.
+;; cyrus-sasl 2.1.28, the latest release on 2026-10-26: 2.1.26's source no longer downloads.
 {:name "cyrus-sasl"
  :origin "karate"
- :version "2.1.26"
+ :version "2.1.28"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["custom"]
  :description "Cyrus Simple Authentication Service Layer (SASL) library"
  :upstream_url "http://www.cyrusimap.org/"
- :source {:url "https://www.cyrusimap.org/releases/cyrus-sasl-2.1.26.tar.gz" :sha256 "8fbc5136512b59bb793657f36fadda6359cae3b08f01fd16b3d406f1345b7bc3"}
+ :source {:url "https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.28/cyrus-sasl-2.1.28.tar.gz" :sha256 "7ccfc6abd01ed67c1a0924b353e526f1b766b21f42d4562ee635a8ebfc5bb38c"}
  :deps ["karate/glibc" "karate/openssl"]
  :build_deps ["karate/gcc" "karate/make"]
  :bin_dirs ["sbin"]

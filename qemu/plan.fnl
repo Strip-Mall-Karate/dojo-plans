@@ -1,13 +1,14 @@
 ;; qemu, ported from its plan.sh.
+;; qemu 11.1.2, the latest release on 2026-10-26: 2.11.1's source no longer downloads.
 {:name "qemu"
  :origin "karate"
- :version "2.11.1"
+ :version "11.1.2"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-2.0"]
  :description "QEMU is a generic and open source machine emulator and virtualizer."
  :upstream_url "http://www.qemu.org"
- :source {:url "http://wiki.qemu-project.org/download/qemu-2.11.1.tar.bz2" :sha256 "d9df2213ceed32e91dab7bc9dd19c1af83f91ba72c7aeef7605dfaaf81732ccb"}
+ :source {:url "https://download.qemu.org/qemu-11.1.2.tar.xz" :sha256 "731b5681e4bb18be313231579b8efd0296c5b015fa36dc533874b639ba838016"}
  :deps ["karate/bzip2" "karate/curl" "karate/gcc-libs" "karate/glib" "karate/glibc" "karate/jemalloc" "karate/libaio" "karate/libcap-ng" "karate/lzo" "karate/ncurses" "karate/patch" "karate/pcre" "karate/pixman" "karate/python2" "karate/snappy" "karate/util-linux" "karate/vde2" "karate/zlib"]
  :build_deps ["karate/autoconf" "karate/automake" "karate/diffutils" "karate/gcc" "karate/libtool" "karate/make" "karate/m4" "karate/pkg-config"]
  :bin_dirs ["bin"]
