@@ -15,7 +15,9 @@
  :include_dirs ["include"]
  :pconfig_dirs ["lib/pkgconfig"]
  :build (fn [b]
-          (b:run ["./configure" (.. "--prefix=" b.prefix)])
+          ;; Its warnings are errors by default, and glibc 2.43 and later's C23 strchr returns a
+          ;; const pointer for a const argument, which it assigns to a plain one.
+          (b:run ["./configure" (.. "--prefix=" b.prefix) "--disable-werror"])
           (b:run ["make" (.. "-j" (tostring b.jobs))]))
  :check (fn [b]
           (b:run ["make" "check"]))}
