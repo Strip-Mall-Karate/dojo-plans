@@ -24,7 +24,7 @@ How would a user use this package?  i.e. can a user simply call the package as a
 
 How do other services that want to consume this service bind to it?
 
-Checkout [the karate/postgresql](https://github.com/Strip-Mall-Karate/dojo-plans/tree/master/postgresql) README for a good example of this.
+Checkout [the karate/postgresql](https://github.com/StripMallKarateCompany/dojo-plans/tree/master/postgresql) README for a good example of this.
 
 ## Topologies
 
@@ -40,7 +40,7 @@ Check out the Dojo docs on standalone for more details on what the standalone to
 
 If this plan can be used with the standalone topology, how do you do it?
 
-Checkout [the karate/postgresql](https://github.com/Strip-Mall-Karate/dojo-plans/tree/master/postgresql) README for a good example of this.
+Checkout [the karate/postgresql](https://github.com/StripMallKarateCompany/dojo-plans/tree/master/postgresql) README for a good example of this.
 
 ### Leader-Follower
 
@@ -50,7 +50,7 @@ If this plan can be used with the leader/follower topology, how do you do it?
 
 Check out the Dojo docs on Leader-Follower for more details on what the leader-follower topology is and what it does.
 
-Checkout [the karate/postgresql](https://github.com/Strip-Mall-Karate/dojo-plans/tree/master/postgresql) README for a good example of this (look under the Clustering heading)
+Checkout [the karate/postgresql](https://github.com/StripMallKarateCompany/dojo-plans/tree/master/postgresql) README for a good example of this (look under the Clustering heading)
 
 ## Update Strategies
 

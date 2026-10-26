@@ -9,6 +9,6 @@
  :maintainer "Strip Mall Karate Company"
  :license ["Apache-2.0"]
  :description "Dojo Plan Scaffolding for Node.js Applications"
- :upstream_url "https://github.com/Strip-Mall-Karate/dojo-plans/tree/main/scaffolding-node"
+ :upstream_url "https://github.com/StripMallKarateCompany/dojo-plans/tree/main/scaffolding-node"
  :deps ["karate/tar" "karate/coreutils"]
  :scaffolding "karate/scaffolding-base"}

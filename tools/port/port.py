@@ -82,8 +82,8 @@ def fennel_string(value):
 # what the port writes. Quoted bash in an UNPORTED block keeps the original.
 RENAME = [
     (re.compile(r"The Habitat Maintainers <humans@habitat\.sh>"), MAINTAINER),
-    (re.compile(r"https?://github\.com/habitat-sh/core-plans"), "https://github.com/Strip-Mall-Karate/dojo-plans"),
-    (re.compile(r"https?://github\.com/habitat-sh/habitat"), "https://github.com/Strip-Mall-Karate/dojo"),
+    (re.compile(r"https?://github\.com/habitat-sh/core-plans"), "https://github.com/StripMallKarateCompany/dojo-plans"),
+    (re.compile(r"https?://github\.com/habitat-sh/habitat"), "https://github.com/StripMallKarateCompany/dojo"),
     (re.compile(r"\bHAB_"), "DOJ_"),
     (re.compile(r"(?<![\w.])/hab(?=/|\b)"), "/doj"),
     (re.compile(r"\bv-hab-"), "v-doj-"),

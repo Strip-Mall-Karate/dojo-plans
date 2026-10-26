@@ -1,6 +1,6 @@
 # Ruby Scaffolding CHANGELOG
 
-[Full history](https://github.com/Strip-Mall-Karate/dojo-plans/commits/master/scaffolding-ruby)
+[Full history](https://github.com/StripMallKarateCompany/dojo-plans/commits/master/scaffolding-ruby)
 
 # 0.8.10 (09-20-2018)
 
