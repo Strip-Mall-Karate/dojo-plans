@@ -189,3 +189,60 @@
 ;; The plan read openssl's ca-dir.patch from beside it; a build reads only its own
 ;; plan's directory, which holds a copy.
 (v--common-prepare b)
+
+== for f in $pkg_prefix/bin/* $pkg_prefix/pkg/tool/linux_$GOARCH/*; do
+    strip -s "$f"
+  done
+--
+(each [_ f (ipairs (b:glob (b:join b.prefix "bin") "*"))]
+  (b:run ["strip" "-s" f]))
+(each [_ f (ipairs (b:glob (.. b.prefix "/pkg/tool/linux_" (or (b:getenv "GOARCH") "")) "*"))]
+  (b:run ["strip" "-s" f]))
+
+== for l in $(busybox --list); do
+    ln -sv busybox "$pkg_prefix/bin/$l"
+  done
+--
+(each [l (string.gmatch (b:capture ["busybox" "--list"]) "%S+")]
+  (b:symlink "busybox" (.. b.prefix "/bin/" l)))
+
+== if actual=$(expect -c "spawn ls" | sed 's/\r$//'); then
+    if [[ "$expected" != "$actual" ]]; then
+      exit_with "Expected out from '$cmd' was: '$expected', actual: '$actual'" 1
+    fi
+  else
+    exit_with "PTYs may not be working properly, aborting" 1
+  fi
+--
+;; The output of expect, each line's carriage return removed.
+(let [actual (pick-values 1 (: (: (b:capture ["expect" "-c" "spawn ls"]) :gsub "\r\n" "\n") :gsub "\r$" ""))]
+  (when (not= v-expected actual)
+    (error (.. "Expected out from '" v-cmd "' was: '" v-expected "', actual: '" actual "'"))))
+
+== find "$pkg_prefix/lib" -name "*.so" | xargs -I '%' patchelf --set-rpath "$LD_RUN_PATH" %
+--
+(each [_ f (ipairs (b:find (b:join b.prefix "lib") "*.so"))]
+  (b:run ["patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") f]))
+
+== find "$pkg_prefix/include" \
+    \( -name ..install.cmd -o -name .install \) \
+    -print0 \
+  | xargs -0 rm -v
+--
+(each [_ pattern (ipairs ["..install.cmd" ".install"])]
+  (each [_ f (ipairs (b:find (b:join b.prefix "include") pattern))]
+    (b:remove f)))
+
+== curl -L http://cpanmin.us | perl - App::cpanminus
+--
+;; The plan piped the live cpanmin.us script into perl, which installed the newest
+;; App::cpanminus from CPAN. The checksummed source is App::cpanminus at this
+;; version; with local::lib's settings it installs into the prefix.
+(b:run ["perl" "Makefile.PL"])
+(b:run ["make" "install"])
+
+== PLAN_CONTEXT="$PLAN_CONTEXT/../busybox" _create_config
+--
+;; The plan read busybox's config from beside it; a build reads only its own
+;; plan's directory, which holds a copy.
+(v--create-config b)
