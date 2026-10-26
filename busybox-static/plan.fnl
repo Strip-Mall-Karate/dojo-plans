@@ -44,6 +44,8 @@
               (when (not deleted) (when (string.find line "CONFIG_FEATURE_UTMP") (set line (pick-values 1 (string.gsub line "^.*$" "CONFIG_FEATURE_UTMP=n" 1)))))
               (when (not deleted) (when (string.find line "CONFIG_FEATURE_WTMP") (set line (pick-values 1 (string.gsub line "^.*$" "CONFIG_FEATURE_WTMP=n" 1)))))
               (when (not deleted) (when (string.find line "CONFIG_INETD") (set line (pick-values 1 (string.gsub line "^.*$" "CONFIG_INETD=n" 1)))))
+              ;; Traffic control needs the CBQ definitions kernel headers dropped in 6.8.
+              (when (not deleted) (when (string.find line "^CONFIG_TC=") (set line "CONFIG_TC=n")))
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src ".config") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
@@ -56,6 +58,8 @@
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src "include/libbb.h") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
+          ;; The config predates options busybox added since; oldconfig gives each its default.
+          (b:run ["make" "oldconfig" "CC=musl-gcc"] {:stdin (string.rep "\n" 4000)})
           (b:run ["make" (.. "-j" (tostring b.jobs)) "CC=musl-gcc"]))
  :install (fn [b]
           (b:copy (b:join b.src "busybox") (.. b.prefix "/bin/busybox"))
