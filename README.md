@@ -1,6 +1,6 @@
 # Dojo Plans
 
-The plans that build [Dojo](https://github.com/Strip-Mall-Karate/dojo)'s packages in the `karate`
+The plans that build [Dojo](https://github.com/StripMallKarateCompany/dojo)'s packages in the `karate`
 origin: one directory per package, with the plan and whatever the package carries beside it (hooks,
 configuration templates, `default.toml`, tests). Builder is `https://bldr.karate.company`.
 

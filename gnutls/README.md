@@ -2,7 +2,7 @@
 
 GnuTLS is a secure communications library implementing the SSL, TLS and DTLS protocols and technologies around them
 
-> Note that this package comes without DANE support, if you need it, feel free to open an issue at https://github.com/Strip-Mall-Karate/dojo-plans/issues/new
+> Note that this package comes without DANE support, if you need it, feel free to open an issue at https://github.com/StripMallKarateCompany/dojo-plans/issues/new
 
 ## Maintainers
 

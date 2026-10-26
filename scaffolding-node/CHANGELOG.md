@@ -1,6 +1,6 @@
 # Node Scaffolding CHANGELOG
 
-[Full history](https://github.com/Strip-Mall-Karate/dojo-plans/commits/master/scaffolding-node)
+[Full history](https://github.com/StripMallKarateCompany/dojo-plans/commits/master/scaffolding-node)
 
 ## 0.6.13 (03-30-2018)
 

@@ -6,6 +6,6 @@
  :maintainer "Strip Mall Karate Company"
  :license ["Apache-2.0"]
  :description "Scaffolding for Go Applications"
- :upstream_url "https://github.com/Strip-Mall-Karate/dojo-plans"
+ :upstream_url "https://github.com/StripMallKarateCompany/dojo-plans"
  :deps ["karate/go" "karate/git" "karate/gcc" "karate/make"]
  :scaffolding "karate/scaffolding-base"}

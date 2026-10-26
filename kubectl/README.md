@@ -3,4 +3,4 @@
 The kubectl plan provides the kubectl binary for packages which want
 to interact with a Kubernetes cluster.
 
-For a full Kubernetes plan, please see https://github.com/Strip-Mall-Karate/dojo-plans/tree/master/kubernetes
+For a full Kubernetes plan, please see https://github.com/StripMallKarateCompany/dojo-plans/tree/master/kubernetes
