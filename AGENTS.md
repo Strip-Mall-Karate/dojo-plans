@@ -4,7 +4,7 @@ Guidance for agents changing this repository. `README.md` says what it is; `CONT
 plan is written; `tools/port/README.md` how the bash plans are being ported and what is left.
 
 - Plans are Fennel (`plan.fnl`), loaded and built by `doj-plan-build` from Dojo's `components/plan`
-  (Strip-Mall-Karate/dojo). Plan code never runs a shell; a package's own scripts may be run.
+  (StripMallKarateCompany/dojo). Plan code never runs a shell; a package's own scripts may be run.
 - The source project's plans as of 10 April 2019 (`e831d067`) are the fork point. Nothing later is
   taken. Its name appears nowhere in the tree; inherited and ported files keep their Apache 2.0
   license and Chef's copyright, new work is MIT (`NOTICE`).

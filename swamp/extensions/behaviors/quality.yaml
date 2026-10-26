@@ -1,0 +1,4 @@
+version: 1
+accept:
+  - rule: behavior-spelling
+    reason: every client and worker that installs it runs a swamp with the behavior spelling

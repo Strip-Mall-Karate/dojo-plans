@@ -1,7 +1,7 @@
-# @strip-mall-karate/dojo
+# @strip-mall-karate-company/dojo
 
-Builds [Dojo](https://github.com/Strip-Mall-Karate/dojo) packages from a checkout of
-[Dojo Plans](https://github.com/Strip-Mall-Karate/dojo-plans) with `doj-plan-build`, the program in
+Builds [Dojo](https://github.com/StripMallKarateCompany/dojo) packages from a checkout of
+[Dojo Plans](https://github.com/StripMallKarateCompany/dojo-plans) with `doj-plan-build`, the program in
 Dojo's `components/plan` that reads a plan's `plan.fnl` and builds it. One definition stands for one
 checkout and one target. Its methods read a plan, build a plan, and order a set of plans into waves,
 where each wave depends only on the waves before it.
@@ -9,10 +9,13 @@ where each wave depends only on the waves before it.
 Builds run on the machine swamp runs on, which must be able to build the target. `doj-plan-build`
 refuses a target its host cannot build.
 
+It runs `doj-plan-build` as a subprocess: the program is `planBuild`, and its arguments are an
+argument list built from the method's own arguments, never a shell command line.
+
 ## Definition
 
 ```yaml
-type: "@strip-mall-karate/dojo"
+type: "@strip-mall-karate-company/dojo"
 name: dojo
 globalArguments:
   checkout: ..                      # the plans checkout, relative to the swamp repository

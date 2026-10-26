@@ -33,7 +33,7 @@ For example, Make a fluentd package with `fluent-plugin-elasticsearch` and `flue
 - clone this folder
 
 ```shell
-git clone git@github.com:Strip-Mall-Karate/dojo-plans.git
+git clone git@github.com:StripMallKarateCompany/dojo-plans.git
 cp -a dojo-plans/fluentd ./
 cd fluentd
 ```

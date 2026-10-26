@@ -189,6 +189,7 @@ async function runBuilder(
   signal?: AbortSignal,
 ): Promise<{ code: number; stdout: string; stderr: string }> {
   const out = await spawnable(args, () =>
+    // swamp-quality-ignore deno-command: running doj-plan-build is this behavior; argv, no shell
     new Deno.Command(args.planBuild, {
       args: argv,
       env: builderEnv(args),
@@ -230,6 +231,7 @@ async function streamBuilder(
 ): Promise<{ code: number; lastStdout: string }> {
   const child = await spawnable(args, () =>
     Promise.resolve(
+      // swamp-quality-ignore deno-command: running doj-plan-build is this behavior; argv, no shell
       new Deno.Command(args.planBuild, {
         args: argv,
         env: { ...builderEnv(args), ...env },
@@ -467,7 +469,7 @@ export function orderWaves(
 
 /** The behavior: one definition per plans checkout and target. */
 export const behavior = {
-  type: "@strip-mall-karate/dojo",
+  type: "@strip-mall-karate-company/dojo",
   version: "2026.10.26.1",
   globalArguments: GlobalArgsSchema,
   resources: {

@@ -1,7 +1,7 @@
 # Building plans with swamp
 
 This directory is a [swamp](https://swamp-club.com) repository that builds this checkout's plans
-in dependency order, with the `@strip-mall-karate/dojo` behavior in
+in dependency order, with the `@strip-mall-karate-company/dojo` behavior in
 [extensions/behaviors](extensions/behaviors/README.md). Its definition, `dojo`, builds the parent
 directory's plans for `x86_64-linux`. Run swamp from here on a machine that builds that target, with
 `doj-plan-build` on PATH:
