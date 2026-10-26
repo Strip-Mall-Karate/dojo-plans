@@ -242,3 +242,11 @@ cat ver | grep -q "$v"
 if echo "-I/x -L/y" | grep -q "^-I"; then
   echo inc > found
 fi
+
+== tolerated-failure-and-sed-list
+-- setup
+seq 1 12 > numbers
+-- body
+false || true
+ls does-not-exist || :
+sed -i '2,3 d; 5 d; $ d' numbers

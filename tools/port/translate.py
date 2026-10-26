@@ -716,7 +716,17 @@ def cmd_sed(words, scope):
         if not rest:
             raise Unported("sed arity")
         exprs.append(rest.pop(0))
-    ops = [sed_operation(word_parts(e, scope), extended) for e in exprs]
+    ops = []
+    for e in exprs:
+        parts = word_parts(e, scope)
+        # Several commands in one expression: `211,217 d; 232 d`. Only split
+        # expressions with no substitution, whose text holds no ; of its own.
+        if (len(parts) == 1 and parts[0][0] == "lit" and ";" in parts[0][1]
+                and not re.search(r"(^|;)\s*[0-9$/,\s]*s", parts[0][1])):
+            ops.extend(sed_operation([("lit", piece.strip())], extended)
+                       for piece in parts[0][1].split(";") if piece.strip())
+        else:
+            ops.append(sed_operation(parts, extended))
     body = ("(let [text (b:read {p}) ends (= (text:sub -1) \"\\n\") lines [] out []]\n"
             "  (each [l (string.gmatch (if ends text (.. text \"\\n\")) \"(.-)\\n\")] (table.insert lines l))\n"
             "  (each [n l (ipairs lines)]\n"
@@ -926,7 +936,7 @@ BUILDER_HELPERS = {"update_pkg_version", "pkg_interpreter_for", "abspath", "trim
 # The shell's own commands: none is a program for b:run.
 SHELL_BUILTINS = {"set", "unset", "shopt", "trap", "read", "type", "command", "hash", "wait", "ulimit", "umask",
                   "alias", "exec", "export", "local", "declare", "return", "exit", "source", ".", "[", "[[", "test",
-                  "cd", "pushd", "popd", "let", "eval", "builtin", "readonly", "shift", "getopts", "false"}
+                  "cd", "pushd", "popd", "let", "eval", "builtin", "readonly", "shift", "getopts"}
 
 
 # Variables a plan sets without `export` that the build reads anyway (the
@@ -1131,6 +1141,15 @@ def list_forms(parts, scope):
                 raise Unported("test inside a list")
             forms.extend(statement(seg, scope))
         return forms
+    if ops == ["||"] and parts[1][1] in ("true", ":") and not is_test(parts[0][1]):
+        # A failure the plan tolerates: the program's exit code, and the build goes on.
+        forms = statement(parts[0][1], scope)
+        if len(forms) != 1 or not forms[0].startswith("(b:run ["):
+            raise Unported("|| true after " + parts[0][1].split()[0])
+        run = forms[0]
+        if run.endswith("})"):
+            return [run[:-2] + " :check false})"]
+        return [run[:-1] + " {:check false})"]
     if ops == ["||"] and is_test(parts[0][1]) and not is_test(parts[1][1]):
         return [f"(when (not {condition(parts[0][1], scope)})\n  {' '.join(statement(parts[1][1], scope))})"]
     raise Unported("pipeline or list")
@@ -1292,7 +1311,7 @@ STUDIO_LINK = re.compile(
     r'ln\s+-s[vf]*\s+"\$\(pkg_path_for\s+([\w/.-]+)\)/((?:s?bin)/[\w.+-]+)"\s+\1\s*'
     r'(?:_clean_\w+=true|_clean_cmds\+=\(\1\))?\s*fi$', re.S)
 STUDIO_UNLINK = re.compile(
-    r'(if\s+\[\[?\s+-n\s+"\$_clean_\w+"\s+\]\]?\s*;?\s*then\s+rm\s+-f?v?f?\s+/\S+\s*fi'
+    r'(if\s+\[\[?\s+-n\s+"\$\{?_clean_\w+\}?"\s+\]\]?\s*;?\s*then\s+rm\s+-f?v?f?\s+/\S+\s*fi'
     r'|for\s+cmd\s+in\s+"\$\{_clean_cmds\[@\]\}"\s*;?\s*do\s+rm\s+-fv\s+"\$cmd"\s*;?\s*done)$', re.S)
 
 STUDIO_UNLINK_EXISTS = re.compile(
