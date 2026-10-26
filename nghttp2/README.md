@@ -6,19 +6,19 @@ This package provides the nghttp2 library and headers.
 curl).
 
 The applications included in the nghttp2 sources, nghttpx, nghttpd, nghttp, and
-h2load, are *not included* in the habitat package.
+h2load, are *not included* in the dojo package.
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
-To use this library in your application, add `core/nghttp2` to its `pkg_deps`,
+To use this library in your application, add `karate/nghttp2` to its `pkg_deps`,
 and pass its location to your application's `./configure` call, for example:
 
 ```

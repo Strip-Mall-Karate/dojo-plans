@@ -9,7 +9,7 @@ for custom preprocessors.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,6 +17,6 @@ Binary package
 
 ## Usage
 
-Include `core/hspec-discover` in your `pkg_build_deps` in order to allow cabal to take advantage of it for automatic
+Include `karate/hspec-discover` in your `pkg_build_deps` in order to allow cabal to take advantage of it for automatic
 hspec detection. If your haskell project is setup to use `hspec-discover`, a `cabal test` in your project's `do_check`
 will automatically use it when appropriate.

@@ -4,7 +4,7 @@ Extremely Fast Compression algorithm http://www.lz4.org
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

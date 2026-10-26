@@ -2,7 +2,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,7 +17,7 @@ This package provides `automake` the GNU tool to generate make files.
 Typically this is a build time dependency that can be added to your
 plan.sh:
 
-    pkg_build_deps=(core/automake)
+    pkg_build_deps=(karate/automake)
 
 ## TODO
 

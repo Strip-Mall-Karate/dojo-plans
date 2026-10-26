@@ -1,5 +1,5 @@
-# Habitat Package: Crate
-The Habitat Maintainers <humans@habitat.sh>
+# Dojo Package: Crate
+Strip Mall Karate Company
 
 ## Description
 
@@ -19,13 +19,13 @@ CrateDB is an open source SQL database with a ground-breaking distributed design
 - On the first node:
 
 ```
-hab sup start endocode/crate --topology leader
+doj sup start endocode/crate --topology leader
 ```
 
 - On subsequent nodes:
 
 ```
-hab sup start endocode/crate --topology leader --peer <first node ip>
+doj sup start endocode/crate --topology leader --peer <first node ip>
 ```
 
 On all nodes the following ports are available:
@@ -37,4 +37,4 @@ On all nodes the following ports are available:
 ### Notes
 
 - CrateDB has a _lot_ of configuration. This package has been designed to minimise the amount of configuration that needs to be adjusted by the administrator.
-- The configuration for this plan has been written so that the lead Habitat supervisor will always been the CrateDB master node.
+- The configuration for this plan has been written so that the lead Dojo supervisor will always been the CrateDB master node.

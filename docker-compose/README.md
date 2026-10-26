@@ -4,17 +4,17 @@
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
 ```bash
-hab pkg install core/docker-compose
-hab pkg binlink core/docker-compose docker-compose   # do not try to binlink all the python deps
+doj pkg install karate/docker-compose
+doj pkg binlink karate/docker-compose docker-compose   # do not try to binlink all the python deps
 
 docker-compose --version
 ```

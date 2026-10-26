@@ -4,7 +4,7 @@ A tool designed to simplify the creation and maintenance of programs that contai
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

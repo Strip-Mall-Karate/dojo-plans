@@ -4,7 +4,7 @@ inotify-tools is a C library and a set of command-line programs for Linux provid
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

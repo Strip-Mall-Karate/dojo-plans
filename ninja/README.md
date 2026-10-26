@@ -4,7 +4,7 @@ A small build system with a focus on speed
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -12,4 +12,4 @@ Binary package
 
 ## Usage
 
-To have `ninja` in your `PATH` just add `core/ninja` to `pkg_build_deps`.
+To have `ninja` in your `PATH` just add `karate/ninja` to `pkg_build_deps`.

@@ -10,7 +10,7 @@ fully support your configuration is to import this plan into a new plan and prov
 configuration file
 
 ## Example usage
-- `hab plan init myvarnish`
+- `doj plan init myvarnish`
 - Include this plan in `pkg_deps` in plan.sh
 - Add your VCL file to the plan
 - If you've changed the default file name you'll have to pass `files.vcl=newFileName`

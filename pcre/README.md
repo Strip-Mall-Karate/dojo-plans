@@ -4,7 +4,7 @@ A library that implements Perl 5-style regular expressions
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

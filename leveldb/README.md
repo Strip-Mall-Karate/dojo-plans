@@ -4,7 +4,7 @@ LevelDB is a fast key-value storage library written at Google that provides an o
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

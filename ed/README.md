@@ -6,17 +6,17 @@ This package provides the GNU ed binary.
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
 ```
-$ hab pkg install core/ed
-$ hab pkg binlink core/ed
+$ doj pkg install karate/ed
+$ doj pkg binlink karate/ed
 $ ed --help
 GNU Ed - The GNU line editor.
 

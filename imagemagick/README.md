@@ -4,7 +4,7 @@ A software suite to create, edit, compose, or convert bitmap images.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

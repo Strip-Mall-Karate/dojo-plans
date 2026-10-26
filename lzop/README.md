@@ -4,7 +4,7 @@ lzop is a file compressor which is very similar to gzip. lzop uses the LZO data 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

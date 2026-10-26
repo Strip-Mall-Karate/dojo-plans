@@ -4,7 +4,7 @@ direnv is an environment switcher for the shell.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

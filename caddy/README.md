@@ -4,7 +4,7 @@ Fast, cross-platform HTTP/2 web server with automatic HTTPS
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,22 +17,22 @@ This package can be used as binary or service package.
 Usage as a binary package is simply running the command after installation:
 
 ```
-hab pkg install --binlink core/caddy
+doj pkg install --binlink karate/caddy
 caddy
 ```
 
 As a service package, you can load the service and use the bundled default configuration:
 
 ```
-hab pkg install core/caddy
-hab svc load core/caddy
+doj pkg install karate/caddy
+doj svc load karate/caddy
 ```
 
-Or you can wrap this with a configuration plan, by adding `core/caddy` as a runtime dependency of your plan:
+Or you can wrap this with a configuration plan, by adding `karate/caddy` as a runtime dependency of your plan:
 
 ```
 ...
-pkg_deps=(core/caddy)
+pkg_deps=(karate/caddy)
 ...
 ```
 
@@ -41,7 +41,7 @@ pkg_deps=(core/caddy)
 Caddy exposes a `port` variable containing the HTTP listening port. This can be referenced in service bindings.
 
 ```
-hab svc load my/service --bind caddy.default
+doj svc load my/service --bind caddy.default
 ```
 
 ## Topologies

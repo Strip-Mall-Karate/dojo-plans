@@ -1,4 +1,4 @@
-# Habitat package: sensu-agent
+# Dojo package: sensu-agent
 
 ## Description
 
@@ -10,13 +10,10 @@ The sensu agent should be used in conjunction with one or more sensu backends. I
 
 Ex:
 ```bash
-  hab sup run core/sensu-agent --bind backend:sensu-backend.default --peer some.ip --topology standalone --strategy at-once
+  doj sup run karate/sensu-agent --bind backend:sensu-backend.default --peer some.ip --topology standalone --strategy at-once
 ```
 
 
-## Testing
-
-To test out the plan locally, install the [kitchen-habitat](https://github.com/test-kitchen/kitchen-habitat) plugin and run `kitchen converge` to create a sensu backend with 2 sensu-agents that are bound to it.
 
 See also: configuring the sensuctl to work with the backend
 

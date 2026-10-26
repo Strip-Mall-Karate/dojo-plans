@@ -2,11 +2,11 @@
 
 Boost provides free peer-reviewed portable C++ source libraries.
 
-> Note: this package is required by `core/mysql` and `core/mysql-client` packages, you should use `core/boost` in your packages instead.
+> Note: this package is required by `karate/mysql` and `karate/mysql-client` packages, you should use `karate/boost` in your packages instead.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -18,6 +18,6 @@ This is a library usually used at build time, thus you should use it like so in 
 
 ```
 pkg_build_deps=(
-    core/boost159
+    karate/boost159
 )
 ```

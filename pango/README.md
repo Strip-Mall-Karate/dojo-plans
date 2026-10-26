@@ -2,7 +2,7 @@ Pango is a library for laying out and rendering of text, with an emphasis on int
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -13,4 +13,4 @@ Binary package
 Typically this is a runtime dependency that can be added to your
 plan.sh:
 
-    pkg_deps=(core/pango)
+    pkg_deps=(karate/pango)

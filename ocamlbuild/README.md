@@ -4,7 +4,7 @@ OCamlbuild is a generic build tool, that has built-in rules for building OCaml l
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

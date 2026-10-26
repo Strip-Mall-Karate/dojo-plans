@@ -1,4 +1,4 @@
-# habitat provided config file
+# dojo provided config file
 #
 # my global config
 global:
@@ -28,7 +28,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 {{~#if bind.targets}}
-  - job_name:  'from_hab_ring'
+  - job_name:  'from_dojo_ring'
     static_configs:
 {{#each bind.targets.members as |target|}}
       - targets: ['{{target.sys.ip}}:{{target.cfg.metric-http-port}}']

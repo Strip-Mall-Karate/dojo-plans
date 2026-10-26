@@ -15,7 +15,7 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Service is running" {
-  [ "$(hab svc status | grep "nginx\.default" | awk '{print $4}' | grep up)" ]
+  [ "$(doj svc status | grep "nginx\.default" | awk '{print $4}' | grep up)" ]
 }
 
 # Check for master process, exclude grep, and test.bats processes
@@ -33,7 +33,7 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
   [ "${result}" -gt 1 ]
 
   result="$(ps aux | grep -v grep | grep -v "test\.bats" | grep nginx | grep worker | awk '{print $2}' | uniq)"
-  [ "${result}" = "hab" ]
+  [ "${result}" = "doj" ]
 }
 
 @test "Listening on port 80" {

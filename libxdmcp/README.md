@@ -4,7 +4,7 @@ X11 Display Manager Control Protocol library
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

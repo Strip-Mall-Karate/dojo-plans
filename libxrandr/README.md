@@ -7,4 +7,4 @@ This package provides the xrandr shared library.
 Typically this is a run-time dependency that can be added to your
 plan.sh:
 
-    pkg_deps=(core/libxrandr)
+    pkg_deps=(karate/libxrandr)

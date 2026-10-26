@@ -11,9 +11,9 @@ Below we have provided an example configuration for deploying Concourse.
 pkg_name=concourse-web
 pkg_origin=eeyun
 pkg_version="0.1.0"
-pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
+pkg_maintainer="Strip Mall Karate Company"
 pkg_license=('Apache-2.0')
-pkg_deps=(core/concourse core/postgresql)
+pkg_deps=(karate/concourse karate/postgresql)
 pkg_exports=(
    [web_port]=ports.web
 )

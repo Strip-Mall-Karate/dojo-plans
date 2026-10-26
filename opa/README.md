@@ -4,7 +4,7 @@ OPA is a lightweight general-purpose policy engine that can be co-located with y
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,8 +15,8 @@ Service package
 Install the package, and load the OPA service:
 
 ```
-hab pkg install core/opa
-hab svc load core/opa
+doj pkg install karate/opa
+doj svc load karate/opa
 ```
 
 This will start OPA with the default configuration.
@@ -29,7 +29,7 @@ should be done in configuration plans.
 The service binary can also be used interactively:
 
 ```
-# hab pkg exec core/opa opa run
+# doj pkg exec karate/opa opa run
 OPA 0.10.0 (commit dbf54cde-dirty, built at 2018-10-26T07:58:50Z)
 
 Run 'help' to see a list of commands.

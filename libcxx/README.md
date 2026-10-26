@@ -4,7 +4,7 @@ A new implementation of the C++ standard library, targeting C++11
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

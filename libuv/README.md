@@ -6,4 +6,4 @@ asynchronous IO.
 Typically, libuv is an application run-time dependency which can be
 added to your plan.sh:
 
-    pkg_dep=(core/libuv)
+    pkg_dep=(karate/libuv)

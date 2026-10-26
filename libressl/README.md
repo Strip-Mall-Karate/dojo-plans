@@ -4,7 +4,7 @@ Version of the TLS/crypto stack forked from OpenSSL
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

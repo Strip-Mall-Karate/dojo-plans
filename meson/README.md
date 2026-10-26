@@ -7,4 +7,4 @@ This package provides the meson build system binaries
 Typically this is a build dependency that can be added to your
 plan.sh:
 
-    pkg_build_deps=(core/meson core/python)
+    pkg_build_deps=(karate/meson karate/python)

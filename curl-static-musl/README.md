@@ -5,7 +5,7 @@ curl is an open source command line tool and library for
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

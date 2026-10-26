@@ -7,17 +7,17 @@ command line.
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
 ```
-$ hab pkg install core/jo
-$ hab pkg binlink core/jo
+$ doj pkg install karate/jo
+$ doj pkg binlink karate/jo
 $ jo -h
 Usage: jo [-a] [-B] [-p] [-v] [-V] [word...]
         word is key=value or key@value

@@ -4,7 +4,7 @@ Safe, concurrent, practical language
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

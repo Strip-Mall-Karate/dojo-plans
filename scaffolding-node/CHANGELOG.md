@@ -1,6 +1,6 @@
 # Node Scaffolding CHANGELOG
 
-[Full history](https://github.com/habitat-sh/core-plans/commits/master/scaffolding-node)
+[Full history](https://github.com/Strip-Mall-Karate/dojo-plans/commits/master/scaffolding-node)
 
 ## 0.6.13 (03-30-2018)
 
@@ -13,7 +13,7 @@
 ## 0.6.11 (12-08-2017)
 
 - Improve git detection with `git rev-parse --is-in-work-tree`, makes
-  core/git a direct build dependency
+  karate/git a direct build dependency
 
 ## 0.6.10 (11-28-2017)
 
@@ -41,15 +41,15 @@
 
 ## 0.6.4 (10-04-2017)
 
-- prevent shellouts where hab functions can do the same work
+- prevent shellouts where doj functions can do the same work
 - remove unnecessary bin/ dir inclusion in scaffold's pkg_bin_dirs
 - move version parsing into scaffolding.sh
 - update version parsing to omit = and v from version strings
-- make core/node a build dependency in the scaffolding itself
+- make karate/node a build dependency in the scaffolding itself
 
 ## 0.6.3 (09-25-2017)
 
-- add explicit dependency on core/node
+- add explicit dependency on karate/node
 
 ## 0.6.2 (09-19-2017)
 

@@ -4,7 +4,7 @@ Mage is a make/rake-like build tool using Go. You write plain-old go functions, 
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,20 +15,20 @@ Binary Package
 Mage can be installed/used as a standalone binary:
 
 ```
-hab pkg install core/mage
-$(hab pkg path core/mage)/bin/mage
+doj pkg install karate/mage
+$(doj pkg path karate/mage)/bin/mage
 
 # or binlink
 
-hab pkg install core/mage
-hab pkg binlink core/mage
+doj pkg install karate/mage
+doj pkg binlink karate/mage
 mage
 ```
 
 Alternatively, it can be used in your pacakges build dependencies for running Magefiles.
 
 ```
-pkg_build_deps=(core/mage)
+pkg_build_deps=(karate/mage)
 
 do_build() {
   ...

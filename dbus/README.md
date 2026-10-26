@@ -4,7 +4,7 @@ D-Bus is a message bus system, a simple way for applications to talk to one anot
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

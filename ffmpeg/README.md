@@ -4,7 +4,7 @@ A complete, cross-platform solution to record, convert and stream audio and vide
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

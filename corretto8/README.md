@@ -4,7 +4,7 @@ Amazon Corretto is a no-cost, multi-platform, production-ready distribution of t
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -14,17 +14,17 @@ Binary package
 
 Install:
 ```
-hab pkg install core/corretto8
+doj pkg install karate/corretto8
 ```
 
 Execute:
 ```
-hab pkg exec core/corretto8 java -h
+doj pkg exec karate/corretto8 java -h
 ```
 
 Add to a plan:
 ```
 pkg_deps=(
-  core/corretto8
+  karate/corretto8
 )
 ```

@@ -4,7 +4,7 @@
 
 ## Maintainers
 
-The Habitat Maintainers: <humans@habitat.sh>
+Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,13 +17,13 @@ Install the package and execute 7zip.
 On windows, `binlink` is not supported, so you can execute directly from the package:
 
 ```
-hab pkg install core/7zip
-hab pkg exec core/7zip 7z --help
+doj pkg install karate/7zip
+doj pkg exec karate/7zip 7z --help
 ```
 
 On Linux you can do the same, or binlink and use the command directly:
 
 ```
-hab pkg install core/7zip --binlink
+doj pkg install karate/7zip --binlink
 7z --help
 ```

@@ -4,7 +4,7 @@ A faster (using SIMD) libjpeg implementation
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

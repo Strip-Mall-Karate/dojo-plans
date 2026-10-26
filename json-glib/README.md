@@ -7,4 +7,4 @@ This package provides the json-glib libraries
 Typically this is a runtime dependency that can be added to your
 plan.sh:
 
-    pkg_deps=(core/json-glib)
+    pkg_deps=(karate/json-glib)

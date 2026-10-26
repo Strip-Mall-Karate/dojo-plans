@@ -4,7 +4,7 @@ musl is a new standard library to power a new generation of Linux-based devices.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -4,7 +4,7 @@ UnZip is an extraction utility for archives compressed in .zip format (also call
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

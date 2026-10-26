@@ -7,17 +7,17 @@ between to channels. A myriad channel types are supported, see below.
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
 ```
-$ hab pkg install core/socat
-$ hab pkg binlink core/socat
+$ doj pkg install karate/socat
+$ doj pkg binlink karate/socat
 $ socat -h
 socat by Gerhard Rieger and contributors - see www.dest-unreach.org
 Usage:

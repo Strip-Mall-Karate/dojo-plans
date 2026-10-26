@@ -6,7 +6,7 @@ NOTE - This plan tracks GDB Version 7.x. To use a higher version of GDB, please 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

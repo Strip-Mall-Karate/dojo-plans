@@ -7,4 +7,4 @@ This package provides the libxshmfence libraries
 Typically this is a runtime dependency that can be added to your
 plan.sh:
 
-    pkg_deps=(core/libxshmfence)
+    pkg_deps=(karate/libxshmfence)

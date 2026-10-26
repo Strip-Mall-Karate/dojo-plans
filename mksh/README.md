@@ -1,4 +1,4 @@
-# Habitat package: ksh
+# Dojo package: ksh
 
 ## Description
 

@@ -4,7 +4,7 @@ An implementation of the Scheme programming language, used in many GNU programs 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

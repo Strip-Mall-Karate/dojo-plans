@@ -7,4 +7,4 @@ This package provides `libatspi.so`
 Typically this is a build time dependency that can be added to your
 plan.sh:
 
-    pkg_build_deps=(core/at-spi2-core)
+    pkg_build_deps=(karate/at-spi2-core)

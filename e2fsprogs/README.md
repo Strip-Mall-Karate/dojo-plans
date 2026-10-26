@@ -4,7 +4,7 @@ Ext2/3/4 filesystem userspace utilities
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

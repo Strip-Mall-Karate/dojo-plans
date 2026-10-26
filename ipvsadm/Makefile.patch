@@ -5,10 +5,10 @@
  
  ifeq "${ARCH}" "sparc64"
 -    CFLAGS = -Wall -Wunused -Wstrict-prototypes -g -m64 -pipe -mcpu=ultrasparc -mcmodel=medlow
-+    override CFLAGS += -Wall -Wunused -Wstrict-prototypes -g -m64 -pipe -mcpu=ultrasparc -mcmodel=medlow $(LDFLAGS) -Wl,-R$(shell hab pkg path "core/popt")/lib -Wl,-R$(shell hab pkg path "core/libnl")/lib
++    override CFLAGS += -Wall -Wunused -Wstrict-prototypes -g -m64 -pipe -mcpu=ultrasparc -mcmodel=medlow $(LDFLAGS) -Wl,-R$(shell doj pkg path "karate/popt")/lib -Wl,-R$(shell doj pkg path "karate/libnl")/lib
  else
 -    CFLAGS = -Wall -Wunused -Wstrict-prototypes -g
-+    override CFLAGS += -Wall -Wunused -Wstrict-prototypes -g $(LDFLAGS) -Wl,-R$(shell hab pkg path "core/popt")/lib -Wl,-R$(shell hab pkg path "core/libnl")/lib
++    override CFLAGS += -Wall -Wunused -Wstrict-prototypes -g $(LDFLAGS) -Wl,-R$(shell doj pkg path "karate/popt")/lib -Wl,-R$(shell doj pkg path "karate/libnl")/lib
  endif
  
  

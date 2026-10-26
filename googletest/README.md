@@ -9,7 +9,7 @@ followed [here](https://github.com/google/googletest).
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 * [Ben Dang](me@bdang.it)
 
 ## Type of Package
@@ -18,8 +18,8 @@ Static C++ Library and Include Headers
 
 ## Usage
 
-If you require `gtest` and `gmock` just include `core/googletest` preferably in `pkg_build_deps`.  
-Habitat will then update `CFLAGS`, `CXXFLAGS`, `CPPFLAGS`, `LDFLAGS`, `PKG_CONFIG_PATH` and
+If you require `gtest` and `gmock` just include `karate/googletest` preferably in `pkg_build_deps`.  
+Dojo will then update `CFLAGS`, `CXXFLAGS`, `CPPFLAGS`, `LDFLAGS`, `PKG_CONFIG_PATH` and
 `CMAKE_FIND_ROOT_PATH` with paths to the libs and includes.
 
 ### CMake
@@ -34,14 +34,14 @@ pkg_description="googletest cmake example"
 pkg_license=('MIT')
 pkg_maintainer='Ben Dang <me@bdang.it>'
 pkg_deps=(
-  core/gcc-libs
-  core/glibc
+  karate/gcc-libs
+  karate/glibc
 )
 pkg_build_deps=(
-  core/gcc
-  core/make
-  core/cmake
-  core/googletest
+  karate/gcc
+  karate/make
+  karate/cmake
+  karate/googletest
 )
 pkg_bin_dirs=(bin)
 

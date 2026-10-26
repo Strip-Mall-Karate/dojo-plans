@@ -4,7 +4,7 @@ A software library that implements a self-contained, serverless, zero-configurat
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

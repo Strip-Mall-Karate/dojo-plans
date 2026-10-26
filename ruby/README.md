@@ -4,7 +4,7 @@ A dynamic, open source programming language with a focus on   simplicity and pro
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

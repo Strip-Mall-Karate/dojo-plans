@@ -4,7 +4,7 @@ OpenSSL is an open source project that provides a robust, commercial-grade, and 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

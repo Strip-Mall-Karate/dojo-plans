@@ -4,7 +4,7 @@ Zstandard is a real-time compression algorithm, providing high compression ratio
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

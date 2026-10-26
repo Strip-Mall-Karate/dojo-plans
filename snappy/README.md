@@ -4,7 +4,7 @@ A fast compressor/decompressor http://google.github.io/snappy/
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

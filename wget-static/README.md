@@ -4,7 +4,7 @@ GNU Wget is a free software package for retrieving files using HTTP, HTTPS, FTP 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

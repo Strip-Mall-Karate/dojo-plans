@@ -4,7 +4,7 @@ Aspcud is a solver for package dependencies
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

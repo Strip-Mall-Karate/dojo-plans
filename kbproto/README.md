@@ -4,7 +4,7 @@ X11 XKB extension wire protocol
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

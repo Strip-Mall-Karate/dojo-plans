@@ -4,7 +4,7 @@ Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

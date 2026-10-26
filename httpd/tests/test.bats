@@ -16,7 +16,7 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Service is running" {
-  [ "$(hab svc status | grep "httpd\.default" | awk '{print $4}' | grep up)" ]
+  [ "$(doj svc status | grep "httpd\.default" | awk '{print $4}' | grep up)" ]
 }
 
 # Check for processes, exclude grep, and test.bats processes

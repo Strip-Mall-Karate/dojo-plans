@@ -4,7 +4,7 @@ Nginx is an HTTP and reverse proxy server, a mail proxy server, and a generic TC
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -18,7 +18,7 @@ Examples of this are detailed below.
 
 ## Bindings
 
-Consuming an Nginx service depends on what ports are exposed. Configuration plans wrapping `core/nginx` may expose more than a single port, however this core plan exposes a single http port:
+Consuming an Nginx service depends on what ports are exposed. Configuration plans wrapping `karate/nginx` may expose more than a single port, however this core plan exposes a single http port:
 
 ```
 han start <origin>/<app> --bind webserver:nginx.default
@@ -50,14 +50,14 @@ This section will detail how to achieve this.
 
 ### Configuration Plan
 
-A configuration plan is a Habitat plan that has a dependency on another plan, and simply provides its own configuration for the service. They have also been called Wrapper plans.
+A configuration plan is a Dojo plan that has a dependency on another plan, and simply provides its own configuration for the service. They have also been called Wrapper plans.
 
 ### Wrapping Nginx
 
 Create a new plan:
 
 ```
-hab plan init my-webserver
+doj plan init my-webserver
 cd my-webserver
 ```
 
@@ -67,7 +67,7 @@ At minimum, the `plan.sh` should contain the following:
 pkg_name=my-webserver
 pkg_origin=myorigin
 pkg_version="0.1.0"
-pkg_deps=(core/nginx)
+pkg_deps=(karate/nginx)
 pkg_exports=(
   [port]=port
 )
@@ -92,7 +92,7 @@ port = 80
 worker_connections = 512
 ```
 
-Next, you will need to create 2 files. One is the static `mime.types` required by nginx to serve the content correctly, and the other is the main `nginx.conf` which will override some compiled-in values from the `core/nginx` package.
+Next, you will need to create 2 files. One is the static `mime.types` required by nginx to serve the content correctly, and the other is the main `nginx.conf` which will override some compiled-in values from the `karate/nginx` package.
 
 You can download the `mime.types` file from the [Nginx repository][mime-types].
 
@@ -131,10 +131,10 @@ http {
 
 The important pieces here are the `temp_path` overrides that will allow Nginx to write temporary content to the correct directories.
 
-Once you have created the above files, you can enter a habitat studio and build the plan:
+Once you have created the above files, you can enter a dojo studio and build the plan:
 
 ```
-hab studio enter
+doj studio enter
 
 [1][default:/src:0]# build
 ```

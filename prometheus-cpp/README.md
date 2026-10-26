@@ -5,7 +5,7 @@ This package provides the [Prometheus Client C++ Library](https://github.com/jup
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
@@ -14,7 +14,7 @@ Static C++ Library and `include`
 ## Usage
 
 If you are building a C++ application and you require a way to provide metrics especially for
-[Prometheus](http://prometheus.io), then add this package to your `pkg_build_deps`.  Habitat will then populate the
+[Prometheus](http://prometheus.io), then add this package to your `pkg_build_deps`.  Dojo will then populate the
 `LD_RUN_PATH`, `CFLAGS`, `CXXFLAGS`, and `CMAKE_FIND_ROOT_PATH`. to allow you statically link to this library.
 
 ### CMake
@@ -27,24 +27,24 @@ pkg_origin=bdangit
 pkg_version=0.1.1
 pkg_license=('MIT')
 pkg_build_deps=(
-  core/gcc
-  core/cmake
-  core/make
-  core/pkg-config
-  core/prometheus-cpp
+  karate/gcc
+  karate/cmake
+  karate/make
+  karate/pkg-config
+  karate/prometheus-cpp
 )
 pkg_deps=(
-  core/glibc
-  core/gcc-libs
-  core/zlib
-  core/protobuf
+  karate/glibc
+  karate/gcc-libs
+  karate/zlib
+  karate/protobuf
 )
 
 pkg_bin_dirs=(bin)
 
 do_begin() {
-  export HAB_ENV_CMAKE_FIND_ROOT_PATH_SEPARATOR=";"
-  export HAB_ENV_CMAKE_FIND_ROOT_PATH_TYPE="aggregate"
+  export DOJ_ENV_CMAKE_FIND_ROOT_PATH_SEPARATOR=";"
+  export DOJ_ENV_CMAKE_FIND_ROOT_PATH_TYPE="aggregate"
 }
 
 do_setup_environment() {
@@ -85,4 +85,4 @@ target_link_libraries(myapp prometheus-cpp::core prometheus-cpp::pull)
 
 ### Example Application
 
-An example application built with Habitat can be viewed [here](https://github.com/bdangit/prometheus-cpp-example).
+An example application built with Dojo can be viewed [here](https://github.com/bdangit/prometheus-cpp-example).

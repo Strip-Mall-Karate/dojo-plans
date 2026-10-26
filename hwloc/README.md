@@ -5,7 +5,7 @@ The Portable Hardware Locality (hwloc) software package provides a portable abst
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
@@ -18,7 +18,7 @@ Binary Package
 A tool to help you visualize how your cores and devices are connected.
 
 ```bash
-[0][default:/src:0]# hab pkg exec core/hwloc lstopo --output-format ascii
+[0][default:/src:0]# doj pkg exec karate/hwloc lstopo --output-format ascii
 /----------------------------------------------------------------------\
 | Machine (1999MB total)                                               |
 |                                                                      |

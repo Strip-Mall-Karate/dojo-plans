@@ -1,4 +1,4 @@
-# Habitat package: vault
+# Dojo package: vault
 
 ## Maintainers
 * [Christopher P. Maher](https://github.com/defilan)
@@ -21,7 +21,7 @@ Vault can be deployed either in a `standalone` topology or in a multi-node
 and HA requirements driving the configuration.
 
 ```text
-hab start core/vault
+doj start karate/vault
 ```
 
 ## Update Strategy
@@ -30,7 +30,7 @@ Recommended update strategy for Vault is `rolling`.
 
 ## BREAKING CHANGES FROM 1.0.0
 
-Vault >=1.0.0 introduced changes in the Habitat plan in order to simplify default configuration and reduce dependencies. This makes adoption and maintenance easier, and aligns with recent RFCs for plan development.
+Vault >=1.0.0 introduced changes in the Dojo plan in order to simplify default configuration and reduce dependencies. This makes adoption and maintenance easier, and aligns with recent RFCs for plan development.
 
 If you have upgraded to Vault 1.0.0 from Vault 0.*, you will notice that the default storage backend has changed from consul to file based.
 

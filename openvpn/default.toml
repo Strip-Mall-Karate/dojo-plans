@@ -34,9 +34,9 @@ dev-node = false
 # OpenVPN can also use a PKCS #12 formatted key file
 # (see "pkcs12" directive in man page).
 
-ca = "/hab/svc/openvpn/files/ca.crt"
-cert = "/hab/svc/openvpn/files/server.crt"
-key = "/hab/svc/openvpn/files/server.key"
+ca = "/doj/svc/openvpn/files/ca.crt"
+cert = "/doj/svc/openvpn/files/server.crt"
+key = "/doj/svc/openvpn/files/server.key"
 
 # Diffie hellman parameters.
 # Generate your own with:
@@ -44,7 +44,7 @@ key = "/hab/svc/openvpn/files/server.key"
 #   openssl dhparam -out dh1024.pem 1024
 #
 # Substitute 2048 for 1024 if you are using 2048 bit keys.
-dh = "/hab/svc/openvpn/files/dh1024.pem"
+dh = "/doj/svc/openvpn/files/dh1024.pem"
 
 # Configure server mode and supply a VPN subnet for OpenVPN to draw
 # client addresses from. The server will take 10.8.0.1 for itself, the
@@ -134,7 +134,7 @@ keepalive = "10 120"
 # The second parameter should be '0'
 # on the server and '1' on the clients.
 # for example:
-#tls-auth = "/hab/svc/openvpn/files/ta.key 0"
+#tls-auth = "/doj/svc/openvpn/files/ta.key 0"
 tls-auth = false
 
 # Select a cryptographic cipher.
@@ -155,8 +155,8 @@ max-clients = 100
 
 # It's a good idea to reduce the OpenVPN
 # daemon's privileges after initialization.
-user = "hab"
-group = "hab"
+user = "doj"
+group = "doj"
 
 # The persist options will try to avoid
 # accessing certain resources on restart
@@ -165,7 +165,7 @@ group = "hab"
 persist-key = true
 persist-tun = true
 
-status = "/hab/svc/openvpn/var/log/openvpn-status.log"
+status = "/doj/svc/openvpn/var/log/openvpn-status.log"
 
 # By default, log messages will go to the syslog (or
 # on Windows, if running as a service, they will go to
@@ -175,7 +175,7 @@ status = "/hab/svc/openvpn/var/log/openvpn-status.log"
 # while "log-append" will append to it.  Use one
 # or the other (but not both).
 log = false
-log-append = "/hab/svc/openvpn/var/log/openvpn.log"
+log-append = "/doj/svc/openvpn/var/log/openvpn.log"
 
 # Set the appropriate level of log
 # file verbosity.

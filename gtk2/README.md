@@ -4,7 +4,7 @@ GTK+, or the GIMP Toolkit, is a multi-platform toolkit for creating graphical us
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -4,7 +4,7 @@ Alex is a tool for generating lexical analysers in Haskell. It takes a descripti
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

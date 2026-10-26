@@ -9,12 +9,12 @@ To use this plan, you'll need to set the `JAVA_HOME` and pay attention to the lo
 export M2_HOME=/foo/bar/baz
 
 # Ant requires JAVA_HOME to be set, and can be set via:
-export JAVA_HOME=$(hab pkg path core/jdk8)
+export JAVA_HOME=$(doj pkg path karate/corretto8)
 ```
 
 
-To use `mvn` in the Habitat dev shell:
+To use `mvn` in the Dojo dev shell:
 
 ```
-hab pkg binlink core/maven mvn
+doj pkg binlink karate/maven mvn
 ```

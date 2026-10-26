@@ -1,7 +1,7 @@
 Helm
 ====
 
-This is a Habitat plan for the Kubernetes Helm client CLI application, called `helm`.
+This is a Dojo plan for the Kubernetes Helm client CLI application, called `helm`.
 
 Usage
 =====

@@ -4,7 +4,7 @@ OpenJDK is a free and open-source implementation of the Java Platform, Standard 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

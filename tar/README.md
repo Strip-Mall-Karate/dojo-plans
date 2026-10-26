@@ -4,7 +4,7 @@ GNU Tar provides the ability to create tar archives, as well as various other ki
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

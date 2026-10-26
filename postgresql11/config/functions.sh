@@ -13,7 +13,7 @@ chmod 0600 {{pkg.svc_var_path}}/.pgpass
 write_local_conf() {
   echo 'Writing postgresql.local.conf file based on memory settings'
   cat > {{pkg.svc_config_path}}/postgresql.local.conf<<LOCAL
-# Auto-generated memory defaults created at service start by Habitat
+# Auto-generated memory defaults created at service start by Dojo
 effective_cache_size=$(awk '/MemTotal/ {printf( "%.0f\n", ($2 / 1024 / 4) *3 )}' /proc/meminfo)MB
 shared_buffers=$(awk '/MemTotal/ {printf( "%.0f\n", $2 / 1024 / 4 )}' /proc/meminfo)MB
 maintenance_work_mem=$(awk '/MemTotal/ {printf( "%.0f\n", $2 / 1024 / 16 )}' /proc/meminfo)MB

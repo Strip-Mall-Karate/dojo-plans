@@ -4,7 +4,7 @@ Drush is a command line shell and Unix scripting interface for Drupal.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

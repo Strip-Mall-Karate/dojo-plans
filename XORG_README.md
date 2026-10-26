@@ -28,5 +28,4 @@ conventions in mind:
 - [ ] Finish plans all packages in the proto/ folder (https://www.x.org/releases/individual/proto/)
 - [ ] Finish plans for font-related packages.
 - [ ] Build xorg-server and any remaining missing dependencies (see
-  https://github.com/stevendanna/habitat-plans/issues/5#issuecomment-335787378
-  for some useful guidance)
+  the upstream xorg-server build notes)

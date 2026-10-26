@@ -4,7 +4,7 @@ GNU gperf is a perfect hash function generator.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

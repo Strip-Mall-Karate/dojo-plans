@@ -4,7 +4,7 @@ NUMA support for Linux http://oss.sgi.com/projects/libnuma/
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

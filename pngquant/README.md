@@ -1,10 +1,10 @@
-# Habitat package: pngquant
+# Dojo package: pngquant
 
 Lossy PNG compressor.
 
 ## Maintainers
 
-The Habitat Maintainers (humans@habitat.sh).
+Strip Mall Karate Company.
 
 ## Type of package
 
@@ -14,7 +14,7 @@ Library package. Include this plan as a runtime or build dependency for plans th
 
 ```
 pkg_deps=(
-  core/pngquant
+  karate/pngquant
 )
 ```
 
@@ -22,6 +22,6 @@ or
 
 ```
 pkg_build_deps=(
-  core/pngquant
+  karate/pngquant
 )
 ```

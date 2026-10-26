@@ -4,7 +4,7 @@ An abstract library implementation of a VT220/xterm/ECMA-48 terminal emulator.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -4,7 +4,7 @@ opam is a source-based package manager. It supports multiple simultaneous compil
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

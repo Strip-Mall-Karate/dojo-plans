@@ -2,11 +2,11 @@
 
 GnuTLS is a secure communications library implementing the SSL, TLS and DTLS protocols and technologies around them
 
-> Note that this package comes without DANE support, if you need it, feel free to open an issue at https://github.com/habitat-sh/core-plans/issues/new
+> Note that this package comes without DANE support, if you need it, feel free to open an issue at https://github.com/Strip-Mall-Karate/dojo-plans/issues/new
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,4 +17,4 @@ Binary package
 Typically this is a runtime dependency that can be added to your
 plan.sh:
 
-    pkg_deps=(core/gnutls)
+    pkg_deps=(karate/gnutls)

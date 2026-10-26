@@ -4,7 +4,7 @@ A C programming interface to determine the call-chain of a program.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

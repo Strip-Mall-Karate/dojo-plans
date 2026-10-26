@@ -1,4 +1,4 @@
-# Habitat package: libtalloc
+# Dojo package: libtalloc
 
 ## Maintainers
 * [Christopher P. Maher](https://github.com/defilan)
@@ -16,7 +16,7 @@ during build/runtime.
 
 do_build() {
   ./configure --prefix="${pkg_prefix}" \
-    --with-talloc-lib-dir="$(pkg_path_for core/talloc)" \
-    --with-talloc-include-dir="$(pkg_path_for core/talloc)"
+    --with-talloc-lib-dir="$(pkg_path_for karate/talloc)" \
+    --with-talloc-include-dir="$(pkg_path_for karate/talloc)"
   make
 }

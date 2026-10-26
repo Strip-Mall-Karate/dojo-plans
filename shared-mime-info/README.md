@@ -4,7 +4,7 @@ The shared-mime-info package contains the core database of common types and the 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

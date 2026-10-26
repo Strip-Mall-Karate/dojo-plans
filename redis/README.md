@@ -4,7 +4,7 @@ Redis is an open source (BSD licensed), in-memory data structure store, used as 
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,13 +17,13 @@ Redis first requires configuration to setup the credentials for protected mode. 
 Example service install / load and setup:
 
 ```
-hab pkg install core/redis
+doj pkg install karate/redis
 
 echo '
 requirepass="password"
-' | hab config apply redis.default $(date +%s)
+' | doj config apply redis.default $(date +%s)
 
-hab svc load core/redis
+doj svc load karate/redis
 ```
 
 ## Bindings
@@ -31,12 +31,12 @@ hab svc load core/redis
 Redis provides the bind `port` for other services to bind to.
 
 ```
-hab svc load my/service --bind redis:redis.default
+doj svc load my/service --bind redis:redis.default
 ```
 
 ## Topologies
 
-The default configuration does not enable clustering. This should be addresed in future Habitat plan releases.
+The default configuration does not enable clustering. This should be addresed in future Dojo plan releases.
 
 For the moment, a `standalone` topology is possible with the default configuration.
 

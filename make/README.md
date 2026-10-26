@@ -4,7 +4,7 @@ Make is a tool which controls the generation of executables and other non-source
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

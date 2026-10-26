@@ -4,7 +4,7 @@ Record Query - A tool for doing record analysis and transformation
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

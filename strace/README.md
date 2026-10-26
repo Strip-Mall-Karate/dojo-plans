@@ -4,7 +4,7 @@ strace is a system call tracer for Linux
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

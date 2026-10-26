@@ -4,7 +4,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -13,8 +13,8 @@ Service package
 ## Usage
 
 ```
-hab pkg install core/gocd-server
-hab svc load core/gocd-server
+doj pkg install karate/gocd-server
+doj svc load karate/gocd-server
 ```
 
 ## Topologies

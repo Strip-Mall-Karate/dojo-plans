@@ -4,17 +4,17 @@ The [Azure command-line interface (CLI)](https://docs.microsoft.com/en-us/cli/az
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
 ```bash
-hab pkg install core/azure-cli
-hab pkg binlink core/azure-cli az   # do not try to binlink all the python deps
+doj pkg install karate/azure-cli
+doj pkg binlink karate/azure-cli az   # do not try to binlink all the python deps
 
 az --version
 ```

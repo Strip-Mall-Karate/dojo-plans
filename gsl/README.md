@@ -4,7 +4,7 @@ GSL is a numerical library for C and C++
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

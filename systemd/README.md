@@ -4,7 +4,7 @@ systemd is an init system used in Linux distributions to bootstrap the user spac
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -4,7 +4,7 @@ Weak aliases for pthread functions
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

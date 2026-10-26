@@ -4,7 +4,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,7 +15,7 @@ Binary package
 ### Installation
 
 ```
-hab pkg install --binlink core/ipvsadm
+doj pkg install --binlink karate/ipvsadm
 ```
 
 You can then interact with the binary on path:

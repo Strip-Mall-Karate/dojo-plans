@@ -4,7 +4,7 @@ ttyrec is a tty recorder. Recorded data can be played back with the included tty
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -13,8 +13,8 @@ Binary package
 ## Usage
 
 ```
-$ hab pkg install core/ttyrec
-$ hab pkg binlink core/ttyrec
+$ doj pkg install karate/ttyrec
+$ doj pkg binlink karate/ttyrec
 $ ttyrec -help
 usage: ttyrec [-u] [-e command] [-a] [file]
 ```

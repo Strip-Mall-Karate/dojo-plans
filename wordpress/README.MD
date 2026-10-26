@@ -12,12 +12,12 @@ You will need to provide 3 variables
 - bind='0.0.0.0'
 
 ```
-hab start core/mysql --group wordpress
+doj start karate/mysql --group wordpress
 ```
 
 ### wordpress
 ```
-hab start core/wordpress --peer database --bind database:mysql.wordpress
+doj start karate/wordpress --peer database --bind database:mysql.wordpress
 ```
 
 ### docker-compose example
@@ -35,12 +35,12 @@ services:
     links:
       - database
     volumes:
-      - data-volume:/hab/svc/wordpress/data
+      - data-volume:/doj/svc/wordpress/data
   database:
     image: starkandwayne/mysql
     command: "start starkandwayne/mysql --group wordpress"
     environment:
-      HAB_MYSQL: |
+      DOJ_MYSQL: |
         app_username='wordpress'
         app_password='wordpress'
         bind='0.0.0.0'

@@ -4,28 +4,28 @@ HAProxy is a free, very fast and reliable solution offering high availability, l
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-This is a service package that will be run by the Habitat supervisor.
+This is a service package that will be run by the Dojo supervisor.
 
 ## Usage
 
 You can start the service with:
 
 ```
-$ hab start core/haproxy19
+$ doj start karate/haproxy19
 ```
 
-And bind another Habitat service to it - see "Binding" below for more details.
+And bind another Dojo service to it - see "Binding" below for more details.
 
 ## Bindings
 
 Consuming services can bind to HAProxy via:
 
 ```
-hab svc load core/haproxy19 --bind port:haproxy.default
+doj svc load karate/haproxy19 --bind port:haproxy.default
 ```
 
 ## Topologies
@@ -37,28 +37,28 @@ This plan currently only supports the standalone topology.
 To run a standalone haproxy instance, run
 
 ```
-hab sup run --topology standalone
-hab svc load core/haproxy19
+doj sup run --topology standalone
+doj svc load karate/haproxy19
 ```
 
-The standalone topology is used by default by the habitat supervisor if none is specified.
-For more details on the standalone topology, see [the Habitat docs on standalone](https://www.habitat.sh/docs/using-habitat/#standalone).
+The standalone topology is used by default by the dojo supervisor if none is specified.
+For more details on the standalone topology, see the Dojo docs on standalone.
 
 ### Leader-Follower
 
 This plan does not make use of the leader/follower topology.
 
-Check out [the Habitat docs on Leader-Follower](https://www.habitat.sh/docs/using-habitat/#leader-follower-topology) for more details on what the leader-follower topology is and what it does.
+Check out the Dojo docs on Leader-Follower for more details on what the leader-follower topology is and what it does.
 
 ## Update Strategies
 
 The authors do not provide any recommendations for how to use update strategies with this package.
 
-Check out [the update strategy documentation](https://www.habitat.sh/docs/using-habitat/#update-strategy) for information on the strategies Habitat supports.
+Check out the update strategy documentation for information on the strategies Dojo supports.
 
 ### Configuration Updates
 
-Check out the [configuration update](https://www.habitat.sh/docs/using-habitat/#configuration-updates) documentation for more information on what configuration updates are and how they are executed.
+Check out the configuration update documentation for more information on what configuration updates are and how they are executed.
 
 Take a look at the [default.toml](default.toml) for this package to see the configuration settings you can override.
 

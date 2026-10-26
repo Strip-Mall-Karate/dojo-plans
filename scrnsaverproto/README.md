@@ -4,7 +4,7 @@ X11 Screen Saver Extension
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,4 +15,4 @@ Binary package
 Typically this is a build time dependency that can be added to your
 plan.sh:
 
-    pkg_build_deps=(core/scrnsaverproto)
+    pkg_build_deps=(karate/scrnsaverproto)

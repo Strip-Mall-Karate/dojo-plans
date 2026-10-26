@@ -1,0 +1,12 @@
+Dojo Plans
+Copyright 2026 Strip Mall Karate Company
+
+Dojo Plans' own work is licensed under the MIT license (see LICENSE).
+
+This product includes software developed by Chef Software Inc. and
+contributors, licensed under the Apache License, Version 2.0 (see
+LICENSE-APACHE): the package plans and their hooks, configuration, tests and
+documentation, as of 10 April 2019. Every file that came from that software,
+and every plan ported from one, stays under the Apache License, Version 2.0,
+with Dojo's changes to it. Those files have been modified for Dojo; the Git
+history records each change and who made it.

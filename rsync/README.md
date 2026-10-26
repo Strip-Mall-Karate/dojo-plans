@@ -4,7 +4,7 @@ An open source utility that provides fast incremental file transfer
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

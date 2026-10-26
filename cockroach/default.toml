@@ -12,7 +12,7 @@ region = "default"
 datacenter = "default"
 
 # We need to use pre-canned certs, at least until this becomes a reality:
-#   https://github.com/habitat-sh/habitat/issues/4091
+#   source project issue 4091
 #
 # WARNING: Change these before deploying to a real server!!!
 # to generate, see: https://www.cockroachlabs.com/docs/stable/secure-a-cluster.html

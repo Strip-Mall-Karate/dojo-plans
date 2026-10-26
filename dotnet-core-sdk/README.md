@@ -6,7 +6,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -14,7 +14,7 @@ Binary package
 
 ## Testing
 
-To test the Linux package, log into the Habitat Studio and run:
+To test the Linux package, log into the Dojo Studio and run:
 
 ```
 ./tests/test.sh

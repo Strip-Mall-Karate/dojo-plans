@@ -15,7 +15,7 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Service is running" {
-  [ "$(hab svc status | grep "gnatsd\.default" | awk '{print $4}' | grep up)" ]
+  [ "$(doj svc status | grep "gnatsd\.default" | awk '{print $4}' | grep up)" ]
 }
 
 @test "A single process" {

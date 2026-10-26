@@ -4,7 +4,7 @@ Gecode is a toolkit for developing constraint-based systems and applications
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -4,7 +4,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers (humans@habitat.sh).
+* Strip Mall Karate Company.
 
 ## Type of package
 
@@ -15,13 +15,13 @@ Binary package
 To use this plan, include it in your `pkg_build_deps`.
 
 ```
-pkg_build_deps=(core/ant)
+pkg_build_deps=(karate/ant)
 ```
 
 You will also need to set the `JAVA_HOME` environment variable, for example:
 
 ```
-export JAVA_HOME=$(hab pkg path core/jdk8)
+export JAVA_HOME=$(doj pkg path karate/corretto8)
 ```
 
 [1]: https://ant.apache.org/index.html

@@ -7,7 +7,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,12 +15,12 @@ Binary package
 
 ## Usage
 
-This package needs the file `/etc/protocols` from the `core/iana-etc` package.
+This package needs the file `/etc/protocols` from the `karate/iana-etc` package.
 Add this to your plan/hooks:
 
 ```
 if [[ ! -f /etc/protocols ]]; then
-  hab pkg install core/iana-etc
-  ln -s $(hab pkg path core/iana-etc)/etc/protocols /etc/protocols
+  doj pkg install karate/iana-etc
+  ln -s $(doj pkg path karate/iana-etc)/etc/protocols /etc/protocols
 fi
 ```

@@ -1,0 +1,577 @@
+# Statements a person ported: each entry is `== ` and the bash statement as the
+# plan has it (whitespace does not matter), a line `--`, and the Fennel that does
+# what it did. port.py uses an entry wherever the statement appears, so one entry
+# serves a plan and every plan that sources it. An empty Fennel part drops the
+# statement; its reason is a Fennel comment.
+
+== echo "quit" | ./bc/bc -l Test/checklib.b
+--
+;; bc reads the test file, then quits at the end of its input, which a build's
+;; programs read as empty: what piping in `quit` did.
+(b:run ["./bc/bc" "-l" "Test/checklib.b"])
+
+== PLAN_CONTEXT=$PLAN_CONTEXT/../coreutils _patch_files
+--
+;; coreutils' own patch, applied as its _patch_files did.
+(b:run ["patch" "-p1" "-i" (.. b.plan_dir "/../coreutils/skip-tests.patch")])
+
+== lzip -d --stdout "${HAB_CACHE_SRC_PATH}/${pkg_filename}" | tar x -C "${HAB_CACHE_SRC_PATH}/"
+--
+(b:run ["tar" "--lzip" "-xf" (.. b.cache "/" (.. b.name "-" b.version ".tar.lz")) "-C" b.cache])
+
+== install -Dm644 COPYING "$pkgdir/share/licenses/COPYING"
+--
+;; The plan named $pkgdir, which nothing sets, so the source project's builder
+;; installed this to /share/licenses; the license belongs in the package.
+(b:copy (b:join b.src "COPYING") (.. b.prefix "/share/licenses/COPYING"))
+(b:chmod (.. b.prefix "/share/licenses/COPYING") "644")
+
+== install -Dm644 COPYING "${pkgdir}/share/COPYING"
+--
+;; The plan named $pkgdir, which nothing sets, so the source project's builder
+;; installed this to /share; the license belongs in the package.
+(b:copy (b:join b.src "COPYING") (.. b.prefix "/share/COPYING"))
+(b:chmod (.. b.prefix "/share/COPYING") "644")
+
+== export GEM_HOME=${pkg_path}/vendor/bundle
+--
+;; The plan named $pkg_path, which nothing sets, so GEM_HOME was /vendor/bundle;
+;; bundle installs into ./vendor/bundle, so that is GEM_HOME here.
+(b:env "GEM_HOME" (b:join b.src "vendor/bundle"))
+
+== for d in src/azure-cli src/azure-cli-telemetry src/azure-cli-core src/azure-cli-nspkg src/azure-cli-command_modules-nspkg src/command_modules/azure-cli-*/ ; do
+    pushd "$d" > /dev/null
+    build_line "Building $d"
+    python setup.py bdist_wheel -d "$HAB_CACHE_SRC_PATH/$pkg_dirname/_build"
+    popd > /dev/null
+  done
+--
+(local dirs ["src/azure-cli" "src/azure-cli-telemetry" "src/azure-cli-core" "src/azure-cli-nspkg"
+             "src/azure-cli-command_modules-nspkg"])
+(each [_ m (ipairs (b:glob (b:join b.src "src/command_modules") "azure-cli-*"))]
+  (table.insert dirs m))
+(each [_ d (ipairs dirs)]
+  (b:log (.. "Building " d))
+  (b:run ["python" "setup.py" "bdist_wheel" "-d" (b:join b.src "_build")] {:cwd d}))
+
+== $_tar_cmd xf "${CACHE_PATH}/${pkg_name}_${pkg_version}_src.tar" -C "${CACHE_PATH}" --strip-components=1
+--
+;; $_tar_cmd was the source project's builder's tar.
+(b:run ["tar" "xf" (b:join b.src (.. b.name "_" b.version "_src.tar")) "-C" b.src "--strip-components=1"])
+
+== sed \
+    -e "/^dist_man1_MANS =/ s,^.*$,dist_man1_MANS = $(libtoolize_1),g" \
+    -i Makefile.in
+--
+;; The plan named $(libtoolize_1), which no plan defines, so the shell put nothing
+;; there: the man page is dropped, and help2man with it.
+(let [text (b:read (b:join b.src "Makefile.in"))]
+  (b:write (b:join b.src "Makefile.in")
+           (pick-values 1 (: text :gsub "\ndist_man1_MANS =[^\n]*" "\ndist_man1_MANS = "))))
+
+== find tests -type f \
+    | xargs sed -e "s,/bin/pwd,$(pkg_path_for coreutils)/bin/pwd,g" -i
+--
+;; find tests -type f | xargs sed: each file under tests, /bin/pwd made coreutils' pwd.
+(let [pwd (.. (b:path_for "coreutils") "/bin/pwd")]
+  (each [_ f (ipairs (b:find (b:join b.src "tests") "*"))]
+    (when (not (b:exists (b:join f ".")))
+      (let [text (b:read f)
+            (fixed n) (: text :gsub "/bin/pwd" (pick-values 1 (: pwd :gsub "%%" "%%%%")))]
+        (when (> n 0) (b:write f fixed))))))
+
+== if [[ ! -f /etc/services ]]; then
+    cp -v "$(pkg_path_for iana-etc)/etc/services" /etc/services
+    local clean_services=true
+  fi
+--
+;; The plan copied iana-etc's services file to /etc/services for the tests when it
+;; was missing. A Dojo build writes nothing outside itself; the tests need a
+;; services file where the build runs.
+
+== if [[ -n "$clean_services" ]]; then
+    rm -fv /etc/services
+  fi
+--
+
+== if [[ ! -f /etc/protocols ]]; then
+    cp -v "$(pkg_path_for iana-etc)/etc/protocols" /etc/protocols
+    local clean_protocols=true
+  fi
+--
+;; The plan copied iana-etc's protocols file to /etc/protocols for the tests when
+;; it was missing. A Dojo build writes nothing outside itself; the tests need a
+;; protocols file where the build runs.
+
+== if [[ -n "$clean_protocols" ]]; then
+    rm -fv /etc/protocols
+  fi
+--
+
+== find "$path" -name "$fileending" -type f \
+    -exec grep -Iq . {} \; \
+    -exec sh -c 'head -n 1 "$1" | grep -q "$2"' _ {} "$int" \; \
+    -exec sh -c 'echo "$1"' _ {} \; > /tmp/fix_interpreter_in_path_list
+--
+;; Each text file under path named like fileending whose #! names int, pointed
+;; at the dependency's: b:fix_interpreter rewrites only a #! line that names it.
+(each [_ f (ipairs (b:find v-path v-fileending))]
+  (when (not (b:exists (b:join f ".")))
+    (b:fix_interpreter [f] v-pkg v-int)))
+
+== find "${path}" -name "${fileending}" -type f \
+    -exec grep -Iq . {} \; \
+    -exec sh -c 'head -n 1 "$1" | grep -q "$2"' _ {} "${int}" \; \
+    -exec sh -c 'echo "$1"' _ {} \; > /tmp/fix_interpreter_in_path_list
+--
+;; Each text file under path named like fileending whose #! names int, pointed
+;; at the dependency's: b:fix_interpreter rewrites only a #! line that names it.
+(each [_ f (ipairs (b:find v-path v-fileending))]
+  (when (not (b:exists (b:join f ".")))
+    (b:fix_interpreter [f] v-pkg v-int)))
+
+== grep -v '^ *#' < /tmp/fix_interpreter_in_path_list | while IFS= read -r line
+  do
+    fix_interpreter "$line" "$pkg" "$int"
+  done
+--
+;; The files the find above listed are fixed there.
+
+== grep -v '^ *#' < /tmp/fix_interpreter_in_path_list | while IFS= read -r line
+  do
+    fix_interpreter "${line}" "${pkg}" "${int}"
+  done
+--
+;; The files the find above listed are fixed there.
+
+== rm -rf /tmp/fix_interpreter_in_path_list
+--
+
+
+== for folder in bin include lib; do
+    find "$pkg_prefix/$folder" -type f -perm -u+w -print0 2> /dev/null \
+      | while read -rd '' f; do
+        case "$(file -bi "$f")" in
+          *application/x-executable*) strip --strip-all "$f";;
+          *application/x-sharedlib*) strip --strip-unneeded "$f";;
+          *application/x-archive*) strip --strip-debug "$f";;
+          *) continue;;
+          esac
+      done
+  done
+--
+(each [_ folder (ipairs ["bin" "include" "lib"])]
+  (when (b:exists (b:join b.prefix folder))
+    (each [_ f (ipairs (b:find (b:join b.prefix folder) "*"))]
+      (when (not (b:exists (b:join f ".")))
+        (let [kind (b:capture ["file" "-bi" f])]
+          (if (: kind :find "application/x-executable" 1 true) (b:run ["strip" "--strip-all" f])
+              (: kind :find "application/x-sharedlib" 1 true) (b:run ["strip" "--strip-unneeded" f])
+              (: kind :find "application/x-archive" 1 true) (b:run ["strip" "--strip-debug" f])))))))
+
+== if [[ ! -f "/bin/rm" ]]; then
+    hab pkg binlink core/coreutils rm --dest /bin
+    BINLINKED_RM=true
+  fi
+--
+;; The plan linked coreutils' rm to /bin/rm, which OpenSSL's build scripts name.
+;; Its comment held that the scripts must not change for the FIPS build; the
+;; validated part is openssl-fips's canister, which this does not touch.
+(use-dependency-path b "/bin/rm" (b:path_for "karate/coreutils" "bin/rm"))
+
+== if [[ $BINLINKED_RM == true ]]; then
+    rm -f /bin/rm
+  fi
+--
+
+== PLAN_CONTEXT="$(abspath "$PLAN_CONTEXT/../openssl")" _common_prepare
+--
+;; The plan read openssl's ca-dir.patch from beside it; a build reads only its own
+;; plan's directory, which holds a copy.
+(v--common-prepare b)
+
+== for f in $pkg_prefix/bin/* $pkg_prefix/pkg/tool/linux_$GOARCH/*; do
+    strip -s "$f"
+  done
+--
+(each [_ f (ipairs (b:glob (b:join b.prefix "bin") "*"))]
+  (b:run ["strip" "-s" f]))
+(each [_ f (ipairs (b:glob (.. b.prefix "/pkg/tool/linux_" (or (b:getenv "GOARCH") "")) "*"))]
+  (b:run ["strip" "-s" f]))
+
+== for l in $(busybox --list); do
+    ln -sv busybox "$pkg_prefix/bin/$l"
+  done
+--
+(each [l (string.gmatch (b:capture ["busybox" "--list"]) "%S+")]
+  (b:symlink "busybox" (.. b.prefix "/bin/" l)))
+
+== if actual=$(expect -c "spawn ls" | sed 's/\r$//'); then
+    if [[ "$expected" != "$actual" ]]; then
+      exit_with "Expected out from '$cmd' was: '$expected', actual: '$actual'" 1
+    fi
+  else
+    exit_with "PTYs may not be working properly, aborting" 1
+  fi
+--
+;; The output of expect, each line's carriage return removed.
+(let [actual (pick-values 1 (: (: (b:capture ["expect" "-c" "spawn ls"]) :gsub "\r\n" "\n") :gsub "\r$" ""))]
+  (when (not= v-expected actual)
+    (error (.. "Expected out from '" v-cmd "' was: '" v-expected "', actual: '" actual "'"))))
+
+== find "$pkg_prefix/lib" -name "*.so" | xargs -I '%' patchelf --set-rpath "$LD_RUN_PATH" %
+--
+(each [_ f (ipairs (b:find (b:join b.prefix "lib") "*.so"))]
+  (b:run ["patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") f]))
+
+== find "$pkg_prefix/include" \
+    \( -name ..install.cmd -o -name .install \) \
+    -print0 \
+  | xargs -0 rm -v
+--
+(each [_ pattern (ipairs ["..install.cmd" ".install"])]
+  (each [_ f (ipairs (b:find (b:join b.prefix "include") pattern))]
+    (b:remove f)))
+
+== curl -L http://cpanmin.us | perl - App::cpanminus
+--
+;; The plan piped the live cpanmin.us script into perl, which installed the newest
+;; App::cpanminus from CPAN. The checksummed source is App::cpanminus at this
+;; version; with local::lib's settings it installs into the prefix.
+(b:run ["perl" "Makefile.PL"])
+(b:run ["make" "install"])
+
+== PLAN_CONTEXT="$PLAN_CONTEXT/../busybox" _create_config
+--
+;; The plan read busybox's config from beside it; a build reads only its own
+;; plan's directory, which holds a copy.
+(v--create-config b)
+
+== for header in "gcc/config/"*-gnu.h "gcc/config/"*"/"*.h; do
+    grep -q LIBC_DYNAMIC_LINKER "$header" || continue
+    build_line "  Fixing $header"
+    sed -i "$header" \
+      -e 's|define[[:blank:]]*\([UCG]\+\)LIBC_DYNAMIC_LINKER\([0-9]*\)[[:blank:]]"\([^\"]\+\)"$|define \1LIBC_DYNAMIC_LINKER\2 "'"${glibc}"'\3"|g' \
+      -e 's|/lib64/ld-linux-|/lib/ld-linux-|g'
+  done
+--
+;; Each header that names LIBC_DYNAMIC_LINKER: the dynamic linker's path is glibc's.
+(let [config (b:join b.src "gcc/config")
+      headers (b:glob config "*-gnu.h")
+      glibc (pick-values 1 (v-glibc:gsub "%%" "%%%%"))]
+  (each [_ d (ipairs (b:glob config "*"))]
+    (when (b:exists (b:join d "."))
+      (each [_ h (ipairs (b:glob d "*.h"))] (table.insert headers h))))
+  (each [_ header (ipairs headers)]
+    (let [text (b:read header)]
+      (when (text:find "LIBC_DYNAMIC_LINKER" 1 true)
+        (b:log (.. "  Fixing " header))
+        (let [ends (= (text:sub -1) "\n") out []]
+          (each [line (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
+            (let [linked (pick-values 1 (line:gsub "define[ \t]*([UCG]+)LIBC_DYNAMIC_LINKER(%d*)[ \t]\"([^\\\"]+)\"$"
+                                                   (.. "define %1LIBC_DYNAMIC_LINKER%2 \"" glibc "%3\"")))]
+              (table.insert out (pick-values 1 (linked:gsub "/lib64/ld%-linux%-" "/lib/ld-linux-")))))
+          (b:write header (.. (table.concat out "\n") (if ends "\n" ""))))))))
+
+== grep -lr /usr/bin/file ./* | while read -r f; do
+    sed -i -e "s,/usr/bin/file,file,g" "$f"
+  done
+--
+;; Each file under the source (but its top-level dot files) naming /usr/bin/file names file.
+(each [_ f (ipairs (b:find b.src "*"))]
+  (when (and (not (b:exists (b:join f "."))) (not (: (f:sub (+ (length b.src) 2)) :match "^%.")))
+    (let [(fixed n) (: (b:read f) :gsub "/usr/bin/file" "file")]
+      (when (> n 0) (b:write f fixed)))))
+
+== ulimit -s 32768
+--
+;; The plan raised the stack limit to 32 MiB for one test set that exhausts it. A
+;; plan cannot set a limit; those tests' failures are tolerated, as all are here.
+
+== for bin in "$pkg_prefix/bin/"*-gcc*; do
+      if cmp -s "$pkg_prefix/bin/gcc" "$bin"; then
+        ln -sfnv gcc "$bin"
+      fi
+    done
+--
+;; Each hard link of gcc made a symbolic one.
+(let [gcc (b:read (.. b.prefix "/bin/gcc"))]
+  (each [_ bin (ipairs (b:glob (.. b.prefix "/bin") "*-gcc*"))]
+    (when (= gcc (b:read bin))
+      (b:remove bin)
+      (b:symlink "gcc" bin))))
+
+== for bin in "$pkg_prefix/bin/c++" "$pkg_prefix/bin/"*-c++* "$pkg_prefix/bin/"*-g++*; do
+      if cmp -s "$pkg_prefix/bin/g++" "$bin"; then
+        ln -sfn g++ "$bin"
+      fi
+    done
+--
+;; Each hard link of g++ made a symbolic one.
+(let [gxx (b:read (.. b.prefix "/bin/g++"))
+      bins [(.. b.prefix "/bin/c++")]]
+  (each [_ pattern (ipairs ["*-c++*" "*-g++*"])]
+    (each [_ bin (ipairs (b:glob (.. b.prefix "/bin") pattern))] (table.insert bins bin)))
+  (each [_ bin (ipairs bins)]
+    (when (and (b:exists bin) (= gxx (b:read bin)))
+      (b:remove bin)
+      (b:symlink "g++" bin))))
+
+== if [[ ! -r /bin/pwd ]]; then
+    if [[ "$STUDIO_TYPE" = "stage1" ]]; then
+      ln -sv /tools/bin/pwd /bin/pwd
+    else
+      ln -sv "$(pkg_path_for coreutils)/bin/pwd" /bin/pwd
+    fi
+    _clean_pwd=true
+  fi
+--
+;; The plan linked coreutils' pwd to /bin/pwd (/tools' in the source project's
+;; stage1 studio, which Dojo does not have).
+(use-dependency-path b "/bin/pwd" (b:path_for "karate/coreutils" "bin/pwd"))
+
+== if [[ ! -r /bin/echo ]]; then
+      if [[ "$STUDIO_TYPE" = "stage1" ]]; then
+        ln -sv /tools/bin/echo /bin/echo
+      else
+        ln -sv "$(pkg_path_for coreutils)/bin/echo" /bin/echo
+      fi
+      _clean_echo=true
+    fi
+--
+;; The plan linked coreutils' echo to /bin/echo (/tools' in the source project's
+;; stage1 studio, which Dojo does not have).
+(use-dependency-path b "/bin/echo" (b:path_for "karate/coreutils" "bin/echo"))
+
+== if [[ ! -r /bin/cat ]]; then
+      ln -sv "$(command -v cat)" /bin/cat
+      _clean_cat=true
+    fi
+--
+;; The plan linked the cat on PATH, coreutils', to /bin/cat.
+(use-dependency-path b "/bin/cat" (b:path_for "karate/coreutils" "bin/cat"))
+
+== if [[ "$STUDIO_TYPE" = "stage1" ]]; then
+      if [ -f /tools/lib/libgcc_s.so.1 ]; then
+        cp -v /tools/lib/libgcc_s.so.1 "$pkg_prefix/lib/"
+        cp -av /tools/lib/libgcc_s.so "$pkg_prefix/lib/"
+      fi
+    fi
+--
+;; In the source project's stage1 studio, which Dojo does not have, the plan copied
+;; the bootstrap toolchain's libgcc_s into the package.
+
+== ln -sv $(ls -d $(pkg_path_for linux-headers)/include/* | grep -v 'scsi$') .
+--
+;; Each of linux-headers' include entries but scsi/, which glibc provides, linked here.
+(each [_ entry (ipairs (b:glob (.. (b:path_for "karate/linux-headers") "/include") "*"))]
+  (when (not= (entry:match "[^/]+$") "scsi")
+    (b:symlink entry (b:join (.. b.prefix "/include") (entry:match "[^/]+$")))))
+
+== (source "$PLAN_CONTEXT/../$plan/plan.sh"
+    pkg_filename="$(basename $pkg_source)"
+    pkg_dirname="${pkg_name}-${pkg_version}"
+    CACHE_PATH="$HAB_CACHE_SRC_PATH/$pkg_dirname"
+
+    build_line "Downloading $pkg_source"
+    do_download
+    build_line "Verifying $pkg_filename"
+    do_verify
+    build_line "Clean the cache"
+    do_clean
+    build_line "Unpacking $pkg_filename"
+    do_unpack
+    mv -v "$HAB_CACHE_SRC_PATH/$pkg_dirname" \
+      "$HAB_CACHE_SRC_PATH/$build_dirname/$plan"
+  )
+--
+;; The plan sourced the named plan to download and unpack its source into the
+;; build directory. glibc names only tzdata; these are its source and unpacking.
+(when (not= v-plan "tzdata")
+  (error (.. "extract_src: no source known for " v-plan)))
+(let [url "https://www.iana.org/time-zones/repository/releases/tzdata2018g.tar.gz"
+      dir (.. b.cache "/" b.name "-build/tzdata")]
+  (b:log (.. "Downloading " url))
+  (b:download url "02dfde534872f6513ae4553a3388fdae579441e31b862ea99170dfc447f46a16" "tzdata2018g.tar.gz")
+  (b:remove dir)
+  (b:mkdir dir)
+  (b:run ["tar" "xf" (.. b.cache "/tzdata2018g.tar.gz")] {:cwd dir}))
+
+== (source "$PLAN_CONTEXT/../../$plan/plan.sh"
+    pkg_filename="$(basename $pkg_source)"
+    pkg_dirname="${pkg_name}-${pkg_version}"
+    CACHE_PATH="$HAB_CACHE_SRC_PATH/$pkg_dirname"
+    build_line "Downloading $pkg_source"
+    do_download
+    build_line "Verifying $pkg_filename"
+    do_verify
+    build_line "Clean the cache"
+    do_clean
+    build_line "Unpacking $pkg_filename"
+    do_unpack
+    mv -v "$HAB_CACHE_SRC_PATH/$pkg_dirname" "$HAB_CACHE_SRC_PATH/$build_dirname/$plan"
+  )
+--
+;; The plan sourced the named plan to download and unpack its source into the
+;; build directory. glibc names only tzdata; these are its source and unpacking.
+(when (not= v-plan "tzdata")
+  (error (.. "extract_src: no source known for " v-plan)))
+(let [url "https://www.iana.org/time-zones/repository/releases/tzdata2018g.tar.gz"
+      dir (.. b.cache "/" b.name "-build/tzdata")]
+  (b:log (.. "Downloading " url))
+  (b:download url "02dfde534872f6513ae4553a3388fdae579441e31b862ea99170dfc447f46a16" "tzdata2018g.tar.gz")
+  (b:remove dir)
+  (b:mkdir dir)
+  (b:run ["tar" "xf" (.. b.cache "/tzdata2018g.tar.gz")] {:cwd dir}))
+
+== if [[ ! -e /bin/pwd ]]; then
+    hab pkg binlink core/coreutils pwd -d /bin
+    _pwd_binlink=true
+  fi
+--
+;; The plan linked coreutils' pwd to /bin/pwd for the build. Linux 4.16.7 names
+;; /bin/pwd only in its documentation, so nothing takes its place.
+
+== if [[ -v $_pwd_binlink ]]; then
+    rm -f /bin/pwd
+  fi
+--
+
+== trimmed=$(trim "$data")
+--
+(set v-trimmed (v-data:match "^%s*(.-)%s*$"))
+
+== for dep in "${pkg_build_deps[@]}"; do
+    local dep_path
+    dep_path=$(pkg_path_for "$dep");
+
+    if [[ -f "$dep_path/LD_RUN_PATH" ]]; then
+      local data
+      local trimmed
+      data=$(cat "$dep_path/LD_RUN_PATH")
+      trimmed=$(trim "$data")
+      ld_library_path_part+=("$trimmed")
+    fi
+  done
+--
+;; Each build dependency's LD_RUN_PATH, trimmed.
+(each [_ dep (ipairs ["karate/bc" "karate/bison" "karate/diffutils" "karate/elfutils" "karate/findutils" "karate/gcc"
+                      "karate/inetutils" "karate/make" "karate/perl" "karate/openssl"])]
+  (let [file (.. (b:path_for dep) "/LD_RUN_PATH")]
+    (when (b:exists file)
+      (table.insert v-ld-library-path-part ((b:read file):match "^%s*(.-)%s*$")))))
+
+== LD_LIBRARY_PATH=$(join_by ':' "${ld_library_path_part[@]}")
+--
+(b:env "LD_LIBRARY_PATH" (table.concat v-ld-library-path-part ":"))
+
+== install -m0755 dist/Linux*/bin/{*util,derdump,pp,shlibsign,signtool,signver,ssltap,vfychain,vfyserv} "${pkg_prefix}"/bin
+--
+;; Each tool from the build's dist/Linux* directory, executable, into bin.
+(each [_ dist (ipairs (b:glob (b:join b.src "dist") "Linux*"))]
+  (let [tools (b:glob (.. dist "/bin") "*util")]
+    (each [_ name (ipairs ["derdump" "pp" "shlibsign" "signtool" "signver" "ssltap" "vfychain" "vfyserv"])]
+      (table.insert tools (.. dist "/bin/" name)))
+    (each [_ f (ipairs tools)]
+      (b:copy f (.. b.prefix "/bin/" (f:match "[^/]+$")))
+      (b:chmod (.. b.prefix "/bin/" (f:match "[^/]+$")) "755"))))
+
+== install -m0755 dist/Linux*/lib/*.so "${pkg_prefix}"/lib
+--
+;; Each shared library from the build's dist/Linux* directory, into lib.
+(each [_ dist (ipairs (b:glob (b:join b.src "dist") "Linux*"))]
+  (each [_ f (ipairs (b:glob (.. dist "/lib") "*.so"))]
+    (b:copy f (.. b.prefix "/lib/" (f:match "[^/]+$")))
+    (b:chmod (.. b.prefix "/lib/" (f:match "[^/]+$")) "755")))
+
+== install -m0644 dist/Linux*/lib/{*.chk,libcrmf.a} "${pkg_prefix}"/lib
+--
+;; Each library check file and libcrmf.a from the build's dist/Linux* directory, into lib.
+(each [_ dist (ipairs (b:glob (b:join b.src "dist") "Linux*"))]
+  (let [files (b:glob (.. dist "/lib") "*.chk")]
+    (table.insert files (.. dist "/lib/libcrmf.a"))
+    (each [_ f (ipairs files)]
+      (b:copy f (.. b.prefix "/lib/" (f:match "[^/]+$")))
+      (b:chmod (.. b.prefix "/lib/" (f:match "[^/]+$")) "644"))))
+
+== find "$pkg_prefix/lib" -name "*.so" -print0 \
+    | xargs -0 -I '%' patchelf \
+      --set-rpath "$LD_RUN_PATH" \
+      %
+--
+(each [_ f (ipairs (b:find (b:join b.prefix "lib") "*.so"))]
+  (b:run ["patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") f]))
+
+== for i in $(seq 0 $((${#_target_sources[@]} - 1))); do
+    dir="$(basename "${_target_sources[$i]/%.tar.gz/}")"
+    pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname/$dir" > /dev/null
+      build_line "Installing $dir target for Rust"
+      ./install.sh --prefix="$("$pkg_prefix/bin/rustc" --print sysroot)"
+    popd > /dev/null
+  done
+--
+;; Each extra target's standard library, unpacked beside the source, installed into rustc's sysroot.
+(let [sysroot (b:capture [(.. b.prefix "/bin/rustc") "--print" "sysroot"])]
+  (each [_ source (ipairs ["https://static.rust-lang.org/dist/rust-std-1.33.0-x86_64-unknown-linux-musl.tar.gz"])]
+    (let [dir (pick-values 1 (: (source:match "[^/]+$") :gsub "%.tar%.gz$" ""))]
+      (b:log (.. "Installing " dir " target for Rust"))
+      (b:run ["./install.sh" (.. "--prefix=" sysroot)] {:cwd (b:join b.src dir)}))))
+
+== find . -type f -executable \
+    -exec sh -c 'file -i "$1" | grep -q "x-executable; charset=binary"' _ {} \; \
+    -print \
+    -exec patchelf --interpreter "$(pkg_path_for glibc)/lib/ld-linux-x86-64.so.2" {} \;
+--
+;; Each ELF executable under the source, its interpreter glibc's.
+(each [_ f (ipairs (b:find b.src "*"))]
+  (when (and (not (b:exists (b:join f ".")))
+             (: (b:capture ["file" "-i" f]) :find "x-executable; charset=binary" 1 true))
+    (b:log f)
+    (b:run ["patchelf" "--interpreter" (.. (b:path_for "karate/glibc") "/lib/ld-linux-x86-64.so.2") f])))
+
+== GHC_LIB_PATHS=$(find . -name '*.so' -printf '%h\n' | uniq)
+--
+;; The directories under the prefix holding shared libraries, each once.
+(set v-ghc-lib-paths [])
+(let [seen {}]
+  (each [_ f (ipairs (b:find b.prefix "*.so"))]
+    (let [dir (f:match "^(.*)/[^/]+$")]
+      (when (not (. seen dir))
+        (tset seen dir true)
+        (table.insert v-ghc-lib-paths dir)))))
+
+== find . -type f -executable \
+    -exec sh -c 'file -i "$1" | grep -q "x-executable; charset=binary"' _ {} \; \
+    -print \
+    -exec bash -c 'ghc_patch_rpath $1 $2 ' _ "{}" "$GHC_LIB_PATHS" \;
+--
+;; Each ELF executable in the prefix finds glibc's libraries and, relative to
+;; itself ($ORIGIN), the package's own.
+(fn relative [from to]
+  (let [split (fn [p] (icollect [part (p:gmatch "[^/]+")] part))
+        a (split from)
+        c (split to)]
+    (var i 1)
+    (while (and (<= i (length a)) (<= i (length c)) (= (. a i) (. c i)))
+      (set i (+ i 1)))
+    (let [out []]
+      (for [_ i (length a)] (table.insert out ".."))
+      (for [j i (length c)] (table.insert out (. c j)))
+      (if (= (length out) 0) "." (table.concat out "/")))))
+(each [_ f (ipairs (b:find b.prefix "*"))]
+  (when (and (not (b:exists (b:join f ".")))
+             (: (b:capture ["file" "-i" f]) :find "x-executable; charset=binary" 1 true))
+    (b:log f)
+    (let [dir (f:match "^(.*)/[^/]+$")
+          origins (icollect [_ lib (ipairs v-ghc-lib-paths)] (.. "$ORIGIN/" (relative dir lib)))]
+      (b:run ["patchelf" "--set-rpath" (.. (or (b:getenv "LD_RUN_PATH") "") ":" (table.concat origins ":")) f]))))
+
+== PLAN_CONTEXT=$(abspath ../bash)
+--
+;; The plan pointed its plan directory at bash's; nothing it runs reads from there.
+
+== download_file "https://raw.github.com/technomancy/${pkg_name}/${pkg_version}/bin/lein-pkg" "lein"
+--
+;; Checked against the SHA-256 the plan's do_verify gave it.
+(b:download (.. "https://raw.github.com/technomancy/" b.name "/" b.version "/bin/lein-pkg")
+            "9108095b5f377bdfb630a5c65bd963ea288b11ab08e868473cbd7763eaa96472" "lein")

@@ -1,0 +1,8 @@
+{
+  "name": "hello-node",
+  "description": "A small app to test the Node scaffolding",
+  "license": "MIT",
+  "author": {"name": "Strip Mall Karate Company"},
+  "scripts": {"start": "node server.js"},
+  "dependencies": {"left-pad": "1.3.0"}
+}

@@ -4,7 +4,7 @@ Library for reading and writting files in the Tag Image File Format (TIFF)
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

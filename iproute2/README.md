@@ -4,7 +4,7 @@ Collection of utilities for controlling TCP/IP networking
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

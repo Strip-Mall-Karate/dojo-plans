@@ -4,7 +4,7 @@ This library contains the public client interface for NIS(YP) and NIS+ in a IPv6
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -1,6 +1,6 @@
 # Shield
 
-This is a habitat plan for SHIELD a standalone system that can perform backup and restore functions for a wide variety of pluggable data systems. Please checkout the [github repo](https://github.com/starkandwayne/shield) for more information on the internals and how to use it.
+This is a dojo plan for SHIELD a standalone system that can perform backup and restore functions for a wide variety of pluggable data systems. Please checkout the [github repo](https://github.com/starkandwayne/shield) for more information on the internals and how to use it.
 
 ## Dependencies
 - shield-proxy (packaged and run as side-car with shield)
@@ -11,12 +11,12 @@ This is a habitat plan for SHIELD a standalone system that can perform backup an
 First you will need to start postgresql to provide a persistent store for shield:
 
 ```
-hab start core/postgresql
+doj start karate/postgresql
 ```
 
 Then bring up the daemon via:
 ```
-hab start core/shield --peer <pg-host> --bind database:postgresql.default
+doj start karate/shield --peer <pg-host> --bind database:postgresql.default
 ```
 
 You can configure shield specific entities via the `shield` cli or by bringing up a `shield-agent` that will provision entities automaticaly.
@@ -26,7 +26,7 @@ cat <<EOF > agent-config.toml
 [schedules]
 auto = "daily 4am"
 EOF
-HAB_SHIELD_AGENT=$(cat agent-config.toml) hab start core/shield-agent --peer <shield-host> --bind daemon:shield.default
+DOJ_SHIELD_AGENT=$(cat agent-config.toml) doj start karate/shield-agent --peer <shield-host> --bind daemon:shield.default
 ```
 
 ## docker-compose example
@@ -49,7 +49,7 @@ services:
     image: starkandwayne/shield-agent
     command: "start starkandwayne/shield-agent --peer shield --bind daemon:shield.default"
     environment:
-      HAB_SHIELD_AGENT: |
+      DOJ_SHIELD_AGENT: |
         [schedules]
         daily='daily 4am'
         [retention-policies]
@@ -66,10 +66,10 @@ docker-compose up
 
 Once the containers have come up you can use the shield cli to check that the daily schedule was provisioned.
 ```
-$ shield create-backend hab https://localhost
-Successfully created backend 'hab', pointing to 'https://localhost'
+$ shield create-backend doj https://localhost
+Successfully created backend 'doj', pointing to 'https://localhost'
 
-Using https://localhost (hab) as SHIELD backend
+Using https://localhost (doj) as SHIELD backend
 $ shield schedules -k
 Name  Summary  Frequency / Interval (UTC)
 ====  =======  ==========================

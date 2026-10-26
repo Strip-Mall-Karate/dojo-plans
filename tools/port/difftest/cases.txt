@@ -1,0 +1,420 @@
+# Each case: `== name`, then `-- setup` (bash run first in both trees, with
+# $pkg_prefix set), then `-- body` (a callback body, run by bash in one tree
+# and translated to Fennel for the other). The body runs in the source
+# directory, as a callback did.
+
+== cp-file-into-dir
+-- setup
+echo tool > tool
+-- body
+mkdir -p "$pkg_prefix/bin"
+cp tool "$pkg_prefix/bin"
+
+== cp-r-tree
+-- setup
+mkdir -p share/a/b; echo x > share/a/b/f; echo y > share/top
+-- body
+cp -r share "$pkg_prefix/share"
+
+== cp-glob-into-dir
+-- setup
+echo 1 > a.conf; echo 2 > b.conf; echo 3 > c.txt
+-- body
+mkdir -p "$pkg_prefix/etc"
+cp ./*.conf "$pkg_prefix/etc/"
+
+== mv-and-rm
+-- setup
+echo keep > keep; echo gone > gone; mkdir -p d/e; echo z > d/e/f
+-- body
+mv keep kept
+rm -f gone
+rm -rf d
+rm -f does-not-exist
+
+== ln-s-and-rs
+-- setup
+mkdir -p p/bin; echo py > p/bin/python3.7
+-- body
+mkdir -p "$pkg_prefix/bin"
+cp p/bin/python3.7 "$pkg_prefix/bin/python3.7"
+ln -rs "$pkg_prefix/bin/python3.7" "$pkg_prefix/bin/python"
+ln -sf python3.7 "$pkg_prefix/bin/py"
+
+== install-modes
+-- setup
+echo a > a; echo b > b
+-- body
+install -D a "$pkg_prefix/bin/a"
+mkdir -p "$pkg_prefix/share"
+install -m 0644 b "$pkg_prefix/share"
+install -Dm600 b "$pkg_prefix/etc/secret"
+
+== chmod-octal
+-- setup
+echo s > script
+-- body
+chmod 0750 script
+
+== sed-first-per-line
+-- setup
+printf 'aa aa\nbb aa\naa\n' > f
+-- body
+sed -i 's/aa/X/' f
+
+== sed-global
+-- setup
+printf 'a-b a-b\nc.d\n' > f
+-- body
+sed -i 's/a-b/Y/g' f
+
+== sed-anchors-and-dotstar
+-- setup
+printf '#zlib here\nkeep #zlib\n#other line\nfoo bar baz\n' > f
+-- body
+sed -i 's/^#zlib/zlib/' f
+sed -i 's/bar.*/END/' f
+
+== sed-ampersand-and-class
+-- setup
+printf 'v1 v22 x\n' > f
+-- body
+sed -i 's/v[0-9]*/<&>/g' f
+
+== heredoc-write
+-- setup
+mkdir -p etc
+-- body
+cat > etc/conf <<EOF
+name=$pkg_name
+literal \$HOME
+EOF
+
+== heredoc-quoted
+-- setup
+mkdir -p etc
+-- body
+cat <<'EOF' > etc/raw
+keep $pkg_name as written
+EOF
+
+== echo-redirects
+-- setup
+echo first > log
+-- body
+echo "second line" >> log
+echo "fresh" > new
+
+== for-relative-glob
+-- setup
+echo 1 > tool-a; echo 2 > tool-b; echo 3 > other
+-- body
+mkdir -p "$pkg_prefix/bin"
+for bin in tool-*; do
+  install -v -D "$bin" "$pkg_prefix/bin/$bin"
+done
+
+== for-list
+-- setup
+true
+-- body
+for d in alpha beta; do
+  mkdir -p "$pkg_prefix/share/$d"
+done
+
+== if-file-test
+-- setup
+echo here > present
+-- body
+if [[ -f present ]]; then
+  echo yes > answer
+else
+  echo no > answer
+fi
+if [ -d nowhere ]; then
+  echo wrong > answer2
+fi
+
+== list-and-or
+-- setup
+echo x > there
+-- body
+[[ -f there ]] && cp there copied
+[[ -f missing ]] || echo absent > note
+
+== pushd-relative-run
+-- setup
+mkdir -p sub; echo inner > sub/in.txt
+-- body
+pushd sub > /dev/null
+  cat in.txt > out.txt
+popd > /dev/null
+
+== local-vars-and-expansion
+-- setup
+true
+-- body
+local minor=3.7
+local major=${minor%.*}
+mkdir -p "$pkg_prefix/lib/python$minor" "$pkg_prefix/lib/v$major"
+
+== cp-onto-new-and-into-existing
+-- setup
+mkdir -p tree/x; echo t > tree/x/f; echo single > one
+-- body
+mkdir -p "$pkg_prefix/lib"
+cp -r tree "$pkg_prefix/newname"
+cp -r tree "$pkg_prefix/lib"
+cp one "$pkg_prefix/lib"
+cp one "$pkg_prefix/renamed"
+
+== sed-with-variables
+-- setup
+printf '#!/usr/bin/perl -w\nrun /usr/bin/perl here\nkeep 100%% of it\n' > script
+-- body
+local perl_bin="/opt/perl.5/bin/perl"
+sed -i "s,/usr/bin/perl,$perl_bin,g" script
+sed -i -e "s|keep \(.*\)|pct=$pkg_name 100%|" script
+
+== sed-groups-and-backrefs
+-- setup
+printf 'ln -s -f $(PREFIX)/bin/tool\nCFLAGS = -O2 -g\nx-y-z\n' > Makefile
+-- body
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed -i -r 's/^(CFLAGS) = (.*)$/\1 := \2 -fPIC/' Makefile
+sed -i 's/\([a-z]\)-\([a-z]\)/\2+\1/g' Makefile
+
+== glob-after-quoted-dir-and-array-for
+-- setup
+mkdir -p lib; echo a > lib/a.so; echo b > lib/b.so; echo c > lib/c.a
+-- body
+local dir="lib"
+local names=(one two)
+mkdir -p "$pkg_prefix/lib"
+cp "$dir/"*.so "$pkg_prefix/lib"
+for n in ${names[@]}; do
+  mkdir -p "${pkg_prefix:?}/share/$n"
+done
+sed -i 's#\#include#include#' lib/a.so
+
+== chmod-symbolic
+-- setup
+echo s > script; chmod 0644 script; echo d > data; chmod 0640 data; mkdir -p tree; chmod 0700 tree
+-- body
+chmod +x script
+chmod o+r data
+chmod a+X tree
+
+== variable-set-inside-if
+-- setup
+echo present > marker
+-- body
+if [[ -f marker ]]; then
+  where="found"
+else
+  where="missing"
+fi
+echo "$where" > result
+
+== sed-line-commands
+-- setup
+printf 'first\nkeyboard_lookup_key x\nPATH=/a\nm64=../lib64\nlast\n' > f
+printf 'no newline at end' > g
+-- body
+sed -i '/keyboard_lookup_key/d' f
+sed -i '1iBuildFlavour = perf' f
+sed -i '/^PATH/ s/^/#/' f
+sed -i '/m64=/s/lib64/lib/' f
+sed -i '$a appended' f
+sed -i '2,3d' f
+sed -i 's/end/END/' g
+
+== subshell-and-grep
+-- setup
+mkdir -p sub; echo inner > sub/in.txt; printf 'version 1.2\n' > ver
+-- body
+( cd sub || exit
+  cp in.txt copy.txt
+)
+cp ver top-copy
+local v="1.2"
+cat ver | grep -q "$v"
+if echo "-I/x -L/y" | grep -q "^-I"; then
+  echo inc > found
+fi
+
+== tolerated-failure-and-sed-list
+-- setup
+seq 1 12 > numbers
+-- body
+false || true
+ls does-not-exist || :
+sed -i '2,3 d; 5 d; $ d' numbers
+
+== piped-while-read
+-- setup
+mkdir -p d; printf '#!/usr/bin/env node\n' > d/a; printf 'plain\n' > d/b; printf '#!/usr/bin/env node\n' > d/c
+-- body
+grep -rl '^#!/usr/bin/env' d | while read -r target; do
+  sed -e "s#/usr/bin/env node#/opt/node#" -i "$target"
+done
+
+== basename-dirname
+-- setup
+true
+-- body
+local p="/a/b/file.tar.gz"
+local q="tail/"
+echo "$(basename "$p") $(dirname "$p") $(basename "$q") $(dirname "$q")" > names
+
+== sed-alternation-address
+-- setup
+printf '#SSL=/usr\n#_ssl x\n#other\n#c -lssl\n' > Setup.dist
+-- body
+sed -i -re "/(SSL=|_ssl|-DUSE_SSL|-lssl).*/ s|^#||" Setup.dist
+
+== sed-repeated-single-group
+-- setup
+printf '    node "$@"\n\tnode x\nnodejs y\n' > node-gyp
+-- body
+sed -e "s#^\([[:space:]]\)\+node\([[:space:]]\)#\1/opt/bin/node\2#" -i node-gyp
+
+== glob-program-and-quoted-prefix-glob
+-- setup
+printf '#!/bin/sh\necho ran > ran.txt\n' > tool-1.run; chmod +x tool-1.run; mkdir -p sub; echo a > sub/rm-me-1.sh; echo b > sub/rm-me-2.sh; echo c > sub/keep.sh
+-- body
+./tool-*.run --flag
+local d="sub"
+rm -f "$d/rm-me-"*.sh
+
+== arrays-as-arguments-and-echo-sed
+-- setup
+true
+-- body
+local opts=(--one "two words" --three)
+printf '%s\n' "${opts[@]}" > args
+echo "joined ${opts[*]}" > joined
+local inc="-I/a/include -I/b/include"
+echo "$(echo "$inc" | sed -e "s@-I@@g")" > cleaned
+mkdir sub || true
+mkdir sub || true
+
+== text-fed-to-a-program
+-- setup
+printf 'old one\nsame\n' > target
+printf -- '--- target\n+++ target\n@@ -1,2 +1,2 @@\n-old one\n+@NEW@\n same\n' > tmpl.patch
+printf 'a\nb\nc\n' > three
+-- body
+sed -e "s,@NEW@,new $pkg_name,g" tmpl.patch | patch -p0
+cat three | sed -e 's/b/B/' | md5sum > sum
+md5sum < three > sum-plain
+sed 's/a/A/' three > three-up
+
+== sed-text-commands-and-intervals
+-- setup
+printf '#!/usr/bin/env python\nimport os\n' > virtualenv
+printf 'a=1\nPATH=/usr/bin\nb=2\n' > postfix-install
+printf '#!/usr/bin/env node\nx\n' > bin1
+printf 'one\ntwo\n' > spaced
+-- body
+local pp="/opt/lib/python; x"
+sed -i "2iimport sys; sys.path.append(\"$pp\")" virtualenv
+sed -i '/^PATH=/c\ ' postfix-install
+local shebang="#!/opt/node/bin/node"
+sed -e "s|^#!.\{0,\}\$|${shebang}|" -i bin1
+sed -i 's/o\+/0/' spaced
+sed -i '1a\  indented' spaced
+
+== perl-local-lib
+-- setup
+true
+-- body
+eval "$(perl -Mlocal::lib=/tmp/difftest-local-lib)"
+echo "$PERL5LIB|$PERL_LOCAL_LIB_ROOT|$PERL_MB_OPT|$PERL_MM_OPT" > perl-env
+
+== brace-expansion
+-- setup
+mkdir -p pkg/linux_amd64 pkg/tool; echo a > pkg/linux_amd64/a; echo t > pkg/tool/t
+mkdir -p man; echo 1 > man/dlltool.1; echo 2 > man/windres.1; echo 3 > man/keep.1
+-- body
+local arch=amd64
+mkdir -p "$pkg_prefix/pkg" "$pkg_prefix/bin"
+cp -r pkg/{linux_$arch,tool} "$pkg_prefix/pkg/"
+touch "$pkg_prefix/bin/"{bunzip2,bzcat,bzip2}
+rm -f "$pkg_prefix"/bin/{bunzip2,bzcat}
+rm -fv man/{dlltool,windres}*
+for b in {one,two}-x "{literal,braces}"; do
+  mkdir -p "$pkg_prefix/share/$b"
+done
+
+== nested-directory-changes
+-- setup
+mkdir -p build/target/deep; echo lic > LICENSE; echo inner > build/target/deep/f
+-- body
+local target=target
+cd "build/${target}"
+pushd deep > /dev/null
+cp f f2
+popd > /dev/null
+cd ../..
+install -Dm644 LICENSE "$pkg_prefix/share/licenses/license.txt"
+
+== gcc-hand-ports
+-- setup
+mkdir -p gcc/config/i386 gcc/config/arm .hidden sub
+printf '#define GLIBC_DYNAMIC_LINKER "/lib64/ld-linux-x86-64.so.2"\n#define UCLIBC_DYNAMIC_LINKER32 "/lib/ld-uClibc.so.0"\nother\n' > gcc/config/i386/linux64.h
+printf '#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.3"\n' > gcc/config/linux-gnu.h
+printf 'nothing here\n' > gcc/config/arm/plain.h
+printf 'run /usr/bin/file x\n' > sub/script; printf 'run /usr/bin/file x\n' > .hidden/script; printf 'caf\xe9 /usr/bin/file\n' > latin1
+mkdir -p bin; echo gcc-bin > bin/gcc; echo gcc-bin > bin/x86_64-gcc; echo other > bin/x86_64-gcc-ar
+echo gxx-bin > bin/g++; echo gxx-bin > bin/c++; echo gxx-bin > bin/x86_64-g++
+-- body
+local glibc="/opt/glibc%1"
+for header in "gcc/config/"*-gnu.h "gcc/config/"*"/"*.h; do
+    grep -q LIBC_DYNAMIC_LINKER "$header" || continue
+    build_line "  Fixing $header"
+    sed -i "$header" \
+      -e 's|define[[:blank:]]*\([UCG]\+\)LIBC_DYNAMIC_LINKER\([0-9]*\)[[:blank:]]"\([^\"]\+\)"$|define \1LIBC_DYNAMIC_LINKER\2 "'"${glibc}"'\3"|g' \
+      -e 's|/lib64/ld-linux-|/lib/ld-linux-|g'
+  done
+grep -lr /usr/bin/file ./* | while read -r f; do
+    sed -i -e "s,/usr/bin/file,file,g" "$f"
+  done
+mkdir -p "$pkg_prefix/bin"
+cp -a bin/. "$pkg_prefix/bin/"
+for bin in "$pkg_prefix/bin/"*-gcc*; do
+      if cmp -s "$pkg_prefix/bin/gcc" "$bin"; then
+        ln -sfnv gcc "$bin"
+      fi
+    done
+for bin in "$pkg_prefix/bin/c++" "$pkg_prefix/bin/"*-c++* "$pkg_prefix/bin/"*-g++*; do
+      if cmp -s "$pkg_prefix/bin/g++" "$bin"; then
+        ln -sfn g++ "$bin"
+      fi
+    done
+
+== ln-into-existing-directory
+-- setup
+mkdir -p d e; echo t > target
+-- body
+ln -s ../target d
+ln -sf ../target e
+ln -sf target newlink
+ln -s target newlink2
+ln -sv /etc/hostname .
+
+== ln-onto-a-directory-name
+-- setup
+mkdir -p lib
+-- body
+ln -sv lib "$pkg_prefix/lib64"
+mkdir -p "$pkg_prefix/bin"
+ln -sv ../lib "$pkg_prefix/bin"
+
+== lone-dollar
+-- setup
+printf 'HOSTLDFLAGS := x\nend\n' > Makefile
+-- body
+local extra="-L/opt/lib"
+sed -i "1s|$| $extra|" Makefile
+echo "cost: 5$ each" > price

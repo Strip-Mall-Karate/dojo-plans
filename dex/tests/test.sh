@@ -6,11 +6,11 @@ SKIPBUILD=${SKIPBUILD:-0}
 
 source "${TESTDIR}/helpers.bash"
 
-hab pkg install --binlink core/bats
+doj pkg install --binlink karate/bats
 
-hab pkg install core/busybox-static
-hab pkg binlink core/busybox-static nc
-hab pkg install -b core/jq-static core/curl
+doj pkg install karate/busybox-static
+doj pkg binlink karate/busybox-static nc
+doj pkg install -b karate/jq-static karate/curl
 
 # Wait for supervisor to start
 echo "Waiting for supervisor to start"
@@ -18,7 +18,7 @@ wait_listen tcp 9632 30
 
 source "${PLANDIR}/plan.sh"
 # Unload the service if its already loaded.
-hab svc unload "${HAB_ORIGIN}/${pkg_name}"
+doj svc unload "${DOJ_ORIGIN}/${pkg_name}"
 
 if [ "${SKIPBUILD}" -eq 0 ]; then
   set -e
@@ -29,8 +29,8 @@ if [ "${SKIPBUILD}" -eq 0 ]; then
 fi
 
 source "${PLANDIR}/results/last_build.env"
-hab pkg install --binlink --force "${PLANDIR}/results/${pkg_artifact}"
-hab svc load "${pkg_ident}"
+doj pkg install --binlink --force "${PLANDIR}/results/${pkg_artifact}"
+doj svc load "${pkg_ident}"
 
 # Wait for 5 seconds on first check, to ensure service is up.
 echo "Waiting for dex to start (5s)"

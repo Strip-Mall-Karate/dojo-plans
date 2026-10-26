@@ -148,8 +148,6 @@ plan_path = "composer"
 plan_path = "compositeproto"
 [concourse]
 plan_path = "concourse"
-[concourse-fly]
-plan_path = "concourse-fly"
 [consul]
 plan_path = "consul"
 [coreutils]
@@ -237,18 +235,12 @@ plan_path = "docker-compose"
 plan_path = "docutils"
 [dosfstools]
 plan_path = "dosfstools"
-[dotnet-472-dev-pack]
-plan_path = "dotnet-472-dev-pack"
 [dotnet-asp-core]
 path_plan = "dotnet-asp-core"
 [dotnet-core]
 plan_path = "dotnet-core"
-[dotnet-core-lts]
-plan_path = "dotnet-core-lts"
 [dotnet-core-sdk]
 plan_path = "dotnet-core-sdk"
-[dotnet-core-sdk-lts]
-plan_path = "dotnet-core-sdk-lts"
 [dovecot]
 plan_path = "dovecot"
 [doxygen]
@@ -435,8 +427,6 @@ plan_path = "goaccess"
 plan_path = "gocd-server"
 [googletest]
 plan_path = "googletest"
-[goreplay]
-plan_path = "gorplay"
 [govc]
 plan_path = "govc"
 [gox]
@@ -551,8 +541,6 @@ plan_path = "ipvsadm"
 plan_path = "jbigkit"
 [jdk7]
 plan_path = "jdk7"
-[jdk8]
-plan_path = "jdk8"
 [jemalloc]
 plan_path = "jemalloc"
 [jenkins]
@@ -571,8 +559,6 @@ plan_path = "journalbeat"
 plan_path = "jq-static"
 [jre7]
 plan_path = "jre7"
-[jre8]
-plan_path = "jre8"
 [jruby]
 plan_path = "jruby"
 [jruby1]
@@ -624,8 +610,6 @@ plan_path = "lcms2"
 plan_path = "leiningen"
 [leproxy]
 plan_path = "leproxy"
-[leptonica]
-plan_path = "leptonica"
 [less]
 plan_path = "less"
 [leveldb]
@@ -705,8 +689,6 @@ plan_path = "libnsl"
 plan_path = "libossp-uuid"
 [libpcap]
 plan_path = "libpcap"
-[libpciaccess]
-plan_path = "libpciaccss"
 [libpipeline]
 plan_path = "libpipeline"
 [libpng]
@@ -1119,8 +1101,6 @@ plan_path = "postgresql11-client"
 paths = [
   "postgresql11/*",
 ]
-[powershell]
-plan_path = "powershell"
 [procps-ng]
 plan_path = "procps-ng"
 [proj]
@@ -1282,16 +1262,8 @@ plan_path = "sassc"
 plan_path = "sbt"
 [scaffolding-base]
 plan_path = "scaffolding-base"
-[scaffolding-chef]
-plan_path = "scaffolding-chef"
 [scaffolding-go]
 plan_path = "scaffolding-go"
-[scaffolding-go17]
-plan_path = "scaffolding-go17"
-[scaffolding-gradle]
-plan_path = "scaffolding-gradle"
-[scaffolding-inspec]
-plan_path = "scaffolding-inspec"
 [scaffolding-node]
 plan_path = "scaffolding-node"
 [scaffolding-ruby]
@@ -1368,8 +1340,6 @@ plan_path = "tcpdump"
 plan_path = "telegraf"
 [terraform]
 plan_path = "terraform"
-[tesseract]
-plan_path = "tesseract"
 [texinfo]
 plan_path = "texinfo"
 [tmux]

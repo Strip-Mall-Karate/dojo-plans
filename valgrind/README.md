@@ -4,7 +4,7 @@ An instrumentation framework for building dynamic analysis tools
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

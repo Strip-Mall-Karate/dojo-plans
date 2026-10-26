@@ -15,9 +15,9 @@ cd {{pkg.path}} || exit
 
 if [ "$(whoami)" = "root" ]; then
   exec chpst \
-    -U hab:hab \
-    -u hab:hab \
-    "{{pkgPathFor "core/node"}}/bin/node" run-server.js 2>&1
+    -U doj:doj \
+    -u doj:doj \
+    "{{pkgPathFor "karate/node"}}/bin/node" run-server.js 2>&1
 else
-  exec "{{pkgPathFor "core/node"}}/bin/node" run-server.js 2>&1
+  exec "{{pkgPathFor "karate/node"}}/bin/node" run-server.js 2>&1
 fi

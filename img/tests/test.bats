@@ -11,5 +11,5 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Build from scratch" {
-  run img build -t habitat/test-img .
+  run img build -t dojo-plans-test-img .
 }

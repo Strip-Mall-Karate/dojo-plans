@@ -1,4 +1,4 @@
-#!{{pkgPathFor "core/bash"}}/bin/bash -e
+#!{{pkgPathFor "karate/bash"}}/bin/bash -e
 #
 LOCAL_CONNECT_STRING="--defaults-extra-file={{pkg.svc_config_path}}/client.cnf"
 

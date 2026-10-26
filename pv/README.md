@@ -4,7 +4,7 @@ Pipe Viewer - is a terminal-based tool for monitoring the progress of data throu
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

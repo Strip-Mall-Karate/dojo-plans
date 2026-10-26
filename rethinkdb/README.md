@@ -1,4 +1,4 @@
-# Habitat package: RethinkDB
+# Dojo package: RethinkDB
 
 ## Description
 
@@ -7,7 +7,7 @@
 ## Usage
 
 ```
-hab svc load core/rethinkdb
+doj svc load karate/rethinkdb
 ```
 
 ## Bindings

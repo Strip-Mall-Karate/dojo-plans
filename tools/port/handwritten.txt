@@ -1,0 +1,25 @@
+# Plans written by hand in whole, which port.py leaves as they are.
+cacerts
+grub
+patchelf
+netcat-openbsd
+prometheus-cpp
+img
+rust-nightly
+cargo-nightly
+aws-cli
+boringssl
+phantomjs
+scaffolding-base
+scaffolding-go
+mage
+certstrap
+dep
+grpcurl
+opa
+helm
+foulkon
+traefik
+runc
+scaffolding-node
+scaffolding-ruby

@@ -4,7 +4,7 @@ GMP is a free library for arbitrary precision arithmetic, operating on signed in
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

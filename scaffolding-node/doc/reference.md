@@ -1,395 +1,271 @@
 # Node Scaffolding
 
-Node Scaffolding is a [Habitat][habitat] package which helps you build your Node.js-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Habitat Supervisor. The Supervisor will facilitate clustering, discovery of external services such as databases, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
+Node Scaffolding builds Node.js web applications, services and processes ("apps") into a Dojo package
+that the Supervisor runs. Start with the [quickstart](quickstart.md).
 
-For more about Habitat, you can check out [Try Habitat][try_hab]. For more about building your apps, read on!
+## The plan and the app
 
-## Use Node Scaffolding for Your App
-
-Check out the [Node Scaffolding QuickStart Guide](quickstart.md).
-
-## Scaffolding Detection
-
-To properly load and use this Scaffolding, the implementation looks for a [`package.json`][] in your app's root directory. Either directory structure is supported:
-
-A Plan in a `habitat/` subdirectory:
+A plan names the scaffolding and has no `:source`. The directory holding `plan.fnl` is the app, and it
+must have a [`package.json`][]:
 
 ```
 .
 ├── package.json
-└── habitat
-    └── plan.sh
+└── plan.fnl
 ```
 
-A Plan in the same directory as the `package.json`:
+The plan can also be `dojo/plan.fnl`, and the directory above `dojo/` is then the app:
 
 ```
 .
 ├── package.json
-└── plan.sh
+└── dojo
+    └── plan.fnl
 ```
 
-## package.json
+The plan names the scaffolding as a package, or as a table with settings:
 
-A [`package.json`][] must be present for this Scaffolding to function correctly. Note that this could even be an empty file if there are truly no Node dependencies.
-
-## Package Dependencies
-
-Most non-trivial apps need more than their own codebase to run correctly. Many have library dependencies which may require compiling native code. Others require certain software present for shelling out to (for example: ImageMagick). If more packages than the defaults are required, it is generally easy to add these to your Plan to fully describe your app's [build and runtime dependencies][12factor_dependencies].
-
-### Default Dependencies
-
-The following Habitat package dependencies will be injected into your app's Plan:
-
-* [`core/busybox-static`][]: Used by process bins to have valid [shebangs][] and a consistent minimal command set. Will be injected into your Plan's `pkg_deps` array.
-* `core/git`: Used to detect if your app exists within a git repository to better support installing your app while honoring the `.gitignore` file. Will be injected into your Plan's `pkg_build_deps` array.
-
-### Detected Dependencies
-
-Currently no additional Habitat packages are added based on the contents of the `package.json` file, although some may be added in the future.
-
-Additional checks performed by this scaffolding are:
-
-* The app's version of Node will be determined by checking several source locations. See the Node Version section for more details.
-* If your app's root directory contains a `yarn.lock` file, then [Yarn][]-related Habitat packages will be injected into your Plan's `pkg_build_deps` array for resolving and installing Node package dependencies. See the Package Manager section for more details.
-
-###  Specifying Run Dependencies in Your Plan
-
-Generally speaking, your app needs additional Habitat packages present at runtime for one of two reasons:
-
-1. Your app expects certain programs present which it may shell out or bind to in some way.
-2. Your `package.json` has Node package dependencies with native extensions, requiring additional linked libraries.
-
-In both cases, this means your app needs additional Habitat packages installed at runtime. For this, we use the `pkg_deps` array in your Plan.
-
-For this example, let's suppose your app resizes images to generate thumbnails by using the `mogrify` program from the [ImageMagick][] software. To add this package, update your `pkg_deps` line to the following below:
-
-```sh
-pkg_name=my_app
-pkg_origin=acmecorp
-pkg_version=0.1.0
- # ...
-pkg_scaffolding=core/scaffolding-node
-pkg_deps=(core/imagemagick)
+```fennel
+ :scaffolding "karate/scaffolding-node"
 ```
 
-###  Specifying Build Dependencies in Your Plan
-
-Finally, your app may require additional software present in order to **build** your app that is not present by default.
-
-For this example, let's suppose you are using a fictional "MakeSmall" project to minify css files. For this you need the tool's program "mksm", but only at build time. To add the package, update your `pkg_build_deps` line to the following below:
-
-```sh
-pkg_name=my_app
-pkg_origin=acmecorp
-pkg_version=0.1.0
- # ...
-pkg_scaffolding=core/scaffolding-node
-pkg_build_deps=(core/makesmall)
+```fennel
+ :scaffolding {:package "karate/scaffolding-node" :settings {:pkg_manager "yarn" :app_port 9000}}
 ```
 
-## Node Version
+## Settings
 
-### Selecting a Version of Node.js
+| Setting | Meaning | Default |
+| ------- | ------- | ------- |
+| `pkg_manager` | `"npm"` or `"yarn"`. Any other value is an error | see [Package manager](#package-manager) |
+| `node_pkg` | The Node package | see [Node version](#node-version) |
+| `app_port` | The app's port in `default.toml` | `8000` |
+| `env` | More variables for the app's environment, name to value | none |
+| `process_bins` | More processes, name to command. They win over detected ones | none |
 
-By default the latest version of the [`core/node`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of Node.js, there are three locations you can do this:
+## What the scaffolding adds to the plan
 
-1. Use the [`engines.node`][package_json_engines] data structure in your app's `package.json`
-  * you can specify the version in these formats "5.0.0", "v5.0.0", "=5.0.0", ">=5.0.0", ">5.0.0","<=5.0.0","<5.0.0"
-2. Write an [`.nvmrc`][] in your app's root directory with the version of Node.js to use
-3. Set the `scaffolding_node_pkg` variable in your Plan with a valid Habitat package identifier corresponding to a package with a `node` program
+- `:deps`: the Node package and `karate/busybox-static`, which the process bins use as their shell.
+- `:build_deps`: `karate/git`, and `karate/yarn` when the package manager is Yarn.
+- `:bin_dirs`: `bin` and `app/node_modules/.bin`.
+- `:exports`: `port`, from `app.port`.
+- `:svc`: `{:run "<name>-web"}`, unless the plan sets `:svc {:run ...}` itself.
+- From `package.json`: `description`, `license`, `author` (or `author.name`) as the maintainer, and
+  `homepage` as the upstream URL.
 
-A set Plan variable will win over setting a version in your `package.json` and over an `.nvmrc` files (and the `package.json` will win over an `.nvmrc` file), however it is recommended to the `package.json` strategy first as this is most portable across other Node app build and deployment solutions.
+Lists gain the scaffolding's entries, and whatever the plan sets itself stays the plan's.
 
-#### Specifying a Node Version in Your package.json
+### Run and build dependencies
 
-You can use the [`engines.node`][package_json_engines] data structure in your app's `package.json` to specify a version of Node. For example:
+The plan's own `:deps` and `:build_deps` add packages. An app that runs ImageMagick's `mogrify` at
+runtime needs it in `:deps`:
+
+```fennel
+{:name "my_app"
+ :origin "acmecorp"
+ :version "0.1.0"
+ :targets ["x86_64-linux"]
+ :scaffolding "karate/scaffolding-node"
+ :deps ["karate/imagemagick"]}
+```
+
+A tool needed only to build the app goes in `:build_deps`:
+
+```fennel
+ :build_deps ["karate/makesmall"]
+```
+
+## Node version
+
+The Node package is the first of:
+
+1. The `node_pkg` setting, a package with a `node` program.
+2. `engines.node` in `package.json`, matched against the Node packages this repository builds.
+3. The version in `.nvmrc`, as `karate/node/<version>`.
+4. `karate/node`.
+
+### engines.node
+
+The Node packages this repository builds are:
+
+| Package | Version |
+| ------- | ------- |
+| `karate/node6` | 6.14.4 |
+| `karate/node8` | 8.15.0 |
+| `karate/node9` | 9.0.0 |
+| `karate/node10` | 10.15.2 |
+| `karate/node` | 11.13.0 |
+
+`engines.node` is a version, optionally after one operator: `=`, `>=`, `<=`, `>` or `<`. A version with
+no operator, or with `=`, matches exactly. The scaffolding picks the newest package that meets the
+constraint, and fails when none does.
 
 ```json
 {
   "name": "my_app",
   "version": "0.1.0",
-  "engines": {
-    "node": "6.10.3"
-  },
-	...
+  "engines": { "node": "<=10.15.2" }
 }
 ```
 
-The value of this key will be used to determine the version of the Habitat [`core/node`][] package. For example, the `package.json` above would result in `core/node/6.10.3` being injected into your Plan's `pkg_deps` array.
+This picks `karate/node10`. Missing parts of a version count as 0, so `"8"` means exactly 8.0.0, which
+no package meets. Write `"8.15.0"` or `"<9"` for `karate/node8`. Other forms, such as `^8`, `~8.1`,
+`8.x` or a range with two bounds, are an error.
 
-Currently only releases of the [`core/node`] package will work so if further customizing is required you may need to specify a version of Node.js in your Plan as described below. Additionally, only exact versions of Node.js are currently supported, so version constraint expressions such as `">= 0.10.3"` will not work.
+### .nvmrc
 
-#### Specifying a Node Version in an .nvmrc File
-
-You can use an [`.nvmrc`][] file in your app's root directory to specify a version of Node. For example:
+When `package.json` has no `engines.node`, the contents of [`.nvmrc`][] give the package:
 
 ```
 > cat .nvmrc
-6.10.3
+11.13.0
 ```
 
-The value of the contents of this file will be used to determine the version of the Habitat [`core/node`][] package. For example, the `.nvmrc` file above would result in `core/node/6.10.3` being injected into your Plan's `pkg_deps` array.
+This gives `karate/node/11.13.0`. The version must be one that `karate/node` is built at.
 
-If a version of Node.js is detected in your project's `package.json`, the value in an `.nvmrc` will not be used.
+### The node_pkg setting
 
-Currently only releases of the [`core/node`][] package will work  so if further customizing is required you may need to specify a version of Node.js in your Plan as described below. Additionally, only exact version of Node.js are currently support, so version constraint expressions or wildcard versions will not work.
-
-#### Specifying a Node.js Version in Your Plan
-
-You can set the `scaffolding_node_pkg` variable in your Plan to specify a version of Node.js. For example:
-
-```sh
-pkg_name=my_app
-pkg_origin=acmecorp
-pkg_version=0.1.0
- # ...
-pkg_scaffolding=core/scaffolding-node
-
-scaffolding_node_pkg=core/node/5.6.0
+```fennel
+ :scaffolding {:package "karate/scaffolding-node" :settings {:node_pkg "karate/node8"}}
 ```
 
-The value of this variable will be used to determine the Habitat package to satisfy the role of your app's Node.js implementation.
+## Package manager
 
-## Package Manager
+The package manager is the first of:
 
-This scaffolding can detect and use either [npm][] or [Yarn][] to resolve, download, and install Node package dependencies. If the detection logic is not yielding your package manager of choice, you can set this in your Plan as described below.
+1. The `pkg_manager` setting.
+2. [npm][], when the app has a `package-lock.json`.
+3. [Yarn][], when the app has a `yarn.lock`.
+4. npm.
 
-### Detecting a Yarn-based Project
+An app with both a `package-lock.json` and a `yarn.lock` is an error.
 
-If a `yarn.lock` file is found in your app's root directory, then [Yarn][] will be used to install dependencies. An additional Habitat package of [`core/yarn`][] will be injected into your Plan's `pkg_build_deps` array.
+npm is the one that ships with the Node package. npm installs the dependencies in a directory of the
+build's cache, from copies of `package.json`, `.npmrc`, `npm-shrinkwrap.json`, `gulpfile.ts`,
+`tsconfig.json`, `tsoa.json` and `tools/`. It records `npm list --json` as `npm-list.json` in the
+package's app directory, unless the app has its own.
 
-### Detecting an npm-based Project
+Yarn runs `yarn install --pure-lockfile --ignore-engines` in the app's directory, and the build copies
+the resulting `node_modules`.
 
-If no `yarn.lock` file is found in your app's root directory, then [npm][] will be used to install dependencies. The version of `npm` will be the version that ships with the version of Node.js selected.
+The build runs with `NODE_ENV=development`, so development dependencies are installed. When the app is
+in Git and has a `node_modules` that Git does not ignore, the build warns and does not use it. The
+`#!` line of each tool in `node_modules/.bin` is changed to the Node package's `node`.
 
-### Specifying the Package Manager in Your Plan
+## The installed app
 
-You can override the default detection logic which determines the package manager by setting the `scaffolding_pkg_manager` variable in your Plan to either `"npm"` or `"yarn"`. For example:
+The package holds the app under `app/`, with the `node_modules` the build installed. In a Git checkout
+the app's files are those Git lists, tracked or untracked but not ignored. Otherwise they are all the
+files in the directory. `dojo/`, `results/`, `node_modules/`, version control directories and backup
+files are left out.
 
-```sh
-pkg_name=my_app
-pkg_origin=acmecorp
-pkg_version=0.1.0
- # ...
-pkg_scaffolding=core/scaffolding-node
+## Process bins
 
-scaffolding_pkg_manager=yarn
-```
+Each process the app runs, a [service or a task][12factor_processes], gets a process bin:
+`bin/<name>-<process>` in the package. A process bin sources the app's environment, changes to the
+installed app's directory and runs its command. It stops with an error when the service has not
+written its environment file yet.
 
-This would force the Scaffolding code to use Yarn over npm, even if no `yarn.lock` file was present.
+The processes come from, in order of precedence:
 
-## Build and Post-Build scripts
+1. The `process_bins` setting.
+2. A [`Procfile`][] in the app's directory. Lines starting with `#` are skipped.
+3. `scripts.start` in `package.json`, as `web`. No other script becomes a process.
 
-This scaffolding does support running build scripts, etc. that are defined in package.json. However, due to a [known issue](https://github.com/habitat-sh/habitat/issues/1547), you will need to run the Habitat services as "root" rather than the default "hab" user.  You can do this by adding this line to your plan.sh
+Every app also gets `sh`, a shell with the app's environment in the app's directory.
 
-## Process Bins
+`web` is the service the package runs, `<name>-web`, unless the plan sets `:svc {:run ...}`. An app
+with no `web` process and no `:svc {:run ...}` is an error.
 
-Your app may have one or more top-level processes which map to a [running service or ephemeral task][12factor_processes]. Each of these processes will be wrapped up in a small script which sets up a suitable app environment and invokes a command. By convention the main process bin which the package's `run` hook will invoke is the `web` process.
-
-### Default Process Bins
-
-By default, two process bins will be generated: `web` and `sh`. The detection for `web` is described in the Specifying Process Bins section and the `sh` process is described immediately below.
-
-#### Default Shell Process Bin
-
-A bare-bones shell process bin will be generated for all apps. Due to the process bin wrapping logic, this shell session will have its `$PATH` correctly set, all appropriate environment variables set and will be running in the app's installed root path.
-
-* `sh`: `sh`
-
-### Specifying Process Bins
-
-By default, the scaffolding will determine some of the process bins to be created. To customize your app's process bins, there are three locations you can do this:
-
-1. Use a [`Procfile`][] in your app's root directory
-2. Use the [`scripts.start`][package_json_scripts] entry in `package.json`
-3. Setup the `scaffolding_process_bins` hash in your Plan
-
-For each process bin name a set Plan hash entry will win over a `Procfile` entry and over a `package.json` entry (and `Profile` will win over `package.json`), however it is recommended to use the `Procfile` strategy first as this is portable across other Node.js app build and deployment solutions.
-
-#### Specifying Process Bins in a Procfile
-
-You can override default process bins or even add new ones by including a [`Procfile`][] in your app's root directory. By convention, the `web` entry will be invoked by your package's `run` hook and will therefore be considered your package's main service. Additional entries will generate additional process bins in your package. For example, let's take an app whose package name is set to `"my_app"` (by setting `pkg_name="my_app"` in your `plan.sh`) and a Procfile containing:
+For an app named `my_app` with this `Procfile`:
 
 ```
 web: node server.js -p $PORT
 release: node scripts/migrate_db.js
 ```
 
-The Scaffolding will produce `my_app-web` and `my_app-release` process bins in the resulting package under `$pkg_prefix/bin` which will be in the package's `$PATH` environment.
+the package has `my_app-web`, `my_app-release` and `my_app-sh` in `bin/`, on the package's `PATH`.
+The same processes as a setting:
 
-#### Specifying Process Bins in package.json
-
-You can override the default `web` process bin in your app's `package.json` by setting the [`scripts.start`][package_json_scripts] section like so:
-
-```json
-{
-  "name": "my_app",
-  "version": "0.1.0",
-  "scripts": {
-    "start": "node app.js",
-    "test": "nom run test-unit"
-  },
-	...
-}
+```fennel
+ :scaffolding {:package "karate/scaffolding-node"
+               :settings {:process_bins {:web "node server.js -p $PORT"
+                                         :release "node scripts/migrate_db.js"}}}
 ```
 
-The Scaffolding will produce a `my_app-web` process bin but not a `my_app-test` process bin. Only the a script entry called `"start"` will be detected and used.
+## App environment variables
 
-Note that a `web` entry in a `Procfile` (as described above) will win over any setting in `package.json`.
+The scaffolding writes the app's [environment][12factor_config] to `config/app_env.sh`, a template the
+Supervisor renders at runtime. Each process bin and the generated init hook source it.
 
-#### Specifying Process Bins in Your Plan
+The defaults are:
 
-You can override default process bins or even add new ones by creating the `scaffolding_process_bins` hash in your Plan and setting one or more entries. By convention, the `web` entry will be invoked by your package's `run` hook and will therefore be considered your package's main service. Additional entries will generate addition process bins in your package. For example, let's take an app whose package name is set to `"my_app`" (by setting `pkg_name="my_app"` in your `plan.sh`):
+- `PORT`: `{{cfg.app.port}}`
+- `NODE_ENV`: `{{cfg.node_env}}`
 
-```sh
-pkg_name=my_app
-pkg_origin=acmecorp
-pkg_version=0.1.0
- # ...
-pkg_scaffolding=core/scaffolding-node
+The `env` setting adds variables and wins over a default of the same name:
 
- # Declare the associative array (hash) in bash
-declare -A scaffolding_process_bins
- # Override the default web process
-scaffolding_process_bins[web]='node server.js -p ${PORT}'
- # Add an addition process bin called release
-scaffolding_process_bins[release]='node scripts/migrate_db.js'
+```fennel
+ :scaffolding {:package "karate/scaffolding-node"
+               :settings {:env {:MY_PKG_VERSION "0.1.0"
+                                :AWS_DEFAULT_REGION "{{cfg.aws_default_region}}"}}}
 ```
 
-The scaffolding will produce `my_app-web` and `my_app-release` process bins in the resulting package under `$pkg_prefix/bin` which will be in the package's `$PATH` environment.
+A value with handlebars templating is rendered from the service's config at runtime. A value without it
+is fixed when the package is built.
 
-**Note:** future work may make the Bash associative array creation an easier task.
+## Init hook
 
-## App Environment Variables
+When the plan has no `hooks/init`, the scaffolding writes one that sets `HOME` to the service's `data`
+directory and sources the app's environment. A plan with its own `hooks/init` does neither for it.
 
-In order to run correctly, your app may require several environment variables set up which it would [consume on start][12factor_config]. At build time, a Plan hash called `scaffolding_env` can be created to set up more app environment variables. The Scaffolding writes all of the app's environment variables to a config template which the Supervisor will compute and render at runtime. Each process bin will source the runtime-computed version of this config file before running itself meaning that all process bins have access to these variables.
+## Config settings
 
-### Default App Environment Variables
+The scaffolding writes these defaults to the package's `default.toml`, for keys the plan's own
+`default.toml` does not set:
 
-The following default app environment variables are created:
+- `node_env`: `"production"`, the app's `NODE_ENV`.
+- `app.port`: the `app_port` setting, or `8000`. It sets `PORT` and the exported `port`, the
+  [port binding][12factor_port] contract. The app must listen on `PORT` to keep it.
 
-* `PORT`: `{{cfg.app.port}}`
+When the plan's `default.toml` has an `[app]` table, the scaffolding adds no `app.port`.
 
-The values of these environment variables use handlebars templating, meaning that their values will be computed and rendered by the Supervisor at runtime.
-
-### Specifying App Environment Variables
-
-To further customize your app's environment variables, you would setup the `scaffolding_env` hash in your Plan.
-
-For each environment variable name, a set Plan hash entry will win over a default entry.
-
-#### Specifying App Environment Variables in Your Plan
-
-You can override default app environment variables or even add new ones by creating the `scaffolding_env` hash in your Plan and setting one or more entries. Let's see an example:
-
-```sh
-pkg_name=my_app
-pkg_origin=acmecorp
-pkg_version=0.1.0
- # ...
-pkg_scaffolding=core/scaffolding-node
-
- # Declare the associative array (hash) in bash
-declare -A scaffolding_env
- # Add an addition variable which is hardcoded at build time
-scaffolding_env[MY_PKG_VERSION]="$pkg_version/$pkg_release"
- # Add addition variables which is uses runtime config values
-scaffolding_env[AWS_DEFAULT_REGION]="{{cfg.aws_default_region}}"
-```
-
-Note that in the above example we can choose to consume runtime configuration by writing the value with handlebars templating. This will be computed and rendered by the Supervisor at runtime and provided to your app. However, if the value is not "tunable" (i.e. would you change this setting in different environments or in production?), you can immutably set the variable by simply not using any handlebars templating syntax.
-
-## Config Settings
-
-To make your app's package useful in more [environments and contexts][12factor_build], your package will contain config settings. These settings will be computed at runtime and can be used to dynamically generate app config files, environment variable settings, etc.
-
-### Default Config Settings
-
-The following config settings will be created for each app:
-
-* `app.port`: Used to set the listen port number for your app when it runs. It is consumed to set the `$PORT` environment variable and to set the value of the exported `port` configuration. This enforces the [port binding][12factor_port] contract. Note that your app must check for this environment variable for this contract to be fulfilled.
-
-### Specifying Config Settings
-
-The Scaffolding creates some default app config settings, but to further customize your app's config settings, you would create a `default.toml` file with your Plan.
-
-#### Specifying Config Settings in default.toml
-
-You can add more config settings by creating a `default.toml` file in the same directory containing your `plan.sh` file. Either directory structure is supported:
-
-A Plan in a `habitat/` subdirectory:
-
-```
-.
-├── package.json
-└── habitat
-    ├── default.toml
-    └── plan.sh
-```
-
-A Plan in the same directory as the `package.json`:
+The plan's own config settings go in `default.toml` beside `plan.fnl`:
 
 ```
 .
 ├── package.json
 ├── default.toml
-└── plan.sh
+└── plan.fnl
 ```
 
-## Service Bindings
+## Service bindings
 
-[Service bindings][bindings] are a powerful way to declare your app's [service dependencies][12factor_backing_services] which the Supervisor will honor when running your app.
+The scaffolding adds no [service bindings][12factor_backing_services]. A plan declares its own with
+`:binds`. A required binding to an [Elasticsearch][] service group:
 
-### Default Service Bindings
+```fennel
+ :binds {:elasticsearch ["http-port" "transport-port"]}
+```
 
-Currently, no service bindings are generated by default.
-
-### Specifying Service Bindings in Your Plan
-
-You can add service bindings in your Plan by setting an entry in the `pkg_binds` hash. Let's see an example of declaring a **required** binding on an [Elasticsearch][] service group:
+Start the service with the binding:
 
 ```sh
-pkg_name=my_app
-pkg_origin=acmecorp
-pkg_version=0.1.0
- # ...
-pkg_scaffolding=core/scaffolding-node
-
- # We require both the HTTP and transport ports from this
- # service binding
-pkg_binds[elasticsearch]="http-port transport-port"
+doj start acmecorp/my_app --bind elasticsearch:es.my_app
 ```
 
-This allows your app to [dynamically bind][12factor_backing_services] to the desired Elasticsearch service group at runtime. For example, if your app's target Elasticsearch service group was `"es.my_app"`, then you would start it with:
+## App type detection
 
-```sh
-hab start acmecorp/my_app --bind elasticsearch:es.my_app
-```
-
-## App Type Detection
-
-Other Scaffolding packages may offer framework-specific app type detection in order to make further default behavior easier. However, this is currently no app type detection for this Scaffolding package.
+The scaffolding does no framework detection.
 
 
-[12factor_backing_services]: https://12factor.net/https://12factor.net/backing-services
-[12factor_build]: https://12factor.net/build-release-run
+[12factor_backing_services]: https://12factor.net/backing-services
 [12factor_config]: https://12factor.net/config
-[12factor_dependencies]: https://12factor.net/dependencies
 [12factor_port]: https://12factor.net/port-binding
 [12factor_processes]: https://12factor.net/processes
-[bindings]: https://www.habitat.sh/docs/run-packages-binding/
-[`core/busybox-static`]: https://app.habitat.sh/#/pkgs/core/busybox-static
-[`core/node`]: https://app.habitat.sh/#/pkgs/core/node
-[`core/yarn`]: https://app.habitat.sh/#/pkgs/core/yarn
 [Elasticsearch]: https://www.elastic.co/products/elasticsearch
-[habitat]: https://www.habitat.sh/
 [npm]: https://www.npmjs.com/
-[`.nvmrc`]: https://github.com/creationix/nvm#nvmrc
-[`package.json`]: https://docs.npmjs.com/files/package.json
-[package_json_engines]: https://docs.npmjs.com/files/package.json#engines
-[package_json_scripts]: https://docs.npmjs.com/files/package.json#scripts
+[`.nvmrc`]: https://github.com/nvm-sh/nvm#nvmrc
+[`package.json`]: https://docs.npmjs.com/cli/configuring-npm/package-json
 [`Procfile`]: https://devcenter.heroku.com/articles/procfile
-[shebangs]: https://en.wikipedia.org/wiki/Shebang_(Unix)
-[try_hab]: https://www.habitat.sh/try/
-[Yarn]: https://yarnpkg.com/en/
+[Yarn]: https://yarnpkg.com/

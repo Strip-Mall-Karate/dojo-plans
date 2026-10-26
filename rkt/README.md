@@ -9,9 +9,9 @@ Typically this is a runtime dependency that can be added to your
 ```
 plan.sh:
 
-    pkg_deps=(core/rkt)
+    pkg_deps=(karate/rkt)
 ```
 
 Or in the case of simply needed to execute the binary you can do:
 
-`hab pkg exec core/rkt rkt`
+`doj pkg exec karate/rkt rkt`

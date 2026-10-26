@@ -4,7 +4,7 @@ A high performance C-based HTTP client library built upon the Apache Portable Ru
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

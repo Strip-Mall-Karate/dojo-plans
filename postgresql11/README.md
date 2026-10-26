@@ -1,12 +1,12 @@
 # PostgreSQL 11
 
-This packages PostgreSQL 11 in a Habitat package that can be run with the Habitat Supervisor.
+This packages PostgreSQL 11 in a Dojo package that can be run with the Dojo Supervisor.
 
 This PostgreSQL plan supports standalone and clustered modes.
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
@@ -14,33 +14,33 @@ Service
 
 ## Usage
 
-You can use this passage by adding core/postgresql11 to your package dependencies in your plan file:
+You can use this passage by adding karate/postgresql11 to your package dependencies in your plan file:
 
 ```
 pkg_deps=(
-  core/postgresql11 # for psql in hooks/init
+  karate/postgresql11 # for psql in hooks/init
 )
 ```
 
 Or you can start the service with:
 
 ```
-$ hab start core/postgresql11
+$ doj start karate/postgresql11
 ```
 
-And bind another Habitat service to it - see "Binding" below for more details.
+And bind another Dojo service to it - see "Binding" below for more details.
 
 ## Bindings
 
 Consuming services can bind to PostgreSQL via:
 
 ```
-hab start <origin>/<app> --bind database:postgresql11.default --peer <pg-host>
+doj start <origin>/<app> --bind database:postgresql11.default --peer <pg-host>
 ```
 
 Superuser access is exposed to consumers when binding and we advise that required databases, schemas and roles be created and migrations get run in the init hook of the consuming service. The created roles (with restricted access) should then be exposed to the application code that will get run.
 
-In the template of the consuming service, there is currently a difference between the binding syntax for binding to the leader in a clustered topology vs binding to any member.  A [future enhancement](https://github.com/habitat-sh/habitat/issues/4127) may improve upon that, but for now something like this could work if used in an interpreted script file:
+In the template of the consuming service, there is currently a difference between the binding syntax for binding to the leader in a clustered topology vs binding to any member.  A future enhancement may improve upon that, but for now something like this could work if used in an interpreted script file:
 
 ```
 # Use the eachAlive and @first helpers to bind to the oldest alive member of the bound service group
@@ -76,24 +76,19 @@ However if you're using more of a rigid configuration file syntax then you still
 
 To run a standalone PostgreSQL instance simply run
 ```
-hab start core/postgresql11
+doj start karate/postgresql11
 ```
-or
-```
-docker run habitat/postgresql11
-```
-if you want to bring up the pre-exported docker image.
 
 ### Leader/Follower
 
-This plan supports running clustered PostgreSQL by utilizing Habitat's native leader election.
+This plan supports running clustered PostgreSQL by utilizing Dojo's native leader election.
 
 You can run an example cluster via docker-compose after exporting a docker container from this plan:
 ```
-$ hab pkg export docker $(ls -1t results/*.hart | head -1)
+$ doj pkg export docker $(ls -1t results/*.hart | head -1)
 ```
 
-The docker post-process should create a docker image named `core/postgresql11` and it should be available on your local machine
+The docker post-process should create a docker image named `karate/postgresql11` and it should be available on your local machine
 
 ```
 cat <<EOF > docker-compose.yml
@@ -101,25 +96,25 @@ version: '3'
 
 services:
   pg1:
-    image: habitat/postgresql11
+    image: karate/postgresql11
     command: --group cluster
       --topology leader
     volumes:
-      - pg1-data:/hab/svc/postgresql11/data
+      - pg1-data:/doj/svc/postgresql11/data
   pg2:
-    image: habitat/postgresql11
+    image: karate/postgresql11
     command: --group cluster
       --topology leader
       --peer pg1
     volumes:
-      - pg2-data:/hab/svc/postgresql11/data
+      - pg2-data:/doj/svc/postgresql11/data
   pg3:
-    image: habitat/postgresql11
+    image: karate/postgresql11
     command: --group cluster
       --topology leader
       --peer pg1
     volumes:
-      - pg3-data:/hab/svc/postgresql11/data
+      - pg3-data:/doj/svc/postgresql11/data
 
 volumes:
   pg1-data:
@@ -132,7 +127,7 @@ docker-compose up
 
 ## Update Strategies
 
-For more information on update strategies, see [this documentation](https://www.habitat.sh/docs/using-habitat/#update-strategy)
+For more information on update strategies, see this documentation
 
 If you are running a standalone PostgreSQL instance and want to use an update strategy, you should use either "none" (which is the default update strategy) or "all-at-once".
 

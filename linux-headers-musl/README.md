@@ -4,7 +4,7 @@ Linux kernel headers (sanitized for use with musl)
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

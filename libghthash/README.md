@@ -4,7 +4,7 @@ Generic Hash Table which is meant to be easy to extend, portable, clear in its c
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

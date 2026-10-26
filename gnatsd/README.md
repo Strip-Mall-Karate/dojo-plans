@@ -4,7 +4,7 @@ High-Performance server for NATS, the cloud native messaging system.
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,8 +15,8 @@ Service package
 Install the package, and laod the gnatsd service:
 
 ```
-hab pkg install core/gnatsd
-hab svc load core/gnatsd
+doj pkg install karate/gnatsd
+doj svc load karate/gnatsd
 ```
 
 This will start gnatsd with the default configuration.

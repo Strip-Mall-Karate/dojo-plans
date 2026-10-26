@@ -5,7 +5,7 @@ uses the X11 Composite extension.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -16,4 +16,4 @@ Binary package
 Typically this is a build time dependency that can be added to your
 plan.sh:
 
-    pkg_build_deps=(core/compositeproto)
+    pkg_build_deps=(karate/compositeproto)

@@ -4,7 +4,7 @@ LuaJIT is a Just-In-Time (JIT) compiler for the Lua programming language.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

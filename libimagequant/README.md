@@ -1,10 +1,10 @@
-# Habitat package: libimagequant
+# Dojo package: libimagequant
 
 Small, portable C library for high-quality conversion of RGBA images to 8-bit indexed-color (palette) images.
 
 ## Maintainers
 
-The Habitat Maintainers (humans@habitat.sh).
+Strip Mall Karate Company.
 
 ## Type of package
 
@@ -14,7 +14,7 @@ Library package. Include this plan as a runtime or build dependency for plans th
 
 ```
 pkg_deps=(
-  core/libimagequant
+  karate/libimagequant
 )
 ```
 
@@ -22,6 +22,6 @@ or
 
 ```
 pkg_build_deps=(
-  core/libimagequant
+  karate/libimagequant
 )
 ```

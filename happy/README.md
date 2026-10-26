@@ -4,7 +4,7 @@ Happy is a parser generator for Haskell. Given a grammar specification in BNF, H
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

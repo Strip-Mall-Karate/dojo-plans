@@ -9,9 +9,9 @@ index 43db704..8b9dfbb 100755
 -    libgd_CPPFLAGS=`$GDLIB_CONFIG --cflags`
 -    libgd_LDFLAGS=`$GDLIB_CONFIG --ldflags`
 -    libgd_LIBS=`$GDLIB_CONFIG --libs`
-+    libgd_CPPFLAGS=`hab pkg exec core/pkg-config pkg-config --cflags gdlib`
-+    libgd_LDFLAGS=`hab pkg exec core/pkg-config pkg-config --libs-only-L gdlib`
-+    libgd_LIBS=`hab pkg exec core/pkg-config pkg-config --libs gdlib`
++    libgd_CPPFLAGS=`doj pkg exec karate/pkg-config pkg-config --cflags gdlib`
++    libgd_LDFLAGS=`doj pkg exec karate/pkg-config pkg-config --libs-only-L gdlib`
++    libgd_LIBS=`doj pkg exec karate/pkg-config pkg-config --libs gdlib`
    elif test -d "$with_gd"; then
      libgd_CPPFLAGS="-I$with_gd/include"
      libgd_LDFLAGS="-L$with_gd/lib"

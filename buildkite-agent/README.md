@@ -6,7 +6,7 @@ Full documentation is available at [buildkite.com/docs/agent](https://buildkite.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,6 +17,6 @@ Binary package
 ## Usage
 
 ```
-hab pkg install core/buildkite-agent
-hab pkg exec core/buildkite-agent buildkite-agent
+doj pkg install karate/buildkite-agent
+doj pkg exec karate/buildkite-agent buildkite-agent
 ```

@@ -1,4 +1,4 @@
-# Habitat package: leiningen
+# Dojo package: leiningen
 
 ## Description
 
@@ -8,7 +8,7 @@ This plan provides the lein CLI package. `lein` is a tool used to manage Clojure
 
 Package execution:
 ```
-hab pkg exec core/lein lein -h
+doj pkg exec karate/lein lein -h
 
 Leiningen is a tool for working with Clojure projects.
 
@@ -62,7 +62,7 @@ Your `plan.sh` dependencies will look similar to this:
 
 ```
 pkg_build_deps=(
-  core/leiningen
+  karate/leiningen
 )
 ```
 

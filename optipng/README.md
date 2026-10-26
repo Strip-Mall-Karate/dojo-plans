@@ -1,10 +1,10 @@
-# Habitat package: optipng
+# Dojo package: optipng
 
 OptiPNG is a PNG optimizer that recompresses image files to a smaller size, without losing any information.
 
 ## Maintainers
 
-The Habitat Maintainers (humans@habitat.sh).
+Strip Mall Karate Company.
 
 ## Type of package
 
@@ -18,13 +18,13 @@ As a dependency, place the following in your `plan.sh`:
 
 ```
 pkg_deps=(
-  core/optipng
+  karate/optipng
 )
 ```
 
 Or to just use the binary:
 
 ```
-hab pkg install --binlink core/optipng
+doj pkg install --binlink karate/optipng
 optipng myfile.png
 ```

@@ -4,7 +4,7 @@ Like cURL, but for gRPC: Command-line tool for interacting with gRPC servers
 
 ## Maintainers
 
-The Habitat Maintainers <humans@habitat.sh>
+Strip Mall Karate Company
 
 ## Type of Package
 

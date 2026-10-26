@@ -4,7 +4,7 @@ ShellCheck is a GPLv3 tool that gives warnings and suggestions for bash/sh shell
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

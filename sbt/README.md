@@ -4,15 +4,15 @@
 
 ## Maintainers
 
-The Habitat Maintainers: <humans@habitat.sh>
+Strip Mall Karate Company
 
 ## Usage
 
 This is a binary package. To use `sbt` in the dev shell:
 
 ```
-hab pkg install core/jre8 --binlink
-hab pkg install core/sbt --binlink
+doj pkg install karate/corretto8 --binlink
+doj pkg install karate/sbt --binlink
 ```
 
 [1]: https://www.scala-sbt.org/1.x/docs/index.html

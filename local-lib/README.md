@@ -4,7 +4,7 @@ create and use a local lib/ for perl modules with PERL5LIB
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -15,7 +15,7 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Service is running" {
-  [ "$(hab svc status | grep "memcached\.default" | awk '{print $4}' | grep up)" ]
+  [ "$(doj svc status | grep "memcached\.default" | awk '{print $4}' | grep up)" ]
 }
 
 @test "Listening on port 11211" {

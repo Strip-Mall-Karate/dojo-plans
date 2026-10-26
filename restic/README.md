@@ -6,7 +6,7 @@ For detailed usage check out the [documentation](https://restic.readthedocs.io/e
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,7 +17,7 @@ Binary package
 Start off with creating a repository for your backups:
 
 ```console
-$ hab pkg install -b core/restic
+$ doj pkg install -b karate/restic
 $ restic init --repo /tmp/backup
 enter password for new backend:
 enter password again:

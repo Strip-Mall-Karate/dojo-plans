@@ -4,7 +4,7 @@ Library functions for manipulating Unicode strings
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

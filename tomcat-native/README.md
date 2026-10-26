@@ -4,7 +4,7 @@ The Apache Tomcat Native Library is an optional component for use with Apache To
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
