@@ -19,9 +19,6 @@
  :prepare (fn [b]
           (b.default.prepare b)
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/no-sys-dirs.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/skip-wide-character-test.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/skip-zlib-tests.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/fix-perlbug-test.patch")])
           (let [text (b:read (b:join b.src "dist/PathTools/Cwd.pm")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]
