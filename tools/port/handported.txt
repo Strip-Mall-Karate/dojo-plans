@@ -94,6 +94,20 @@
   fi
 --
 
+== if [[ ! -f /etc/protocols ]]; then
+    cp -v "$(pkg_path_for iana-etc)/etc/protocols" /etc/protocols
+    local clean_protocols=true
+  fi
+--
+;; The plan copied iana-etc's protocols file to /etc/protocols for the tests when
+;; it was missing. A Dojo build writes nothing outside itself; the tests need a
+;; protocols file where the build runs.
+
+== if [[ -n "$clean_protocols" ]]; then
+    rm -fv /etc/protocols
+  fi
+--
+
 == find "$path" -name "$fileending" -type f \
     -exec grep -Iq . {} \; \
     -exec sh -c 'head -n 1 "$1" | grep -q "$2"' _ {} "$int" \; \
