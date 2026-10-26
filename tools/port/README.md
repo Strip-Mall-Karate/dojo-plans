@@ -70,16 +70,38 @@ its case fail.
 - Approximations: `-d`, `-x` and `-s` tests are "exists"; `printf`/`cat` into a file may gain a
   trailing newline.
 
-## What is left (78 packages, 2026-10-26)
+## Choices made in the port (Claude's judgment, open to Jamie)
 
-- Scaffoldings and the Go plans that use them: scaffolding-ruby, scaffolding-go/go17 (the old name in
-  their upstream link), certstrap, dep, foulkon, grpcurl, helm, mage, opa, traefik.
-- Unverified sources to pin: aws-cli (version from PyPI search), boringssl (googlesource archives are
-  not stable), cargo-nightly, rust-nightly (pick the nightly of 2019-04-10, sha from Rust's .sha256),
-  leiningen (lein-pkg at its tag), netcat-openbsd (Debian patches), prometheus-cpp (git clone of
-  v0.6.0), img (unpinned git clone), jdk8/jdk9/jre8/jre9 (Oracle download with a cookie).
+- Builds may write anywhere in `b.cache`: the source project's plans move downloads, unpack beside
+  the source and configure in `../<name>-build` there (Strip-Mall-Karate/dojo#6).
+- The source project's stage1 studio does not exist in Dojo; branches for it are notes.
+- A tool link the source never names (linux's `/bin/pwd`) is a note, not a `use-dependency-path`.
+- bash-static's own `do_begin` replaced bash's, which read the patch list: it applied no patches,
+  and neither does the port (`UNSET_ARRAYS` in `port.py`).
+- Pins, each the newest at the fork date unless the plan named a version: rust-nightly and
+  cargo-nightly from the 2019-04-09 nightly's manifest; awscli 1.16.140 from PyPI; boringssl branch
+  3538's head from the GitHub mirror; img's v0.5.4 tag; prometheus-cpp v0.6.0 and its submodules at
+  the recorded commits; netcat-openbsd's Debian 1.105-7 patches from snapshot.debian.org.
+
+## Hand entries match by statement
+
+An entry in `handported.txt` replaces its statement wherever it appears, in any plan. An entry
+holding one plan's values (rust's target URL, linux's dependency list, glibc's tzdata source) must
+either be unique to that plan or refuse another (glibc's does). Check with `git grep` on a value
+from the entry after porting.
+
+## What is left (14 packages, 2026-10-26)
+
+- Go plans, which need a Fennel scaffolding-go and pinned dependencies (`go get` fetched each at
+  HEAD): certstrap, dep, foulkon, grpcurl, helm, mage, opa, traefik.
+- concourse-fly: its v4.2.2 build clones 129 git submodules. Pin all 129, or package the release's
+  `fly` binary; Jamie to decide.
+- jdk8, jdk9, jre8, jre9: checksummed, but Oracle serves these builds only after a sign-in now, and
+  their licence limits redistribution; Jamie to decide (drop, or point users at corretto/openjdk).
 - geoip: its GeoLite download no longer exists; Jamie to decide.
-- concourse-fly sources the source tree's `.envrc`; bash-static sets `PLAN_CONTEXT=$(abspath ../bash)`.
-- Toolchain and families with bespoke bash: glibc, gcc, gcc-libs, binutils, linux, linux-headers, perl,
-  openssl, openssl-musl, busybox, busybox-static, the node, python, llvm/clang, cuda, go and ghc
-  bootstrap families, and the rest of the list `git ls-files '*/plan.sh'` prints.
+
+## Sources that no longer answer
+
+Of 548 committed source URLs, 71 failed a one-byte fetch on 2026-10-26 (ftp.gnupg.org's FTP,
+moved paths on cache.ruby-lang.org, php.net, storage.googleapis.com and others). Their checksums
+still name the right bytes; each needs a live mirror serving the same file.
