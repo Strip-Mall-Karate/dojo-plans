@@ -15,7 +15,7 @@
  :include_dirs ["include"]
  :pconfig_dirs ["lib/pkgconfig"]
  :prepare (fn [b]
-          (var v-library-path (.. (b:path_for "karate/glibc") "/lib")))
+          (b:env "LIBRARY_PATH" (.. (b:path_for "karate/glibc") "/lib")))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix)] {:cwd "src"})
           (b:run ["make"] {:cwd "src"}))
