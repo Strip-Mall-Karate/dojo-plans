@@ -6,11 +6,13 @@ ARG BUILDER_UID=1000
 ARG BUILDER_GID=1000
 
 ENV DEBIAN_FRONTEND=noninteractive
-# The host tools a base plan's first build uses, Rust for doj-plan-build, and what the
-# swamp installer and the packager need.
+# The host tools a base plan's first build uses (its karate build dependencies are empty
+# stand-ins then, so the tools they name come from here), Rust for doj-plan-build, and what
+# the swamp installer and the packager need.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      build-essential bison gawk m4 texinfo python3 perl file patch rsync \
+      build-essential bison flex gawk m4 texinfo python3 perl file patch rsync \
+      expect dejagnu autoconf automake libtool pkg-config gettext autopoint gperf help2man \
       xz-utils bzip2 zstd curl ca-certificates git sudo \
       rustc cargo \
  && rm -rf /var/lib/apt/lists/*
