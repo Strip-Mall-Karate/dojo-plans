@@ -1503,8 +1503,8 @@ def block(text, scope):
             kind, expr = paths(words[0], scope)
             if relative_glob:
                 # A relative glob gives names, not paths.
-                return [f'(each [_ p (ipairs {expr})]\n  (let [{name} (: p :match "[^/]+$")]\n    {" ".join(body)}))']
-            return [f"(each [_ {name} (ipairs {expr})]\n  {' '.join(body)})"]
+                return [f'(each [_ p (ipairs {expr})]\n  (let [{name} (: p :match "[^/]+$")]\n    {" ".join(body) or "nil"}))']
+            return [f"(each [_ {name} (ipairs {expr})]\n  {' '.join(body) or 'nil'})"]
         whole = re.fullmatch(r'"?\$\{([A-Za-z_][A-Za-z0-9_]*)\[[@*]\]\}"?', words[0]) if len(words) == 1 else None
         if whole:
             arr = whole.group(1)
@@ -1512,11 +1512,11 @@ def block(text, scope):
                 "[" + " ".join(fstr(v) for v in scope.plan.arrays.get(arr, [])) + "]" if arr in scope.plan.arrays else None)
             if arr_expr is None:
                 raise Unported("for over " + arr)
-            return [f"(each [_ {name} (ipairs {arr_expr})]\n  {' '.join(body)})"]
+            return [f"(each [_ {name} (ipairs {arr_expr})]\n  {' '.join(body) or 'nil'})"]
         if any(GLOB.search(_unquoted(w)) or w.startswith("$(") for w in words):
             raise Unported("for over a glob or command")
         items = "[" + " ".join(word(w, scope) for w in words) + "]"
-        return [f"(each [_ {name} (ipairs {items})]\n  {' '.join(body)})"]
+        return [f"(each [_ {name} (ipairs {items})]\n  {' '.join(body) or 'nil'})"]
     raise Unported(t.split(None, 1)[0])
 
 
@@ -1540,7 +1540,7 @@ def counted_loop(m, scope):
     body = body_forms(marked.replace("__ITEM_", "$__ITEM_"), scope)
     lists = " ".join(f"{_local(n)}s [" + " ".join(fstr(v) for v in arrays[n]) + "]"
                      for n in sorted(set(re.findall(r"__ITEM_(\w+)__", marked))))
-    return [f"(let [{lists}]\n  (for [n 1 {len(arrays[array])}]\n    {' '.join(body)}))"]
+    return [f"(let [{lists}]\n  (for [n 1 {len(arrays[array])}]\n    {' '.join(body) or 'nil'}))"]
 
 
 def body_forms(text, scope):
