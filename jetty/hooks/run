@@ -6,7 +6,7 @@ export JETTY_HOME="{{pkg.svc_var_path}}/jetty"
 
 if path={{pkgPathFor "karate/jdk7"}}; then
   export JAVA_HOME=$path
-elif path={{pkgPathFor "karate/jdk8"}}; then
+elif path={{pkgPathFor "karate/corretto8"}}; then
   export JAVA_HOME=$path
 fi
 

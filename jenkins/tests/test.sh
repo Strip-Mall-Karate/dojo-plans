@@ -5,7 +5,7 @@ PLANDIR="$(dirname "${TESTDIR}")"
 SKIPBUILD=${SKIPBUILD:-0}
 
 doj pkg install --binlink karate/bats
-doj pkg install --binlink karate/jre8
+doj pkg install --binlink karate/corretto8
 
 doj pkg install karate/busybox-static
 doj pkg binlink karate/busybox-static ps

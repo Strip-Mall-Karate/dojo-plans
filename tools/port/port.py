@@ -89,6 +89,10 @@ RENAME = [
     (re.compile(r"\bv-hab-"), "v-doj-"),
     (re.compile(r"(?<![\w/.-])hab(?![\w-])"), "doj"),
     (re.compile(r"(?<![\w/@.-])core/(?=[a-z0-9])"), "karate/"),
+    # Oracle's JDK and JRE 8 are dropped (Jamie, 2026-10-26): their builds need a sign-in and
+    # their licence limits redistribution. Corretto 8 is the same Java, and a JDK with a jre/.
+    (re.compile(r"\bkarate/(?:jdk8|jre8)\b"), "karate/corretto8"),
+    (re.compile(r'b:path_for "(?:jdk8|jre8)"'), 'b:path_for "corretto8"'),
     (re.compile(r"\bHABITAT\b"), "DOJO"),
     (re.compile(r"\bHabitat\b"), "Dojo"),
     (re.compile(r"(?<![\w.@/-])habitat(?![\w.-])"), "dojo"),

@@ -8,12 +8,12 @@
  :description "A software project management and comprehension tool"
  :upstream_url "https://maven.apache.org/"
  :source {:url "http://apache.cs.utah.edu/maven/maven-3/3.3.9/source/apache-maven-3.3.9-src.tar.gz" :sha256 "9150475f509b23518e67a220a9d3a821648ab27550f4ece4d07b92b1fc5611bc" :dirname "apache-maven-3.3.9"}
- :deps ["karate/coreutils" "karate/jdk8" "karate/which"]
+ :deps ["karate/coreutils" "karate/corretto8" "karate/which"]
  :build_deps ["karate/ant"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :prepare (fn [b]
-          (var v-java-home (b:path_for "jdk8"))
+          (var v-java-home (b:path_for "corretto8"))
           (b:log (.. "Setting JAVA_HOME=" v-java-home)))
  :build (fn [b]
           (b:run ["ant" (.. "-Dmaven.home=" b.prefix)]))

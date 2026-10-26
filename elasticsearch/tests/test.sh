@@ -6,7 +6,7 @@ SKIPBUILD=${SKIPBUILD:-0}
 
 doj pkg install --binlink karate/bats
 doj pkg install --binlink karate/which
-doj pkg install --binlink karate/jre8
+doj pkg install --binlink karate/corretto8
 doj pkg install --binlink karate/curl
 doj pkg install --binlink karate/jq-static
 

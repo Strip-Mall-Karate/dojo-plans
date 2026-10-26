@@ -8,10 +8,10 @@
  :description "A build tool for Scala, Java, and more"
  :upstream_url "https://www.scala-sbt.org"
  :source {:url "https://github.com/sbt/sbt/releases/download/v1.2.8/sbt-1.2.8.tgz" :sha256 "9bb9212541176d6fcce7bd12e4cf8a9c9649f5b63f88b3aff474e0b02c7cfe58"}
- :deps ["karate/coreutils" "karate/jre8" "karate/bash" "karate/sed" "karate/grep"]
+ :deps ["karate/coreutils" "karate/corretto8" "karate/bash" "karate/sed" "karate/grep"]
  :bin_dirs ["bin"]
  :prepare (fn [b]
-          (var v-java-home (b:path_for "karate/jre8"))
+          (var v-java-home (b:path_for "karate/corretto8"))
           (b:env "JAVA_HOME" v-java-home))
  :build (fn [b]
           nil)

@@ -8,7 +8,7 @@
  :description "CrateDB is an open source SQL database with a ground-breaking distributed design."
  :upstream_url "https://crate.io"
  :source {:url "https://cdn.crate.io/downloads/releases/crate-1.1.2.tar.gz" :sha256 "8f22b6531b3d1c8602a880779bbe09e5295ef0959a30aff0986575835aadc937"}
- :deps ["karate/jre8" "karate/curl"]
+ :deps ["karate/corretto8" "karate/curl"]
  :build_deps ["karate/gnupg"]
  :bin_dirs ["crate/bin"]
  :lib_dirs ["crate/lib"]

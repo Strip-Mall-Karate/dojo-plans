@@ -5,7 +5,7 @@ PLANDIR="$(dirname "${TESTDIR}")"
 SKIPBUILD=${SKIPBUILD:-0}
 
 doj pkg install --binlink karate/bats
-doj pkg install --binlink --force "karate/jre8"
+doj pkg install --binlink --force "karate/corretto8"
 
 source "${PLANDIR}/plan.sh"
 
@@ -19,7 +19,7 @@ if [ "${SKIPBUILD}" -eq 0 ]; then
   set +e
 fi
 
-JAVA_HOME="$(doj pkg path karate/jre8)"
+JAVA_HOME="$(doj pkg path karate/corretto8)"
 export JAVA_HOME
 
 bats "${TESTDIR}/test.bats"

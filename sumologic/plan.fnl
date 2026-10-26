@@ -8,7 +8,7 @@
  :description "Sumo Logic’s powerful, scalable SaaS platform analyzes log data and metrics together in real time."
  :upstream_url "https://www.sumologic.com"
  :source {:url "https://collectors.sumologic.com/rest/download/tar" :sha256 "8a9329aaba7daa14bb0f9aadbfc0cffc1d149012b457c79fcb7b3537b1df95e0" :filename "SumoCollector_unix_19_227-19.tar.gz" :dirname "sumocollector"}
- :deps ["karate/gcc-libs" "karate/glibc" "karate/jre8"]
+ :deps ["karate/gcc-libs" "karate/glibc" "karate/corretto8"]
  :build_deps ["karate/patchelf"]
  :bin_dirs ["sumologic/19.227-19/bin" "sumologic"]
  :lib_dirs ["sumologic/19.227-19/lib" "sumologic/19.227-19/bin/native/lib"]

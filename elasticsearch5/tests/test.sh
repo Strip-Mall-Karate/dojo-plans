@@ -27,7 +27,7 @@ fi
 
 doj pkg install --binlink karate/coreutils-static
 doj pkg install --binlink karate/glibc
-doj pkg install --binlink karate/jre8
+doj pkg install --binlink karate/corretto8
 doj pkg install --binlink karate/wget
 doj pkg install --binlink karate/curl
 doj pkg install --binlink karate/busybox-static

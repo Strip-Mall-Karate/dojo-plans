@@ -8,7 +8,7 @@
  :description "Open Source, Distributed, RESTful Search Engine"
  :upstream_url "https://elastic.co"
  :source {:url "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.7.1.tar.gz" :sha256 "7be3f94882130c769e5a6b95dbccdc3cab9f101cbc68edfa661f7188c78f06e2"}
- :deps ["karate/coreutils-static" "karate/busybox-static" "karate/glibc" "karate/zlib" "karate/jre8" "karate/wget"]
+ :deps ["karate/coreutils-static" "karate/busybox-static" "karate/glibc" "karate/zlib" "karate/corretto8" "karate/wget"]
  :build_deps ["karate/patchelf"]
  :bin_dirs ["es/bin"]
  :lib_dirs ["es/lib"]

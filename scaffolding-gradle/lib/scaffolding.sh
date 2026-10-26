@@ -179,11 +179,11 @@ _setup_vars() {
   # `$scaffolding_gradle_pkg` is empty by default
   : "${scaffolding_gradle_pkg:=}"
   # The default JDK package if one cannot be detected
-  _default_jdk_pkg="karate/jdk8"
+  _default_jdk_pkg="karate/corretto8"
   # `$scaffolding_jdk_pkg` is empty by default
   : "${scaffolding_jdk_pkg:=}"
   # The default JRE package if one cannot be detected
-  _default_jre_pkg="karate/jre8"
+  _default_jre_pkg="karate/corretto8"
   # `$scaffolding_jre_pkg` is empty by default
   : "${scaffolding_jre_pkg:=}"
   #

@@ -8,7 +8,7 @@
  :description "Automate Clojure projects without setting your hair on fire."
  :upstream_url "https://leiningen.org/"
  :source {:url "https://github.com/technomancy/leiningen/releases/download/2.8.1/leiningen-2.8.1-standalone.zip" :sha256 "fc49bbc7ff25ef42ad9c0a8b5f3d0641702abc9a9a8e847bc845bca4c09a7c58" :filename "leiningen-2.8.1-standalone.zip"}
- :deps ["karate/bash" "karate/coreutils" "karate/jdk8"]
+ :deps ["karate/bash" "karate/coreutils" "karate/corretto8"]
  :bin_dirs ["bin"]
  :download (fn [b]
           (b.default.download b)

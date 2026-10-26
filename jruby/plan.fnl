@@ -8,13 +8,13 @@
  :description "A high performance, stable, fully threaded Java implementation of the Ruby programming language."
  :upstream_url "https://github.com/jruby/jruby"
  :source {:url "https://github.com/jruby/jruby/archive/9.2.4.0.tar.gz" :sha256 "9b926cbca56faa9d724753c044c89d86bb48c0b5c26c5bf39120e89dc2fb0c69"}
- :deps ["karate/glibc" "karate/jre8" "karate/bash" "karate/coreutils"]
- :build_deps ["karate/which" "karate/make" "karate/jdk8"]
+ :deps ["karate/glibc" "karate/corretto8" "karate/bash" "karate/coreutils"]
+ :build_deps ["karate/which" "karate/make" "karate/corretto8"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :build (fn [b]
-          (var v-java-home (b:path_for "karate/jdk8"))
+          (var v-java-home (b:path_for "karate/corretto8"))
           (b:run ["./mvnw"]))
  :install (fn [b]
           (each [_ p (ipairs (b:glob b.src "*"))] (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$"))))

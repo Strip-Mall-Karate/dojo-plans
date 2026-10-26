@@ -9,7 +9,7 @@ To use this plan, you'll need to set the `JAVA_HOME` and pay attention to the lo
 export M2_HOME=/foo/bar/baz
 
 # Ant requires JAVA_HOME to be set, and can be set via:
-export JAVA_HOME=$(doj pkg path karate/jdk8)
+export JAVA_HOME=$(doj pkg path karate/corretto8)
 ```
 
 

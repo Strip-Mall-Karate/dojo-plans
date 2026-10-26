@@ -8,7 +8,7 @@
  :description "A distributed streaming platform"
  :upstream_url "https://kafka.apache.org/"
  :source {:url "http://mirrors.gigenet.com/apache/kafka/0.10.2.2/kafka_2.11-0.10.2.2.tgz" :sha256 "60f587ed8d1ee6e8e8057f13da6eee472f95c8d2ea691f6aab74edb842dc9950" :dirname "kafka_2.11-0.10.2.2"}
- :deps ["karate/bash-static" "karate/coreutils" "karate/jre8"]
+ :deps ["karate/bash-static" "karate/coreutils" "karate/corretto8"]
  :bin_dirs ["bin"]
  :binds {"zookeeper" ["port"]}
  :build (fn [b]

@@ -5,7 +5,7 @@ PLANDIR="$(dirname "${TESTDIR}")"
 SKIPBUILD=${SKIPBUILD:-0}
 
 doj pkg install --binlink karate/bats
-doj pkg install --binlink karate/jre8
+doj pkg install --binlink karate/corretto8
 
 source "${PLANDIR}/plan.sh"
 

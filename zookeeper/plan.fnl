@@ -8,7 +8,7 @@
  :description "The Apache ZooKeeper system for distributed coordination is a high-performance service for building distributed applications."
  :upstream_url "https://zookeeper.apache.org"
  :source {:url "http://apache.mirrors.ionfish.org/zookeeper/zookeeper-3.4.13/zookeeper-3.4.13.tar.gz" :sha256 "7ced798e41d2027784b8fd55c908605ad5bd94a742d5dab2506be8f94770594d"}
- :deps ["karate/bash-static" "karate/coreutils" "karate/jre8"]
+ :deps ["karate/bash-static" "karate/coreutils" "karate/corretto8"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :exports {"port" "zookeeper.clientPort"}

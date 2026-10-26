@@ -11,7 +11,7 @@ Strip Mall Karate Company
 This is a binary package. To use `sbt` in the dev shell:
 
 ```
-doj pkg install karate/jre8 --binlink
+doj pkg install karate/corretto8 --binlink
 doj pkg install karate/sbt --binlink
 ```
 

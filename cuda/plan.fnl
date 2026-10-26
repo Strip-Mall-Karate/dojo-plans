@@ -39,7 +39,7 @@
  :description "GPU-accelerated Libraries for Computing on NVIDIA devices"
  :upstream_url "https://developer.nvidia.com/cuda-zone"
  :source {:url "https://developer.nvidia.com/compute/cuda/9.2/Prod2/local_installers/cuda_9.2.148_396.37_linux" :sha256 "f5454ec2cfdf6e02979ed2b1ebc18480d5dded2ef2279e9ce68a505056da8611" :filename "cuda_9.2.148_396.37_linux.run"}
- :deps ["karate/gcc-libs" "karate/glibc" "karate/ncurses" "karate/gcc" "karate/python2" "karate/jre8" "karate/coreutils" "karate/busybox-static"]
+ :deps ["karate/gcc-libs" "karate/glibc" "karate/ncurses" "karate/gcc" "karate/python2" "karate/corretto8" "karate/coreutils" "karate/busybox-static"]
  :build_deps ["karate/make" "karate/patchelf" "karate/perl"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib64" "lib64/stubs" "nvvm/lib64"]
@@ -111,7 +111,7 @@
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]
               (var line l) (var deleted false) (local after [])
-              (when (not deleted) (set line (pick-values 1 (string.gsub line "../jre/bin/java" (.. (pick-values 1 (: (b:path_for "karate/jre8") :gsub "%%" "%%%%")) "/bin/java")))))
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "../jre/bin/java" (.. (pick-values 1 (: (b:path_for "karate/corretto8") :gsub "%%" "%%%%")) "/bin/java")))))
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (.. b.prefix "/libnsight/nsight.ini") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
@@ -119,7 +119,7 @@
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]
               (var line l) (var deleted false) (local after [])
-              (when (not deleted) (set line (pick-values 1 (string.gsub line "../jre/bin/java" (.. (pick-values 1 (: (b:path_for "karate/jre8") :gsub "%%" "%%%%")) "/bin/java")))))
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "../jre/bin/java" (.. (pick-values 1 (: (b:path_for "karate/corretto8") :gsub "%%" "%%%%")) "/bin/java")))))
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (.. b.prefix "/libnvvp/nvvp.ini") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))

@@ -23,7 +23,7 @@
  :description "Build and test software of any size, quickly and reliably"
  :upstream_url "https://www.bazel.build/"
  :source {:url "https://github.com/bazelbuild/bazel/releases/download/0.13.0/bazel-0.13.0-dist.zip" :sha256 "82e9035084660b9c683187618a29aa896f8b05b5f16ae4be42a80b5e5b6a7690"}
- :deps ["karate/glibc" "karate/jdk8" "karate/gcc-libs" "karate/zip" "karate/unzip" "karate/coreutils"]
+ :deps ["karate/glibc" "karate/corretto8" "karate/gcc-libs" "karate/zip" "karate/unzip" "karate/coreutils"]
  :build_deps ["karate/python" "karate/protobuf-cpp" "karate/gcc" "karate/libarchive" "karate/which" "karate/patch"]
  :bin_dirs ["bin"]
  :prepare (fn [b]

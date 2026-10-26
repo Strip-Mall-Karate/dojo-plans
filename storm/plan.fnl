@@ -8,7 +8,7 @@
  :description "Open source distributed realtime computation system."
  :upstream_url "http://storm.apache.org/index.html"
  :source {:url "http://apache.mediamirrors.org/storm/apache-storm-1.1.2/apache-storm-1.1.2.tar.gz" :sha256 "823dad47e2941e126caf1186047da1c6058076115589905033e87987db7bfa27" :dirname "apache-storm-1.1.2"}
- :deps ["karate/jre8" "karate/python" "karate/bash"]
+ :deps ["karate/corretto8" "karate/python" "karate/bash"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :binds {"zookeeper" [] "storm" []}

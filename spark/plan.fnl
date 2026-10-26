@@ -8,7 +8,7 @@
  :description "Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs."
  :upstream_url "https://spark.apache.org"
  :source {:url "https://archive.apache.org/dist/spark/spark-2.1.2/spark-2.1.2-bin-hadoop2.7.tgz" :sha256 "3e31164281326fe47210f5d7f07190935815060063f451f41f78b91beb8ecd55" :dirname "spark-2.1.2-bin-hadoop2.7"}
- :deps ["karate/bash" "karate/jre8" "karate/procps-ng"]
+ :deps ["karate/bash" "karate/corretto8" "karate/procps-ng"]
  :bin_dirs ["bin" "sbin"]
  :lib_dirs ["jars"]
  :exports {"port" "port"}

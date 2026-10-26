@@ -21,7 +21,7 @@ pkg_build_deps=(karate/ant)
 You will also need to set the `JAVA_HOME` environment variable, for example:
 
 ```
-export JAVA_HOME=$(doj pkg path karate/jdk8)
+export JAVA_HOME=$(doj pkg path karate/corretto8)
 ```
 
 [1]: https://ant.apache.org/index.html

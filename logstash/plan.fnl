@@ -8,7 +8,7 @@
  :description "Logstash is an open source, server-side data processing pipeline that ingests data from a multitude of sources simultaneously, transforms it, and then sends it to your favorite 'stash.'"
  :upstream_url "https://github.com/elastic/logstash"
  :source {:url "https://artifacts.elastic.co/downloads/logstash/logstash-6.4.3.tar.gz" :sha256 "72dcd1cf21e55cd44503ca7c452aaaa88286564ba1450d5d05941f88e2699cc3"}
- :deps ["karate/bash" "karate/jre8" "karate/coreutils"]
+ :deps ["karate/bash" "karate/corretto8" "karate/coreutils"]
  :build_deps ["karate/bash"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]

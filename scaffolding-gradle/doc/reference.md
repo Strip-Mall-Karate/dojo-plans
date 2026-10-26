@@ -118,7 +118,7 @@ The value of this variable will be used to determine the Dojo package to satisfy
 
 ### Selecting a Version of the Java Compiler
 
-By default the latest version of the [`karate/jdk8`][] package will be injected into your Plan's `pkg_build_deps` array. To specify a non-default version of the JDK, there is one location you can do this:
+By default the latest version of the [`karate/corretto8`][] package will be injected into your Plan's `pkg_build_deps` array. To specify a non-default version of the JDK, there is one location you can do this:
 
 1. Set the `scaffolding_jdk_pkg` variable in your Plan with a valid Dojo package identifier corresponding to a package with a `javac` program
 
@@ -142,7 +142,7 @@ The value of this variable will be used to determine the Dojo package to satisfy
 
 ### Selecting a Version of the Java Runtime
 
-By default the latest version of the [`karate/jre8`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of the JRE, there is one location you can do this:
+By default the latest version of the [`karate/corretto8`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of the JRE, there is one location you can do this:
 
 1. Set the `scaffolding_jre_pkg` variable in your Plan with a valid Dojo package identifier corresponding to a package with a `java` program
 

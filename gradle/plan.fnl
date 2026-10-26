@@ -8,8 +8,8 @@
  :description "A powerful build system for the JVM"
  :upstream_url "http://gradle.org"
  :source {:url "https://services.gradle.org/distributions/gradle-5.1-bin.zip" :sha256 "7506638a380092a0406364c79d6c87d03d23017fc25a5770379d1ce23c3fcd4d"}
- :deps ["karate/glibc" "karate/jre8" "karate/coreutils" "karate/bash-static" "karate/gcc-libs" "karate/sed"]
- :build_deps ["karate/make" "karate/gcc" "karate/jdk8" "karate/patchelf"]
+ :deps ["karate/glibc" "karate/corretto8" "karate/coreutils" "karate/bash-static" "karate/gcc-libs" "karate/sed"]
+ :build_deps ["karate/make" "karate/gcc" "karate/corretto8" "karate/patchelf"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :build (fn [b]

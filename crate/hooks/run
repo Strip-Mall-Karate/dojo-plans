@@ -2,7 +2,7 @@
 
 exec 2>&1
 
-export JAVA_HOME=$(doj pkg path karate/jre8)
+export JAVA_HOME=$(doj pkg path karate/corretto8)
 {{#if cfg.runtime.heapsize ~}}
 export CRATE_HEAP_SIZE={{cfg.runtime.heapsize}}
 {{/if ~}}

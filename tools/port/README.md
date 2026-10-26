@@ -56,6 +56,8 @@ its case fail.
   `use-dependency-path`, which points the build's scripts at the dependency instead.
 - `do_clean` overrides are dropped: a build always starts from a fresh source directory.
 - Unverified sources are pinned to a checksummed archive current at the fork date.
+- concourse-fly is dropped. jdk8, jdk9, jre8 and jre9 (Oracle's, behind a sign-in now and
+  limited in redistribution) are dropped; plans that used jdk8 or jre8 use corretto8, the same Java.
 - Scaffoldings are their own stage: their `plan.fnl` packages the bash library faithfully, but Dojo's
   scaffoldings are Fennel modules, still to write.
 
@@ -90,14 +92,10 @@ holding one plan's values (rust's target URL, linux's dependency list, glibc's t
 either be unique to that plan or refuse another (glibc's does). Check with `git grep` on a value
 from the entry after porting.
 
-## What is left (14 packages, 2026-10-26)
+## What is left (9 packages, 2026-10-26)
 
 - Go plans, which need a Fennel scaffolding-go and pinned dependencies (`go get` fetched each at
   HEAD): certstrap, dep, foulkon, grpcurl, helm, mage, opa, traefik.
-- concourse-fly: its v4.2.2 build clones 129 git submodules. Pin all 129, or package the release's
-  `fly` binary; Jamie to decide.
-- jdk8, jdk9, jre8, jre9: checksummed, but Oracle serves these builds only after a sign-in now, and
-  their licence limits redistribution; Jamie to decide (drop, or point users at corretto/openjdk).
 - geoip: its GeoLite download no longer exists; Jamie to decide.
 
 ## Sources that no longer answer
