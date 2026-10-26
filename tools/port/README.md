@@ -6,12 +6,14 @@ check the result. They go when the last `plan.sh` does.
 ## Running it
 
 From the repository root, with `DPB` the `doj-plan-build` built from Dojo's `components/plan` (the
-runtime the plans need is Strip-Mall-Karate/dojo#6; until it merges, build that branch):
+runtime the plans need is Strip-Mall-Karate/dojo#6 and, for scaffoldings, #7 stacked on it; until
+they merge, build #7's branch):
 
 ```sh
 python3 -I tools/port/port.py <pkg>...            # writes <pkg>/plan.fnl; prints `ok` or what is left
 python3 -I tools/port/check.py "$DPB" <pkg>...     # refuses a plan that is not ported, safe or loading
 python3 -I tools/port/difftest/run.py <dojo-checkout> <builder-state> <builder-port>
+python3 -I tools/port/buildtest/run.py <dojo-checkout> <builder-state> <builder-port> <stand-ins> <plan-dir>...
 ```
 
 `difftest` needs the builder VM running (`support/vm/builder start` in a dojo checkout, with its own
@@ -20,6 +22,11 @@ python3 -I tools/port/difftest/run.py <dojo-checkout> <builder-state> <builder-p
 runs each case in `difftest/cases.txt` as bash in one tree and as its Fennel translation in another;
 the trees must match. Add a case for every new translation, and break the translation once to see
 its case fail.
+
+`buildtest` builds plans for real in the same VM, into `~/dojo-buildtest`, with Nix packages
+standing in for the karate packages they need (its docstring has the stand-in syntax; a stand-in
+named `test/<name>` is given to every plan, for tools a build host has). The scaffoldings, the
+Go plans and the test apps in `buildtest/apps` were built this way, and their binaries run.
 
 ## What each file does
 
@@ -92,10 +99,26 @@ holding one plan's values (rust's target URL, linux's dependency list, glibc's t
 either be unique to that plan or refuse another (glibc's does). Check with `git grep` on a value
 from the entry after porting.
 
-## What is left (9 packages, 2026-10-26)
+## Scaffoldings
 
-- Go plans, which need a Fennel scaffolding-go and pinned dependencies (`go get` fetched each at
-  HEAD): certstrap, dep, foulkon, grpcurl, helm, mage, opa, traefik.
+A scaffolding is a package shipping `lib/scaffolding.fnl`, a Fennel module: phases, helpers plans
+call through `b.scaffolding`, and a `metadata` function that reads the app's files and adds
+dependencies, the service and exports to the plan (Strip-Mall-Karate/dojo#7). A plan gives it
+settings with `:scaffolding {:package <ident> :settings {...}}`. scaffolding-base, scaffolding-go,
+scaffolding-node and scaffolding-ruby are ported; chef, inspec, gradle and go17 were dropped
+(Jamie, 2026-10-26).
+
+- scaffolding-go puts the source at its import path in a GOPATH of the build's own and passes the
+  build's flags to cgo. The Go plans' sources are their tags' archives; where a build asked git for
+  its version, the plan passes the tag's values (ldflags or make variables). glide v0.13.2, gox
+  v1.0.0 and go-bindata's last 2018 commit are pinned where the plans fetched them at HEAD; Makefiles
+  that run `/bin/bash` get the bash dependency as `SHELL`.
+- scaffolding-node matches `engines.node` against the Node packages this repository builds (there
+  is no Builder to ask); scaffolding-ruby reads Gemfile.lock in Fennel and needs one present.
+- A user and group with no service to run are left out of `svc` (chrony, systemd).
+
+## What is left (1 package, 2026-10-26)
+
 - geoip: its GeoLite download no longer exists; Jamie to decide.
 
 ## Sources that no longer answer
