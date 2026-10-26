@@ -246,3 +246,73 @@
 ;; The plan read busybox's config from beside it; a build reads only its own
 ;; plan's directory, which holds a copy.
 (v--create-config b)
+
+== for header in "gcc/config/"*-gnu.h "gcc/config/"*"/"*.h; do
+    grep -q LIBC_DYNAMIC_LINKER "$header" || continue
+    build_line "  Fixing $header"
+    sed -i "$header" \
+      -e 's|define[[:blank:]]*\([UCG]\+\)LIBC_DYNAMIC_LINKER\([0-9]*\)[[:blank:]]"\([^\"]\+\)"$|define \1LIBC_DYNAMIC_LINKER\2 "'"${glibc}"'\3"|g' \
+      -e 's|/lib64/ld-linux-|/lib/ld-linux-|g'
+  done
+--
+;; Each header that names LIBC_DYNAMIC_LINKER: the dynamic linker's path is glibc's.
+(let [config (b:join b.src "gcc/config")
+      headers (b:glob config "*-gnu.h")
+      glibc (pick-values 1 (v-glibc:gsub "%%" "%%%%"))]
+  (each [_ d (ipairs (b:glob config "*"))]
+    (when (b:exists (b:join d "."))
+      (each [_ h (ipairs (b:glob d "*.h"))] (table.insert headers h))))
+  (each [_ header (ipairs headers)]
+    (let [text (b:read header)]
+      (when (text:find "LIBC_DYNAMIC_LINKER" 1 true)
+        (b:log (.. "  Fixing " header))
+        (let [ends (= (text:sub -1) "\n") out []]
+          (each [line (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
+            (let [linked (pick-values 1 (line:gsub "define[ \t]*([UCG]+)LIBC_DYNAMIC_LINKER(%d*)[ \t]\"([^\\\"]+)\"$"
+                                                   (.. "define %1LIBC_DYNAMIC_LINKER%2 \"" glibc "%3\"")))]
+              (table.insert out (pick-values 1 (linked:gsub "/lib64/ld%-linux%-" "/lib/ld-linux-")))))
+          (b:write header (.. (table.concat out "\n") (if ends "\n" ""))))))))
+
+== grep -lr /usr/bin/file ./* | while read -r f; do
+    sed -i -e "s,/usr/bin/file,file,g" "$f"
+  done
+--
+;; Each file under the source (but its top-level dot files) naming /usr/bin/file names file.
+(each [_ f (ipairs (b:find b.src "*"))]
+  (when (and (not (b:exists (b:join f "."))) (not (: (f:sub (+ (length b.src) 2)) :match "^%.")))
+    (let [(fixed n) (: (b:read f) :gsub "/usr/bin/file" "file")]
+      (when (> n 0) (b:write f fixed)))))
+
+== ulimit -s 32768
+--
+;; The plan raised the stack limit to 32 MiB for one test set that exhausts it. A
+;; plan cannot set a limit; those tests' failures are tolerated, as all are here.
+
+== for bin in "$pkg_prefix/bin/"*-gcc*; do
+      if cmp -s "$pkg_prefix/bin/gcc" "$bin"; then
+        ln -sfnv gcc "$bin"
+      fi
+    done
+--
+;; Each hard link of gcc made a symbolic one.
+(let [gcc (b:read (.. b.prefix "/bin/gcc"))]
+  (each [_ bin (ipairs (b:glob (.. b.prefix "/bin") "*-gcc*"))]
+    (when (= gcc (b:read bin))
+      (b:remove bin)
+      (b:symlink "gcc" bin))))
+
+== for bin in "$pkg_prefix/bin/c++" "$pkg_prefix/bin/"*-c++* "$pkg_prefix/bin/"*-g++*; do
+      if cmp -s "$pkg_prefix/bin/g++" "$bin"; then
+        ln -sfn g++ "$bin"
+      fi
+    done
+--
+;; Each hard link of g++ made a symbolic one.
+(let [gxx (b:read (.. b.prefix "/bin/g++"))
+      bins [(.. b.prefix "/bin/c++")]]
+  (each [_ pattern (ipairs ["*-c++*" "*-g++*"])]
+    (each [_ bin (ipairs (b:glob (.. b.prefix "/bin") pattern))] (table.insert bins bin)))
+  (each [_ bin (ipairs bins)]
+    (when (and (b:exists bin) (= gxx (b:read bin)))
+      (b:remove bin)
+      (b:symlink "g++" bin))))

@@ -358,3 +358,37 @@ cp f f2
 popd > /dev/null
 cd ../..
 install -Dm644 LICENSE "$pkg_prefix/share/licenses/license.txt"
+
+== gcc-hand-ports
+-- setup
+mkdir -p gcc/config/i386 gcc/config/arm .hidden sub
+printf '#define GLIBC_DYNAMIC_LINKER "/lib64/ld-linux-x86-64.so.2"\n#define UCLIBC_DYNAMIC_LINKER32 "/lib/ld-uClibc.so.0"\nother\n' > gcc/config/i386/linux64.h
+printf '#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.3"\n' > gcc/config/linux-gnu.h
+printf 'nothing here\n' > gcc/config/arm/plain.h
+printf 'run /usr/bin/file x\n' > sub/script; printf 'run /usr/bin/file x\n' > .hidden/script; printf 'caf\xe9 /usr/bin/file\n' > latin1
+mkdir -p bin; echo gcc-bin > bin/gcc; echo gcc-bin > bin/x86_64-gcc; echo other > bin/x86_64-gcc-ar
+echo gxx-bin > bin/g++; echo gxx-bin > bin/c++; echo gxx-bin > bin/x86_64-g++
+-- body
+local glibc="/opt/glibc%1"
+for header in "gcc/config/"*-gnu.h "gcc/config/"*"/"*.h; do
+    grep -q LIBC_DYNAMIC_LINKER "$header" || continue
+    build_line "  Fixing $header"
+    sed -i "$header" \
+      -e 's|define[[:blank:]]*\([UCG]\+\)LIBC_DYNAMIC_LINKER\([0-9]*\)[[:blank:]]"\([^\"]\+\)"$|define \1LIBC_DYNAMIC_LINKER\2 "'"${glibc}"'\3"|g' \
+      -e 's|/lib64/ld-linux-|/lib/ld-linux-|g'
+  done
+grep -lr /usr/bin/file ./* | while read -r f; do
+    sed -i -e "s,/usr/bin/file,file,g" "$f"
+  done
+mkdir -p "$pkg_prefix/bin"
+cp -a bin/. "$pkg_prefix/bin/"
+for bin in "$pkg_prefix/bin/"*-gcc*; do
+      if cmp -s "$pkg_prefix/bin/gcc" "$bin"; then
+        ln -sfnv gcc "$bin"
+      fi
+    done
+for bin in "$pkg_prefix/bin/c++" "$pkg_prefix/bin/"*-c++* "$pkg_prefix/bin/"*-g++*; do
+      if cmp -s "$pkg_prefix/bin/g++" "$bin"; then
+        ln -sfn g++ "$bin"
+      fi
+    done

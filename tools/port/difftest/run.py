@@ -70,7 +70,7 @@ for case in "$root"/cases/*/; do
   mkdir -p "$work/a/src" "$work/a/prefix" "$work/b/plan" "$work/b/root" "$work/b/keys" "$work/b/out"
   cp "$case/plan.fnl" "$work/b/plan/"
   ( cd "$work/a/src" && pkg_prefix="$work/a/prefix" pkg_name=difftest body="$case/body.sh" bash -c \
-      'set -e; source "$1"; f() { source "$body"; }; f' _ "$case/setup.sh" ) > "$work/a.log" 2>&1
+      'set -e; build_line() { echo "$*"; }; source "$1"; f() { source "$body"; }; f' _ "$case/setup.sh" ) > "$work/a.log" 2>&1
   a=$?
   ( cd "$work/b/plan" && pkg_prefix=/nonexistent bash -c 'set -e; source "$1"' _ "$case/setup.sh" ) > /dev/null 2>&1
   : > "$work/b/keys/karate-20200101000000.sig.key"
