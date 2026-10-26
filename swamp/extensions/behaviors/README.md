@@ -1,7 +1,7 @@
 # @strip-mall-karate/dojo
 
-Builds [Dojo](https://github.com/Strip-Mall-Karate/dojo) packages from a checkout of
-[Dojo Plans](https://github.com/Strip-Mall-Karate/dojo-plans) with `doj-plan-build`, the program in
+Builds [Dojo](https://github.com/StripMallKarateCompany/dojo) packages from a checkout of
+[Dojo Plans](https://github.com/StripMallKarateCompany/dojo-plans) with `doj-plan-build`, the program in
 Dojo's `components/plan` that reads a plan's `plan.fnl` and builds it. One definition stands for one
 checkout and one target. Its methods read a plan, build a plan, and order a set of plans into waves,
 where each wave depends only on the waves before it.

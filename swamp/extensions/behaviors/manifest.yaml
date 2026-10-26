@@ -3,7 +3,7 @@ name: "@strip-mall-karate/dojo"
 version: "2026.10.26.1"
 license: MIT
 description: "Show and build Dojo plans with doj-plan-build, and order a plans checkout into dependency waves for building."
-repository: https://github.com/Strip-Mall-Karate/dojo-plans
+repository: https://github.com/StripMallKarateCompany/dojo-plans
 paths:
   base: manifest
 behaviors:

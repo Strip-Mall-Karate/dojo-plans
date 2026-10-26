@@ -21,8 +21,8 @@ box.
 | `stop`, `remove` | Stops the container; removes it and the `/doj` volume |
 
 From nothing: `image`, `start`, `sync`, `tools <dojo-checkout>`, `standins`. After a commit: `sync`.
-The plans need `components/plan` with Strip-Mall-Karate/dojo#7 (scaffolding metadata), so until it
-merges, `tools` takes a checkout of its branch.
+The plans need `components/plan` with scaffolding metadata (StripMallKarateCompany/dojo#10), so
+until that is on Dojo's main, `tools` takes a checkout of its branch.
 
 ## What a build there is, and is not
 
