@@ -59,20 +59,8 @@
           (b:env "CPPFLAGS" (or (b:getenv "CFLAGS") ""))
           (b:log (.. "Updating CPPFLAGS=" (or (b:getenv "CPPFLAGS") "")))
           (set v-bash "/bin/bash")
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/new-dtags.patch")])
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/dt-needed-true.patch")])
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/more-deterministic-output.patch")])
-          (b:run ["patch" "-p1"] {:stdin (let [text (b:read (.. b.plan_dir "/disable_failing_tests.patch")) ends (= (text:sub -1) "\n") lines [] out []]
-            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l) (var deleted false) (local after [])
-              (when (not deleted) (set line (pick-values 1 (string.gsub line "@zlib_libs@" (.. (pick-values 1 (: (b:path_for "zlib") :gsub "%%" "%%%%")) "/lib")))))
-              (when (not deleted) (table.insert out line))
-              (each [_ x (ipairs after)] (table.insert out x)))
-            (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))})
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/0001-PR23428-x86-Add-a-GNU_PROPERTY_X86_ISA_1_USED-note-if-needed.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/0005-PR23486-x86-Properly-merge-GNU_PROPERTY_X86_ISA_1_USED.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/0006-PR23428-x86-Properly-add-X86_ISA_1_NEEDED-property.patch")])
           (b:write (b:join b.src "ld/configure.tgt") (.. (if (b:exists (b:join b.src "ld/configure.tgt")) (b:read (b:join b.src "ld/configure.tgt")) "") "NATIVE_LIB_DIRS=\n"))
           (each [_ v-f (ipairs ["binutils/Makefile.in" "gas/Makefile.in" "ld/Makefile.in"])]
             (let [text (b:read (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))) ends (= (text:sub -1) "\n") lines [] out []]
@@ -86,7 +74,7 @@
  :build (fn [b]
           (b:remove (b:join b.src (.. "../" b.name "-build")))
           (b:mkdir (b:join b.src (.. "../" b.name "-build")))
-          (b:run [(.. "../" (.. b.name "-" b.version) "/configure") (.. "--prefix=" b.prefix) "--enable-shared" "--enable-gold" "--enable-ld=default" "--enable-plugins" "--enable-deterministic-archives" "--enable-threads" "--disable-werror" "--with-system-zlib"] {:cwd (.. "../" b.name "-build")})
+          (b:run [(.. "../" (.. b.name "-" b.version) "/configure") (.. "--prefix=" b.prefix) "--enable-shared" "--enable-ld=default" "--enable-new-dtags" "--enable-plugins" "--enable-deterministic-archives" "--enable-threads" "--disable-werror" "--with-system-zlib"] {:cwd (.. "../" b.name "-build")})
           (b:run ["make" "configure-host"] {:cwd (.. "../" b.name "-build")})
           (b:run ["make" (.. "-j" (tostring b.jobs)) (.. "tooldir=" b.prefix)] {:cwd (.. "../" b.name "-build")}))
  :check (fn [b]
