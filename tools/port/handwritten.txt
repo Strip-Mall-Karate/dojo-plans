@@ -148,3 +148,5 @@ xz-musl
 zlib
 zlib-musl
 coreutils-static
+pcre2
+libmd

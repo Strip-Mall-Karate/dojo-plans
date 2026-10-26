@@ -25,6 +25,7 @@ dojo-plans/coreutils
 dojo-plans/bison
 dojo-plans/flex
 dojo-plans/pcre
+dojo-plans/pcre2
 dojo-plans/grep
 dojo-plans/readline
 dojo-plans/bash
@@ -74,6 +75,7 @@ dojo/components/doj
 dojo-plans/bats
 dojo/components/plan-build
 dojo-plans/vim
+dojo-plans/libmd
 dojo-plans/libbsd
 dojo-plans/clens
 dojo-plans/mg
