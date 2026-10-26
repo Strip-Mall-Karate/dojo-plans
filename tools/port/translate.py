@@ -268,6 +268,8 @@ def substitution(command, scope):
         return f"(b:path_for {_dep(words[1], scope)})"
     if words[0] == "pkg_interpreter_for" and len(words) == 3:
         return f"(b:path_for {_dep(words[1], scope)} {word(words[2], scope)})"
+    if words[:3] == ["hab", "pkg", "path"] and len(words) == 4:
+        return f"(b:path_for {_dep(words[3], scope)})"
     if words[0] == "nproc" and len(words) == 1:
         return "(tostring b.jobs)"
     if any(w in ("|", "||", "&&", ";") or w.startswith(("|", ">", "<", "2>")) for w in words) or "|" in command:
@@ -1201,7 +1203,7 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
     forms = []
     # Every variable the function assigns is declared at its top, so one set
     # inside an if or a loop is still there after it, as in bash.
-    for var in sorted(set(ASSIGNED.findall(body)) | set(LOCAL.findall(body))):
+    for var in sorted((set(ASSIGNED.findall(body)) | set(LOCAL.findall(body))) - set(shared)):
         if (var in scope.locals or re.fullmatch(r"[A-Z][A-Z0-9_]*", var) or var.startswith("pkg_")
                 or var.startswith("_clean_")):
             continue

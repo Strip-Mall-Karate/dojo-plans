@@ -31,6 +31,12 @@ MARKERS = {
     "CACHE_PATH": "@{src}",
     "SRC_PATH": "@{src}",
     "pkg_target": TARGET,
+    "pkg_svc_path": "@{svc}",
+    "pkg_svc_data_path": "@{svc}/data",
+    "pkg_svc_config_path": "@{svc}/config",
+    "pkg_svc_var_path": "@{svc}/var",
+    "pkg_svc_files_path": "@{svc}/files",
+    "pkg_svc_static_path": "@{svc}/static",
     "STUDIO_TYPE": "",
 }
 
@@ -70,6 +76,30 @@ def fennel_string(value):
             out.append(c)
     out.append('"')
     return "".join(out)
+
+
+# The tree's rename (Habitat to Dojo, hab to doj, core to karate), applied to
+# what the port writes. Quoted bash in an UNPORTED block keeps the original.
+RENAME = [
+    (re.compile(r"\bHAB_"), "DOJ_"),
+    (re.compile(r"(?<![\w.])/hab(?=/|\b)"), "/doj"),
+    (re.compile(r"\bv-hab-"), "v-doj-"),
+    (re.compile(r"(?<![\w/.-])hab(?![\w-])"), "doj"),
+    (re.compile(r"(?<![\w/@.-])core/(?=[a-z0-9])"), "karate/"),
+    (re.compile(r"\bHABITAT\b"), "DOJO"),
+    (re.compile(r"\bHabitat\b"), "Dojo"),
+    (re.compile(r"(?<![\w.@/-])habitat(?![\w.-])"), "dojo"),
+]
+
+
+def renamed(text):
+    out = []
+    for line in text.split("\n"):
+        if not line.lstrip().startswith(";;   "):
+            for rx, rep in RENAME:
+                line = rx.sub(rep, line)
+        out.append(line)
+    return "\n".join(out)
 
 
 def ident(value):
@@ -224,7 +254,7 @@ def port(package_dir):
     notes = [f";; UNPORTED: {p}" for p in emitter.problems]
     out[1:1] = notes
     with open(os.path.join(package_dir, "plan.fnl"), "w", encoding="utf-8") as f:
-        f.write("\n".join(out) + "\n")
+        f.write(renamed("\n".join(out)) + "\n")
     return emitter.problems
 
 

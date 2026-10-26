@@ -4,8 +4,8 @@
 
 With no packages, checks every directory holding a plan.sh or a plan.fnl.
 A package passes when its plan.fnl exists, holds no UNPORTED block, runs no
-shell through b:run, and `doj-plan-build show` loads it for each target it
-lists. Prints one line per failure and a total, and exits nonzero on any.
+shell through b:run, does not name the source project, and `doj-plan-build
+show` loads it for each target it lists. Prints one line per failure and a total, and exits nonzero on any.
 """
 
 import json
@@ -14,6 +14,8 @@ import re
 import subprocess
 import sys
 
+# The source project's name and command, which appear nowhere in Dojo's tree.
+OLD_NAME = re.compile(r"habitat|\bhab\b|\bHAB_", re.I)
 SHELL_RUN = re.compile(r'\(b:(run|capture)\s+\[\s*"(bash|sh|zsh|eval|/bin/sh|/bin/bash)"')
 
 
@@ -38,6 +40,9 @@ def check(tool, package):
         problems.append(f"{text.count(';; UNPORTED')} unported block(s)")
     if SHELL_RUN.search(text):
         problems.append("runs a shell")
+    old = OLD_NAME.search(text)
+    if old:
+        problems.append(f"names the source project: {old.group(0)!r}")
     shown = subprocess.run([tool, "show", package], capture_output=True, text=True, check=False)
     if shown.returncode != 0:
         problems.append("does not load: " + (shown.stderr.strip().splitlines() or ["?"])[-1][:160])
