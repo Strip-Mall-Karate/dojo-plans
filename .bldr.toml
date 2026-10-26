@@ -237,18 +237,12 @@ plan_path = "docker-compose"
 plan_path = "docutils"
 [dosfstools]
 plan_path = "dosfstools"
-[dotnet-472-dev-pack]
-plan_path = "dotnet-472-dev-pack"
 [dotnet-asp-core]
 path_plan = "dotnet-asp-core"
 [dotnet-core]
 plan_path = "dotnet-core"
-[dotnet-core-lts]
-plan_path = "dotnet-core-lts"
 [dotnet-core-sdk]
 plan_path = "dotnet-core-sdk"
-[dotnet-core-sdk-lts]
-plan_path = "dotnet-core-sdk-lts"
 [dovecot]
 plan_path = "dovecot"
 [doxygen]
@@ -435,8 +429,6 @@ plan_path = "goaccess"
 plan_path = "gocd-server"
 [googletest]
 plan_path = "googletest"
-[goreplay]
-plan_path = "gorplay"
 [govc]
 plan_path = "govc"
 [gox]
@@ -624,8 +616,6 @@ plan_path = "lcms2"
 plan_path = "leiningen"
 [leproxy]
 plan_path = "leproxy"
-[leptonica]
-plan_path = "leptonica"
 [less]
 plan_path = "less"
 [leveldb]
@@ -705,8 +695,6 @@ plan_path = "libnsl"
 plan_path = "libossp-uuid"
 [libpcap]
 plan_path = "libpcap"
-[libpciaccess]
-plan_path = "libpciaccss"
 [libpipeline]
 plan_path = "libpipeline"
 [libpng]
@@ -1119,8 +1107,6 @@ plan_path = "postgresql11-client"
 paths = [
   "postgresql11/*",
 ]
-[powershell]
-plan_path = "powershell"
 [procps-ng]
 plan_path = "procps-ng"
 [proj]
@@ -1368,8 +1354,6 @@ plan_path = "tcpdump"
 plan_path = "telegraf"
 [terraform]
 plan_path = "terraform"
-[tesseract]
-plan_path = "tesseract"
 [texinfo]
 plan_path = "texinfo"
 [tmux]
