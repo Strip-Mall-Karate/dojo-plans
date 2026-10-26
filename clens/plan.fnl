@@ -14,6 +14,9 @@
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :build (fn [b]
+          ;; Its Makefile adds -Werror, and gcc 16 warns that a snprintf in fmt_scaled.c may
+          ;; truncate.
+          (b:env "CFLAGS" (.. (or (b:getenv "CFLAGS") "") " -Wno-format-truncation"))
           (b:mkdir (b:join b.src "obj"))
           (b:run ["make" (.. "LOCALBASE=" b.prefix)]))
  :install (fn [b]

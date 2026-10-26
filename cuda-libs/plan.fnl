@@ -45,10 +45,10 @@
           (var v-cuda-run-path (.. b.prefix "/lib64:" b.prefix "/nvvm/lib64:" (b:path_for "gcc-libs") "/lib:" (b:path_for "glibc") "/lib"))
           (set v--cuda-libs ["libOpenCL" "libcufftw" "libnppc" "libnppif" "libnppitc" "libnvrtc-builtins" "libaccinj64" "libcuinj64" "libnppial" "libnppig" "libnpps" "libnvrtc" "libcublas" "libcurand" "libnppicc" "libnppim" "libnvToolsExt" "libcudart" "libcusolver" "libnppicom" "libnppist" "libnvblas" "libcufft" "libcusparse" "libnppidei" "libnppisu" "libnvgraph"])
           (each [_ v-lib (ipairs v--cuda-libs)]
-            (each [_ p (ipairs (b:glob (.. (b:path_for "karate/cuda") "/lib64") "${lib}.*"))] (b:copy p (b:join (.. b.prefix "/lib64/") (: p :match "[^/]+$")))) (b:run ["patchelf" "--set-rpath" v-cuda-run-path (.. b.prefix "/lib64/" v-lib ".so")]))
+            (each [_ p (ipairs (b:glob (.. (b:path_for "karate/cuda") "/lib64") (.. v-lib ".*")))] (b:copy p (b:join (.. b.prefix "/lib64/") (: p :match "[^/]+$")))) (b:run ["patchelf" "--set-rpath" v-cuda-run-path (.. b.prefix "/lib64/" v-lib ".so")]))
           (set v--cuda-stubs-libs ["libcublas" "libcurand" "libnppial" "libnppif" "libnppisu" "libnvidia-ml" "libcuda" "libcusolver" "libnppicc" "libnppig" "libnppitc" "libnvrtc" "libcufft" "libcusparse" "libnppicom" "libnppim" "libnpps" "libcufftw" "libnppc" "libnppidei" "libnppist" "libnvgraph"])
           (each [_ v-lib (ipairs v--cuda-stubs-libs)]
-            (each [_ p (ipairs (b:glob (.. (b:path_for "karate/cuda") "/lib64/stubs") "${lib}.*"))] (b:copy p (b:join (.. b.prefix "/lib64/stubs/") (: p :match "[^/]+$")))) (b:run ["patchelf" "--set-rpath" v-cuda-run-path (.. b.prefix "/lib64/stubs/" v-lib ".so")]))
+            (each [_ p (ipairs (b:glob (.. (b:path_for "karate/cuda") "/lib64/stubs") (.. v-lib ".*")))] (b:copy p (b:join (.. b.prefix "/lib64/stubs/") (: p :match "[^/]+$")))) (b:run ["patchelf" "--set-rpath" v-cuda-run-path (.. b.prefix "/lib64/stubs/" v-lib ".so")]))
           (each [_ p (ipairs (b:glob (.. (b:path_for "karate/cuda") "/nvvm/lib64") "libnvvm.*"))] (b:copy p (b:join (.. b.prefix "/nvvm/lib64/") (: p :match "[^/]+$"))))
           (b:run ["patchelf" "--set-rpath" v-cuda-run-path (.. b.prefix "/nvvm/lib64/libnvvm.so")])
           (b:mkdir (.. b.prefix "/share/licenses"))

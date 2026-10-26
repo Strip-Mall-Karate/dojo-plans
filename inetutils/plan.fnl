@@ -13,6 +13,9 @@
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/grep"]
  :bin_dirs ["bin"]
  :build (fn [b]
+          ;; configure finds tgetent in ncurses but not its declaration, which ncurses has in
+          ;; termcap.h; telnet includes that header when told tgetent is termcap's.
+          (b:env "CPPFLAGS" (.. (or (b:getenv "CPPFLAGS") "") " -DHAVE_TERMCAP_TGETENT=1"))
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--disable-logger" "--disable-whois" "--disable-rcp" "--disable-rexec" "--disable-rlogin" "--disable-rsh" "--disable-servers"])
           (b:run ["make"]))
  :install (fn [b]

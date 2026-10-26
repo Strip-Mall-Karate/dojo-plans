@@ -17,6 +17,10 @@
  :prepare (fn [b]
           (b:run ["patch" "-p0" "-i" (.. b.plan_dir "/patches/atomic.patch")]))
  :build (fn [b]
+          ;; Berkeley DB 5.3's configure probes use implicit int and declarations, which gcc 14
+          ;; and later reject unless -fpermissive; with them failing it falls back to FCNTL
+          ;; mutexes, which it refuses.
+          (b:env "CFLAGS" (.. (or (b:getenv "CFLAGS") "") " -std=gnu17 -fpermissive"))
           (b:run ["../dist/configure" (.. "--prefix=" b.prefix) "--enable-compat185" "--enable-cxx" "--enable-dbm" "--enable-stl"] {:cwd "build_unix"})
           (b:run ["make" "LIBSO_LIBS=-lpthread" (.. "-j" (tostring b.jobs))] {:cwd "build_unix"}))
  :install (fn [b]

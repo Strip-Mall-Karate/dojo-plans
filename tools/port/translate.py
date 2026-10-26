@@ -514,6 +514,16 @@ def path(text, scope):
     return anchor(word(text, scope), scope)
 
 
+def glob_pattern(pattern, scope):
+    """A glob's last component as a Fennel string: its variables expanded, its
+    wildcards left for b:glob."""
+    if "$" not in pattern:
+        return fstr(pattern)
+    if '"' in pattern or "$(" in pattern:
+        raise Unported("glob pattern " + pattern)
+    return word('"' + pattern + '"', scope)
+
+
 def paths(text, scope):
     """A path argument as a list of Fennel expressions, or one expression
     for a glob, marked with a leading `*` for each-over."""
@@ -527,7 +537,7 @@ def paths(text, scope):
             where = base(scope)
         else:
             where = anchor(word(directory, scope), scope)
-        return "*", f"(b:glob {where} {fstr(pattern)})"
+        return "*", f"(b:glob {where} {glob_pattern(pattern, scope)})"
     return "", path(text, scope)
 
 
@@ -1102,7 +1112,7 @@ def cmd_fix_interpreter(words, scope):
         if GLOB.search(directory) or "$(" in pattern or not pattern:
             raise Unported("fix_interpreter pattern " + target)
         where = base(scope) if directory in ("", ".") else anchor(word('"' + directory + '"', scope), scope)
-        files = f"(b:glob {where} {fstr(pattern)})"
+        files = f"(b:glob {where} {glob_pattern(pattern, scope)})"
     else:
         files = f"[{path(target, scope)}]"
     return [f"(b:fix_interpreter {files} {_dep(dep, scope)} {word(interp, scope)})"]

@@ -12,6 +12,17 @@
  :deps ["karate/glibc" "karate/acl" "karate/attr"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
  :bin_dirs ["bin"]
+ :prepare (fn [b]
+          (b.default.prepare b)
+          ;; tar 1.35 defines its own acl_get_file_at, acl_set_file_at and
+          ;; acl_delete_def_file_at, which acl 2.4 now declares with other signatures.
+          (let [path (b:join b.src "src/xattrs.c")
+                text (b:read path)
+                renamed (-> text
+                            (: :gsub "acl_get_file_at" "tar_acl_get_file_at")
+                            (: :gsub "acl_set_file_at" "tar_acl_set_file_at")
+                            (: :gsub "acl_delete_def_file_at" "tar_acl_delete_def_file_at"))]
+            (b:write path renamed)))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix)] {:env {"FORCE_UNSAFE_CONFIGURE" "1"}})
           (b:run ["make"]))

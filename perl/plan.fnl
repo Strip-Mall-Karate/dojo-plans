@@ -11,7 +11,7 @@
  :description "Perl 5 is a highly capable, feature-rich programming language with over 29 years of development."
  :upstream_url "http://www.perl.org/"
  :source {:url "https://www.cpan.org/src/5.0/perl-5.44.0.tar.xz" :sha256 "505cf43912e9480495c344c70260452e32aa2a73c546a026b3f100053b23ce91"}
- :deps ["karate/glibc" "karate/zlib" "karate/bzip2" "karate/gdbm" "karate/db" "karate/coreutils" "karate/less"]
+ :deps ["karate/glibc" "karate/libxcrypt" "karate/zlib" "karate/bzip2" "karate/gdbm" "karate/db" "karate/coreutils" "karate/less"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/procps-ng" "karate/inetutils" "karate/iana-etc"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
@@ -35,11 +35,20 @@
           (each [_ v-i (ipairs [(or (b:getenv "LDFLAGS") "")])]
             (when (string.find v-i "^%-L/")
             (set v-loclibpth (.. v-loclibpth " " (pick-values 1 (string.gsub v-i "^%-L" "" 1))))))
-          (b:env "LD_LIBRARY_PATH" (.. (b:capture ["pwd"]) ":" (or (b:getenv "LD_RUN_PATH") "")))
+          ;; Only the build directory, where libperl is before it is installed: perl's programs
+          ;; find their dependencies by RUNPATH, and a glibc here is loaded by every program the
+          ;; build runs, the host's sh included, which a first build cannot have match.
+          (b:env "LD_LIBRARY_PATH" (b:capture ["pwd"]))
           (b:log (.. "Setting LD_LIBRARY_PATH=" (or (b:getenv "LD_LIBRARY_PATH") ""))))
  :build (fn [b]
           (b:env "BUILD_ZLIB" "False")
           (b:env "BUILD_BZIP2" "0")
+          ;; Where zlib's and bzip2's headers and libraries are: Compress-Raw-Zlib and -Bzip2
+          ;; read these, and perl 5.44 no longer passes its include paths to them.
+          (b:env "ZLIB_INCLUDE" (.. (b:path_for "zlib") "/include"))
+          (b:env "ZLIB_LIB" (.. (b:path_for "zlib") "/lib"))
+          (b:env "BZIP2_INCLUDE" (.. (b:path_for "bzip2") "/include"))
+          (b:env "BZIP2_LIB" (.. (b:path_for "bzip2") "/lib"))
           (b:run ["sh" "Configure" "-de" (.. "-Dprefix=" b.prefix) (.. "-Dman1dir=" b.prefix "/share/man/man1") (.. "-Dman3dir=" b.prefix "/share/man/man3") (.. "-Dlocincpth=" v-locincpth) (.. "-Dloclibpth=" v-loclibpth) (.. "-Dpager=" (b:path_for "less") "/bin/less -isR") "-Dinstallstyle=lib/perl5" "-Uinstallusrbinperl" "-Duseshrplib" "-Dusethreads" "-Dinc_version_list=none" (.. "-Dlddlflags=-shared " (or (b:getenv "LDFLAGS") "")) (.. "-Dldflags=" (or (b:getenv "LDFLAGS") ""))])
           (b:run ["make" (.. "-j" (tostring b.jobs))])
           (b:unsetenv "BUILD_ZLIB")

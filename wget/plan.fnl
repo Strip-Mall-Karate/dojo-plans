@@ -26,6 +26,9 @@
  :prepare (fn [b]
           (v--wget-common-prepare b))
  :build (fn [b]
+          ;; OpenSSL 4 has no SSLv3 method and no longer says so with OPENSSL_NO_SSL3_METHOD,
+          ;; which wget checks before calling it.
+          (b:env "CPPFLAGS" (.. (or (b:getenv "CPPFLAGS") "") " -DOPENSSL_NO_SSL3_METHOD"))
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--with-ssl=openssl" "--without-libuuid"])
           (b:run ["make"]))
  :check (fn [b]

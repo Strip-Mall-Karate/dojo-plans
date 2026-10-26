@@ -13,8 +13,8 @@
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :prepare (fn [b]
-          (var v-java-home (b:path_for "corretto8"))
-          (b:log (.. "Setting JAVA_HOME=" v-java-home)))
+          (b:env "JAVA_HOME" (b:path_for "corretto8"))
+          (b:log (.. "Setting JAVA_HOME=" (or (b:getenv "JAVA_HOME") ""))))
  :build (fn [b]
           (b:run ["ant" (.. "-Dmaven.home=" b.prefix)]))
  :install (fn [b]
