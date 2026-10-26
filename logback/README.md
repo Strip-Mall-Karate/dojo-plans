@@ -4,7 +4,7 @@ The reliable, generic, fast and flexible logging framework for Java.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -4,7 +4,7 @@ GNU rewrite of the OpenBSD netcat/nc package
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

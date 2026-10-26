@@ -4,7 +4,7 @@ Libxml2 is the XML C parser and toolkit developed for the Gnome project
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

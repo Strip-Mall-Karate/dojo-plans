@@ -1,5 +1,5 @@
-# Habitat Package: Crate
-The Habitat Maintainers <humans@habitat.sh>
+# Dojo Package: Crate
+Strip Mall Karate Company
 
 ## Description
 
@@ -20,19 +20,19 @@ web experiences need.
 ### Starting
 
 ```
-hab start core/drupal --bind database:<database service group> --peer <ip of database service group supervisor>
+doj start karate/drupal --bind database:<database service group> --peer <ip of database service group supervisor>
 ```
 
 ### Stopping
 
 ```
-hab sup stop core/nginx
-hab sup stop core/drupal
+doj sup stop karate/nginx
+doj sup stop karate/drupal
 ```
 
 By default, Drupal will be available on port 80.
 
 ### Notes
 
-- This package requires a running instance of `core/mysql` to bind to.
+- This package requires a running instance of `karate/mysql` to bind to.
 - After starting the service the user is provided with a new Drupal site with preconfigured admin username and password.

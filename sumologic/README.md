@@ -1,4 +1,4 @@
-# Habitat package: sumologic
+# Dojo package: sumologic
 
 ## Description
 
@@ -12,8 +12,8 @@ and accesskey.
 ## Usage
 
 ```
-hab svc load core/sumologic
-hab svc start core/sumologic
+doj svc load karate/sumologic
+doj svc start karate/sumologic
 ```
 
 ## Topology

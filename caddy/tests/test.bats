@@ -20,7 +20,7 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Service is running" {
-  [ "$(hab svc status | grep "caddy\.default" | awk '{print $4}' | grep up)" ]
+  [ "$(doj svc status | grep "caddy\.default" | awk '{print $4}' | grep up)" ]
 }
 
 @test "Listening on port 8080" {

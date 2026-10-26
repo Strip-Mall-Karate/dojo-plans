@@ -4,7 +4,7 @@ Google's language-neutral, platform-neutral, extensible mechanism for serializin
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

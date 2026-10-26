@@ -4,7 +4,7 @@ ripgrep combines the usability of The Silver Searcher with the raw speed of grep
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

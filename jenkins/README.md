@@ -4,7 +4,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -12,15 +12,15 @@ Service package
 
 ## Usage
 
-Start the service with Habitat:
+Start the service with Dojo:
 
 ```
-hab sup start core/jenkins
+doj sup start karate/jenkins
 ```
 
 ### Initial Password
 
-On first login, you will be asked for an initial admin password. This is generated automatically, and output in the supervisor log (check with `sup-log`), and is also available on disk at `/hab/svc/jenkins/data/secrets/initialAdminPassword`.
+On first login, you will be asked for an initial admin password. This is generated automatically, and output in the supervisor log (check with `sup-log`), and is also available on disk at `/doj/svc/jenkins/data/secrets/initialAdminPassword`.
 
 ## Topologies
 

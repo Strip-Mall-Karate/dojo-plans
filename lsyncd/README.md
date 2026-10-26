@@ -4,7 +4,7 @@ Lsyncd watches a local directory trees event monitor interface (inotify or fseve
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

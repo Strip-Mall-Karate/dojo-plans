@@ -4,7 +4,7 @@ Small-footprint color management engine, version 2
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

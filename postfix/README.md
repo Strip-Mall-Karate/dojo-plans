@@ -1,6 +1,6 @@
-# postfix habitat service
+# postfix dojo service
 
-A habitat plan for building and running postfix as a supervised service
+A dojo plan for building and running postfix as a supervised service
 
 ## Development / Testing
 
@@ -49,7 +49,7 @@ To test with the default configuration, ensure that `localhost.localdomain` is a
 
 1. Read the mailbox from within the studio:
 
-    `less /hab/svc/postfix/data/spool/root`
+    `less /doj/svc/postfix/data/spool/root`
 
 ## Sample configurations
 

@@ -4,7 +4,7 @@ Real time network traffic monitor for the text console
 
 ## Maintainers
 
-The Habitat Maintainers: <humans@habitat.sh>
+Strip Mall Karate Company
 
 ## Type of Package
 

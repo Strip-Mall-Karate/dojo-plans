@@ -4,7 +4,7 @@ CppUnit is the C++ port of the famous JUnit framework for unit testing. Test out
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

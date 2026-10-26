@@ -1,4 +1,4 @@
-# Habitat package: consul
+# Dojo package: consul
 
 ## Description
 
@@ -9,7 +9,7 @@ This plan provides the static binary for execution.
 ## Usage
 
 ```
-hab svc load core/consul
+doj svc load karate/consul
 ```
 
 ## Topology

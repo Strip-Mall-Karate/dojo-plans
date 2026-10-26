@@ -4,7 +4,7 @@ A dynamic, open source programming language with a focus on   simplicity and pro
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -12,8 +12,8 @@ Binary package
 
 ## Usage
 
-hab pkg exec core/ruby26 ruby --help
+doj pkg exec karate/ruby26 ruby --help
 
 You can add this as a build dependency to your plan with:
 
-pkg_build_deps=(core/ruby26)
+pkg_build_deps=(karate/ruby26)

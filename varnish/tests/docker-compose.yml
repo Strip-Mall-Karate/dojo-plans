@@ -5,7 +5,7 @@ services:
     image: starkandwayne/varnish:edge
     command: "start starkandwayne/varnish --peer webserver --group varnish"
     environment:
-      HAB_VARNISH: |
+      DOJ_VARNISH: |
         [backend]
         host="webserver"
         port="3000"

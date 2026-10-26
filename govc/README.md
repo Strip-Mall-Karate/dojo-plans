@@ -1,4 +1,4 @@
-# Habitat package: govc
+# Dojo package: govc
 
 ## Description
 
@@ -7,7 +7,7 @@ This plan provides the govc CLI package. `govc` is a tool, written in Go, used t
 ## Usage
 
 ```
-hab pkg exec core/govc govc -h
+doj pkg exec karate/govc govc -h
 
 govc -h
 Usage of govc:

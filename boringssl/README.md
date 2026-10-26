@@ -4,7 +4,7 @@ BoringSSL is a fork of OpenSSL that is designed to meet Google's needs.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -16,6 +16,6 @@ This is a library usually used at build time, thus you should use it like so in 
 
 ```
 pkg_build_deps=(
-    core/boringssl
+    karate/boringssl
 )
 ```

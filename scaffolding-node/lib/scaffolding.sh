@@ -101,8 +101,8 @@ scaffolding_modules_install() {
 
   build_line "Installing dependencies using $_pkg_manager $("$_pkg_manager" --version)"
   # Many node dependencies require /usr/bin/env
-  # This directory is not created with Habitat by design
-  # Instead, we use core/coreutils for this functionality
+  # This directory is not created with Dojo by design
+  # Instead, we use karate/coreutils for this functionality
   # This sets up a symlink to simulate a /usr/bin/env,
   # But still use coreutils. Additionally, /usr/bin isn't
   # guaranteed to exist, so create it first.
@@ -122,7 +122,7 @@ scaffolding_modules_install() {
       if [[ -f "npm-shrinkwrap.json" ]]; then
         cp -av npm-shrinkwrap.json "$CACHE_PATH/"
       fi
-      if [[ -n "$HAB_NONINTERACTIVE" ]]; then
+      if [[ -n "$DOJ_NONINTERACTIVE" ]]; then
         export NPM_CONFIG_PROGRESS=false
       fi
 
@@ -155,7 +155,7 @@ scaffolding_modules_install() {
       ;;
     yarn)
       local extra_args
-      if [[ -n "$HAB_NONINTERACTIVE" ]]; then
+      if [[ -n "$DOJ_NONINTERACTIVE" ]]; then
         extra_args="--no-progress"
       fi
 
@@ -265,7 +265,7 @@ _setup_funcs() {
 
 _setup_vars() {
   # The default Node package if one cannot be detected
-  _default_node_pkg="core/node"
+  _default_node_pkg="karate/node"
   # `$scaffolding_pkg_manager` is empty by default
   : "${scaffolding_pkg_manager:=}"
   # `$scaffolding_node_pkg` is empty by default
@@ -379,7 +379,7 @@ _update_vars() {
   _set_if_unset scaffolding_env NODE_ENV "{{cfg.node_env}}"
 
   # TODO fin: try to detect `$pkg_version` in package.json. This may involve a
-  # change to `hab-plan-build.sh` to delay the checking of required Plan
+  # change to `doj-plan-build.sh` to delay the checking of required Plan
   # variables.
 
   if [[ -z "${pkg_description:-}" ]]; then
@@ -453,15 +453,15 @@ _update_svc_run() {
 
 _add_busybox() {
   build_line "Adding Busybox package to run dependencies"
-  # Need to specify core/busybox-static last
-  # So that it does not override the paths of core/coreutils
-  pkg_deps=(${pkg_deps[@]} core/busybox-static)
+  # Need to specify karate/busybox-static last
+  # So that it does not override the paths of karate/coreutils
+  pkg_deps=(${pkg_deps[@]} karate/busybox-static)
   debug "Updating pkg_deps=(${pkg_deps[*]}) from Scaffolding detection"
 }
 
 _add_git() {
   build_line "Adding git to build dependencies"
-  pkg_build_deps=(core/git ${pkg_build_deps[@]})
+  pkg_build_deps=(karate/git ${pkg_build_deps[@]})
   debug "Updating pkg_build_deps=(${pkg_build_deps[*]}) from Scaffolding detection"
 }
 
@@ -483,7 +483,7 @@ _detect_node() {
     val="$(_json_val package.json .engines.node)"
     if [[ -n "$val" ]]; then
 
-      # TODO fin: Add more robust packages.json to Habitat package matching
+      # TODO fin: Add more robust packages.json to Dojo package matching
       case "$val" in
         *)
           nearest_version_string=$(_nearest_version_on_builder "$val")
@@ -492,16 +492,16 @@ _detect_node() {
           if [[ $nearest_version =~ (.*No compatible version of node found.*) ]]; then
               exit_with "$nearest_version" 1
           fi
-          _node_pkg="core/node/$nearest_version"
+          _node_pkg="karate/node/$nearest_version"
           ;;
       esac
       build_line "Detected Node.js version '$val' in package.json, using '$_node_pkg'"
     elif [[ -f .nvmrc && -n "$(cat .nvmrc)" ]]; then
       val="$(trim "$(cat .nvmrc)")"
-      # TODO fin: Add more robust .nvmrc to Habitat package matching
+      # TODO fin: Add more robust .nvmrc to Dojo package matching
       case "$val" in
         *)
-          _node_pkg="core/node/$val"
+          _node_pkg="karate/node/$val"
           ;;
       esac
       build_line "Detected Node.js version '$val' in .nvmrc, using '$_node_pkg'"
@@ -518,7 +518,7 @@ _detect_yarn() {
   # TODO fin: support custom version of Yarn package?
   if [[ "$_pkg_manager" == "yarn" ]]; then
     build_line "Adding Yarn package to build dependencies"
-    pkg_build_deps=(core/yarn ${pkg_build_deps[@]})
+    pkg_build_deps=(karate/yarn ${pkg_build_deps[@]})
     debug "Updating pkg_build_deps=(${pkg_build_deps[*]}) from Scaffolding detection"
   fi
 }
@@ -616,7 +616,7 @@ _set_if_unset() {
 # * No extended attributes are copied
 # * Some file editor backup files are skipped
 # * Some version control-related directories are skipped
-# * Any `./habitat/` directory is skipped
+# * Any `./dojo/` directory is skipped
 # * Any `./vendor/bundle` directory is skipped as it may have native gems
 _tar_pipe_app_cp_to() {
   local dst_path tar
@@ -629,7 +629,7 @@ _tar_pipe_app_cp_to() {
       --no-xattrs \
       --exclude-backups \
       --exclude-vcs \
-      --exclude='habitat' \
+      --exclude='dojo' \
       --exclude='results' \
       --exclude='node_modules' \
       --files-from=- \
@@ -687,7 +687,7 @@ _nearest_version_on_builder() {
   local full_version_number
   full_version_number=$(_full_version_digits "$bare_version")
 
-  "$(pkg_path_for core/curl)"/bin/curl https://bldr.habitat.sh/v1/depot/channels/core/stable/pkgs/node | $_jq . > data.json
+  "$(pkg_path_for karate/curl)"/bin/curl https://bldr.karate.company/v1/depot/channels/core/stable/pkgs/node | $_jq . > data.json
   builder_versions_list=$(stable_versions_list data.json)
   rm -f data.json
 
@@ -699,7 +699,7 @@ _nearest_version_on_builder() {
     # in order to compare it to the full version number
     # with semver
     local parsed_i
-    parsed_i=$(echo "$i" | "$(pkg_path_for core/bc)"/bin/bc)
+    parsed_i=$(echo "$i" | "$(pkg_path_for karate/bc)"/bin/bc)
     comparison_result=1
 
     if [[ $original_version_string =~ (^=?[0-9])  ]]; then
@@ -731,7 +731,7 @@ _nearest_version_on_builder() {
 
   if [ -z "${contender+x}" ];
   then
-    echo "No compatible version of node found in the core origin on Habitat Builder"
+    echo "No compatible version of node found in the karate origin on Dojo Builder"
   else
     echo "$contender"
   fi

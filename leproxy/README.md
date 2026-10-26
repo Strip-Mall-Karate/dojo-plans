@@ -4,7 +4,7 @@ HTTPS reverse proxy with automatic Letsencrypt usage for multiple hostnames/back
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

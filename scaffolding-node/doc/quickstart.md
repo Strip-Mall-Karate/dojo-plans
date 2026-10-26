@@ -1,42 +1,42 @@
 # Use Node Scaffolding for Your App
 
-## Habitat Quick Setup
+## Dojo Quick Setup
 
-To install and setup Habitat on your system for development, follow the instructions on the [Set up your environment][hab_setup] page from the [Getting Started with Habitat][tutorial] tutorial.
+To install and setup Dojo on your system for development, follow the instructions on the Set up your environment page from the Getting Started with Dojo tutorial.
 
-This should leave you with a `hab` program on your system with a generated origin key for signing built packages.
+This should leave you with a `doj` program on your system with a generated origin key for signing built packages.
 
 ## Create a Plan which uses the Node Scaffolding
 
-Now, navigate to the directory at the root of your app and create a `habitat/` directory:
+Now, navigate to the directory at the root of your app and create a `dojo/` directory:
 
 ```sh
-mkdir habitat
+mkdir dojo
 ```
 
-Then create a new file called `habitat/plan.sh` with your editor of choice (denoted here as `$EDITOR`).
+Then create a new file called `dojo/plan.sh` with your editor of choice (denoted here as `$EDITOR`).
 
 ```sh
-$EDITOR habitat/plan.sh
+$EDITOR dojo/plan.sh
 ```
 
 ```sh
 pkg_name=MY_APP
 pkg_origin=MY_ORIGIN
 pkg_version=MY_VERSION
-pkg_scaffolding=core/scaffolding-node
+pkg_scaffolding=karate/scaffolding-node
 ```
 
 You can replace the following:
 
-* `MY_APP` with your app's name (this will become the Habitat package name)
+* `MY_APP` with your app's name (this will become the Dojo package name)
 * `MY_ORIGIN` with the origin name you chose in the Quick Setup
 * `MY_VERSION` with the version of your app.
 
 Now, why not commit the Plan into your project's codebase? If using Git:
 
 ```sh
-git add habitat/plan.sh
+git add dojo/plan.sh
 git commit
 ```
 
@@ -44,17 +44,17 @@ git commit
 
 ## Build Your App Package
 
-All Habitat packages are built in an isolated build environment called a Studio. There are 2 main ways to build your package (both of which use the **exact** same process and code under the hood):
+All Dojo packages are built in an isolated build environment called a Studio. There are 2 main ways to build your package (both of which use the **exact** same process and code under the hood):
 
-1. `hab studio enter`
-2. `hab pkg build`
+1. `doj studio enter`
+2. `doj pkg build`
 
 ### Build Your App Package Interactively with Studio Enter
 
 When you are initially getting your app to build with all of its dependencies, configuration, etc., it can be beneficial to work with a quicker feedback loop. To do this, you can interactively enter a Studio by changing directory to the root of your app and running:
 
 ```sh
-hab studio enter
+doj studio enter
 ```
 
 You will be sitting a shell prompt in the `/src` directory where you app's code is mounted (take a look by running `ls`). To build your app, simply run:
@@ -63,21 +63,19 @@ You will be sitting a shell prompt in the `/src` directory where you app's code 
 build
 ```
 
-You can try to start any successfully built package directly in the Studio by running `hab start MY_ORIGIN/MY_APP` (note that you may require addition options such as service bindings depending on your app's needs).
+You can try to start any successfully built package directly in the Studio by running `doj start MY_ORIGIN/MY_APP` (note that you may require addition options such as service bindings depending on your app's needs).
 
-Any successfully created Habitat packages will be copied into a `./results/` directory which you can access inside or outside the Studio. To exit, simply run `exit`.
+Any successfully created Dojo packages will be copied into a `./results/` directory which you can access inside or outside the Studio. To exit, simply run `exit`.
 
-For a more detailed walkthrough, try the [Getting Started with Habitat][tutorial] tutorial.
+For a more detailed walkthrough, try the Getting Started with Dojo tutorial.
 
 ### Build Your App Package Cleanly and Declaratively with Pkg Build
 
-Working on package interactively is nice, but if you want clean, "from-nothing" builds that will also work on CI systems and in CD pipelines? That is what `hab pkg build` is for. It performs the exact same build with a big difference: the Studio is destroyed and re-created from scratch each time you run `hab pkg build`. This ensures that no previous old software will influence the build of a package.
+Working on package interactively is nice, but if you want clean, "from-nothing" builds that will also work on CI systems and in CD pipelines? That is what `doj pkg build` is for. It performs the exact same build with a big difference: the Studio is destroyed and re-created from scratch each time you run `doj pkg build`. This ensures that no previous old software will influence the build of a package.
 
 To build a package this way, change directory to the root of your app and run:
 
 ```sh
-hab pkg build
+doj pkg build
 ```
 
-[hab_setup]: https://www.habitat.sh/tutorials/getting-started/mac/setup-environment/
-[tutorial]: https://www.habitat.sh/tutorials/

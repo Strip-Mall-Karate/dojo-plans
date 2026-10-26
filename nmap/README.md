@@ -4,7 +4,7 @@ nmap is a free security scanner for network exploration and security audits
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

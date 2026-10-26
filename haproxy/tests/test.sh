@@ -3,10 +3,10 @@ TESTDIR="$(dirname "${0}")"
 PLANDIR="$(dirname "${TESTDIR}")"
 SKIPBUILD=${SKIPBUILD:-0}
 
-hab pkg install core/busybox-static
-hab pkg binlink core/busybox-static netstat
+doj pkg install karate/busybox-static
+doj pkg binlink karate/busybox-static netstat
 
-hab pkg install --binlink core/bats
+doj pkg install --binlink karate/bats
 source "${PLANDIR}/plan.sh"
 
 if [ "${SKIPBUILD}" -eq 0 ]; then
@@ -14,13 +14,13 @@ if [ "${SKIPBUILD}" -eq 0 ]; then
   pushd "${PLANDIR}" > /dev/null
   build
   source results/last_build.env
-  hab svc load -f core/nginx
+  doj svc load -f karate/nginx
   echo '[http.listen]
-port = 81' | hab config apply nginx.default "$(date +%s)"
+port = 81' | doj config apply nginx.default "$(date +%s)"
   # Unload the service if its already loaded.
-  hab svc unload "${HAB_ORIGIN}/${pkg_name}"
-  hab pkg install --binlink --force "results/${pkg_artifact}"
-  hab svc load "${pkg_ident}" --bind=backend:nginx.default
+  doj svc unload "${DOJ_ORIGIN}/${pkg_name}"
+  doj pkg install --binlink --force "results/${pkg_artifact}"
+  doj svc load "${pkg_ident}" --bind=backend:nginx.default
   popd > /dev/null
   set +e
 fi

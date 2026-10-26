@@ -4,7 +4,7 @@ Zsh is a shell designed for interactive use, although it is also a powerful scri
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

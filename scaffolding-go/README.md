@@ -9,7 +9,7 @@ An example of a `plan.sh`:
 pkg_name=hello-go
 pkg_origin=afiune
 pkg_version="0.1.0"
-pkg_scaffolding=core/scaffolding-go
+pkg_scaffolding=karate/scaffolding-go
 pkg_source="http://github.com/afiune/hello-go"
 ```
 
@@ -23,12 +23,11 @@ An example of a `plan.sh`:
 pkg_name=hello-go
 pkg_origin=afiune
 pkg_version="0.1.0"
-pkg_scaffolding=core/scaffolding-go
+pkg_scaffolding=karate/scaffolding-go
 scaffolding_go_base_path=github.com/afiune
 ```
 
 ## Getting Started with Scaffolding
-See https://www.habitat.sh/docs/concepts-scaffolding/ to learn how to get started with Scaffolding.
 
 ## Variables
 | Variable | Type | Value | Default |

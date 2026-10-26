@@ -4,7 +4,7 @@ Library for a set of interfaces providing accessibility. By supporting the ATK i
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

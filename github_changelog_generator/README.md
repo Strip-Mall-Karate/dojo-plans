@@ -4,7 +4,7 @@ Changelog generation has never been so easy. Fully automate changelog generation
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

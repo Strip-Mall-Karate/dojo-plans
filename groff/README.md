@@ -4,7 +4,7 @@ Groff (GNU troff) is a typesetting system that reads plain text mixed with forma
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

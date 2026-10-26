@@ -4,17 +4,17 @@
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
 ```bash
-hab pkg install core/packer
-hab pkg binlink core/packer
+doj pkg install karate/packer
+doj pkg binlink karate/packer
 
 packer --version
 ```

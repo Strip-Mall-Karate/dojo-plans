@@ -175,15 +175,15 @@ _setup_funcs() {
 
 _setup_vars() {
   # The default Gradle package if one cannot be detected
-  _default_gradle_pkg="core/gradle"
+  _default_gradle_pkg="karate/gradle"
   # `$scaffolding_gradle_pkg` is empty by default
   : "${scaffolding_gradle_pkg:=}"
   # The default JDK package if one cannot be detected
-  _default_jdk_pkg="core/jdk8"
+  _default_jdk_pkg="karate/jdk8"
   # `$scaffolding_jdk_pkg` is empty by default
   : "${scaffolding_jdk_pkg:=}"
   # The default JRE package if one cannot be detected
-  _default_jre_pkg="core/jre8"
+  _default_jre_pkg="karate/jre8"
   # `$scaffolding_jre_pkg` is empty by default
   : "${scaffolding_jre_pkg:=}"
   #
@@ -258,7 +258,7 @@ _update_vars() {
   _set_if_unset pkg_exports port "app.port"
 
   # TODO fin: try to detect `$pkg_version` in a properties file. This may
-  # involve a change to `hab-plan-build.sh` to delay the checking of required
+  # involve a change to `doj-plan-build.sh` to delay the checking of required
   # Plan variables.
 }
 
@@ -297,7 +297,7 @@ _update_svc_run() {
 
 _add_busybox() {
   build_line "Adding Busybox package to run dependencies"
-  pkg_deps=(core/busybox-static ${pkg_deps[@]})
+  pkg_deps=(karate/busybox-static ${pkg_deps[@]})
   debug "Updating pkg_deps=(${pkg_deps[*]}) from Scaffolding detection"
 }
 

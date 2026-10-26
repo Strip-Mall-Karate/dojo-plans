@@ -4,7 +4,7 @@ Free & open source, high-performance, distributed memory object caching system, 
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,8 +15,8 @@ Service package
 Simple usage:
 
 ```
-hab pkg install core/memcached
-hab svc load core/memcached
+doj pkg install karate/memcached
+doj svc load karate/memcached
 ```
 
 Memcached is now available on port `11211` (default).

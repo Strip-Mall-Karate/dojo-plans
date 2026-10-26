@@ -4,7 +4,7 @@ An implementation of the JBIG1 data compression standard
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

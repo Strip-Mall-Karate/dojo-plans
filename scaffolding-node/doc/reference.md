@@ -1,8 +1,8 @@
 # Node Scaffolding
 
-Node Scaffolding is a [Habitat][habitat] package which helps you build your Node.js-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Habitat Supervisor. The Supervisor will facilitate clustering, discovery of external services such as databases, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
+Node Scaffolding is a Dojo package which helps you build your Node.js-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Dojo Supervisor. The Supervisor will facilitate clustering, discovery of external services such as databases, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
 
-For more about Habitat, you can check out [Try Habitat][try_hab]. For more about building your apps, read on!
+For more about building your apps, read on!
 
 ## Use Node Scaffolding for Your App
 
@@ -12,12 +12,12 @@ Check out the [Node Scaffolding QuickStart Guide](quickstart.md).
 
 To properly load and use this Scaffolding, the implementation looks for a [`package.json`][] in your app's root directory. Either directory structure is supported:
 
-A Plan in a `habitat/` subdirectory:
+A Plan in a `dojo/` subdirectory:
 
 ```
 .
 ├── package.json
-└── habitat
+└── dojo
     └── plan.sh
 ```
 
@@ -39,28 +39,28 @@ Most non-trivial apps need more than their own codebase to run correctly. Many h
 
 ### Default Dependencies
 
-The following Habitat package dependencies will be injected into your app's Plan:
+The following Dojo package dependencies will be injected into your app's Plan:
 
-* [`core/busybox-static`][]: Used by process bins to have valid [shebangs][] and a consistent minimal command set. Will be injected into your Plan's `pkg_deps` array.
-* `core/git`: Used to detect if your app exists within a git repository to better support installing your app while honoring the `.gitignore` file. Will be injected into your Plan's `pkg_build_deps` array.
+* [`karate/busybox-static`][]: Used by process bins to have valid [shebangs][] and a consistent minimal command set. Will be injected into your Plan's `pkg_deps` array.
+* `karate/git`: Used to detect if your app exists within a git repository to better support installing your app while honoring the `.gitignore` file. Will be injected into your Plan's `pkg_build_deps` array.
 
 ### Detected Dependencies
 
-Currently no additional Habitat packages are added based on the contents of the `package.json` file, although some may be added in the future.
+Currently no additional Dojo packages are added based on the contents of the `package.json` file, although some may be added in the future.
 
 Additional checks performed by this scaffolding are:
 
 * The app's version of Node will be determined by checking several source locations. See the Node Version section for more details.
-* If your app's root directory contains a `yarn.lock` file, then [Yarn][]-related Habitat packages will be injected into your Plan's `pkg_build_deps` array for resolving and installing Node package dependencies. See the Package Manager section for more details.
+* If your app's root directory contains a `yarn.lock` file, then [Yarn][]-related Dojo packages will be injected into your Plan's `pkg_build_deps` array for resolving and installing Node package dependencies. See the Package Manager section for more details.
 
 ###  Specifying Run Dependencies in Your Plan
 
-Generally speaking, your app needs additional Habitat packages present at runtime for one of two reasons:
+Generally speaking, your app needs additional Dojo packages present at runtime for one of two reasons:
 
 1. Your app expects certain programs present which it may shell out or bind to in some way.
 2. Your `package.json` has Node package dependencies with native extensions, requiring additional linked libraries.
 
-In both cases, this means your app needs additional Habitat packages installed at runtime. For this, we use the `pkg_deps` array in your Plan.
+In both cases, this means your app needs additional Dojo packages installed at runtime. For this, we use the `pkg_deps` array in your Plan.
 
 For this example, let's suppose your app resizes images to generate thumbnails by using the `mogrify` program from the [ImageMagick][] software. To add this package, update your `pkg_deps` line to the following below:
 
@@ -69,8 +69,8 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-node
-pkg_deps=(core/imagemagick)
+pkg_scaffolding=karate/scaffolding-node
+pkg_deps=(karate/imagemagick)
 ```
 
 ###  Specifying Build Dependencies in Your Plan
@@ -84,20 +84,20 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-node
-pkg_build_deps=(core/makesmall)
+pkg_scaffolding=karate/scaffolding-node
+pkg_build_deps=(karate/makesmall)
 ```
 
 ## Node Version
 
 ### Selecting a Version of Node.js
 
-By default the latest version of the [`core/node`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of Node.js, there are three locations you can do this:
+By default the latest version of the [`karate/node`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of Node.js, there are three locations you can do this:
 
 1. Use the [`engines.node`][package_json_engines] data structure in your app's `package.json`
   * you can specify the version in these formats "5.0.0", "v5.0.0", "=5.0.0", ">=5.0.0", ">5.0.0","<=5.0.0","<5.0.0"
 2. Write an [`.nvmrc`][] in your app's root directory with the version of Node.js to use
-3. Set the `scaffolding_node_pkg` variable in your Plan with a valid Habitat package identifier corresponding to a package with a `node` program
+3. Set the `scaffolding_node_pkg` variable in your Plan with a valid Dojo package identifier corresponding to a package with a `node` program
 
 A set Plan variable will win over setting a version in your `package.json` and over an `.nvmrc` files (and the `package.json` will win over an `.nvmrc` file), however it is recommended to the `package.json` strategy first as this is most portable across other Node app build and deployment solutions.
 
@@ -116,9 +116,9 @@ You can use the [`engines.node`][package_json_engines] data structure in your ap
 }
 ```
 
-The value of this key will be used to determine the version of the Habitat [`core/node`][] package. For example, the `package.json` above would result in `core/node/6.10.3` being injected into your Plan's `pkg_deps` array.
+The value of this key will be used to determine the version of the Dojo [`karate/node`][] package. For example, the `package.json` above would result in `karate/node/6.10.3` being injected into your Plan's `pkg_deps` array.
 
-Currently only releases of the [`core/node`] package will work so if further customizing is required you may need to specify a version of Node.js in your Plan as described below. Additionally, only exact versions of Node.js are currently supported, so version constraint expressions such as `">= 0.10.3"` will not work.
+Currently only releases of the [`karate/node`] package will work so if further customizing is required you may need to specify a version of Node.js in your Plan as described below. Additionally, only exact versions of Node.js are currently supported, so version constraint expressions such as `">= 0.10.3"` will not work.
 
 #### Specifying a Node Version in an .nvmrc File
 
@@ -129,11 +129,11 @@ You can use an [`.nvmrc`][] file in your app's root directory to specify a versi
 6.10.3
 ```
 
-The value of the contents of this file will be used to determine the version of the Habitat [`core/node`][] package. For example, the `.nvmrc` file above would result in `core/node/6.10.3` being injected into your Plan's `pkg_deps` array.
+The value of the contents of this file will be used to determine the version of the Dojo [`karate/node`][] package. For example, the `.nvmrc` file above would result in `karate/node/6.10.3` being injected into your Plan's `pkg_deps` array.
 
 If a version of Node.js is detected in your project's `package.json`, the value in an `.nvmrc` will not be used.
 
-Currently only releases of the [`core/node`][] package will work  so if further customizing is required you may need to specify a version of Node.js in your Plan as described below. Additionally, only exact version of Node.js are currently support, so version constraint expressions or wildcard versions will not work.
+Currently only releases of the [`karate/node`][] package will work  so if further customizing is required you may need to specify a version of Node.js in your Plan as described below. Additionally, only exact version of Node.js are currently support, so version constraint expressions or wildcard versions will not work.
 
 #### Specifying a Node.js Version in Your Plan
 
@@ -144,12 +144,12 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-node
+pkg_scaffolding=karate/scaffolding-node
 
-scaffolding_node_pkg=core/node/5.6.0
+scaffolding_node_pkg=karate/node/5.6.0
 ```
 
-The value of this variable will be used to determine the Habitat package to satisfy the role of your app's Node.js implementation.
+The value of this variable will be used to determine the Dojo package to satisfy the role of your app's Node.js implementation.
 
 ## Package Manager
 
@@ -157,7 +157,7 @@ This scaffolding can detect and use either [npm][] or [Yarn][] to resolve, downl
 
 ### Detecting a Yarn-based Project
 
-If a `yarn.lock` file is found in your app's root directory, then [Yarn][] will be used to install dependencies. An additional Habitat package of [`core/yarn`][] will be injected into your Plan's `pkg_build_deps` array.
+If a `yarn.lock` file is found in your app's root directory, then [Yarn][] will be used to install dependencies. An additional Dojo package of [`karate/yarn`][] will be injected into your Plan's `pkg_build_deps` array.
 
 ### Detecting an npm-based Project
 
@@ -172,7 +172,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-node
+pkg_scaffolding=karate/scaffolding-node
 
 scaffolding_pkg_manager=yarn
 ```
@@ -181,7 +181,7 @@ This would force the Scaffolding code to use Yarn over npm, even if no `yarn.loc
 
 ## Build and Post-Build scripts
 
-This scaffolding does support running build scripts, etc. that are defined in package.json. However, due to a [known issue](https://github.com/habitat-sh/habitat/issues/1547), you will need to run the Habitat services as "root" rather than the default "hab" user.  You can do this by adding this line to your plan.sh
+This scaffolding does support running build scripts, etc. that are defined in package.json. However, due to a known issue, you will need to run the Dojo services as "root" rather than the default "doj" user.  You can do this by adding this line to your plan.sh
 
 ## Process Bins
 
@@ -247,7 +247,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-node
+pkg_scaffolding=karate/scaffolding-node
 
  # Declare the associative array (hash) in bash
 declare -A scaffolding_process_bins
@@ -288,7 +288,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-node
+pkg_scaffolding=karate/scaffolding-node
 
  # Declare the associative array (hash) in bash
 declare -A scaffolding_env
@@ -318,12 +318,12 @@ The Scaffolding creates some default app config settings, but to further customi
 
 You can add more config settings by creating a `default.toml` file in the same directory containing your `plan.sh` file. Either directory structure is supported:
 
-A Plan in a `habitat/` subdirectory:
+A Plan in a `dojo/` subdirectory:
 
 ```
 .
 ├── package.json
-└── habitat
+└── dojo
     ├── default.toml
     └── plan.sh
 ```
@@ -339,7 +339,7 @@ A Plan in the same directory as the `package.json`:
 
 ## Service Bindings
 
-[Service bindings][bindings] are a powerful way to declare your app's [service dependencies][12factor_backing_services] which the Supervisor will honor when running your app.
+Service bindings are a powerful way to declare your app's [service dependencies][12factor_backing_services] which the Supervisor will honor when running your app.
 
 ### Default Service Bindings
 
@@ -354,7 +354,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-node
+pkg_scaffolding=karate/scaffolding-node
 
  # We require both the HTTP and transport ports from this
  # service binding
@@ -364,7 +364,7 @@ pkg_binds[elasticsearch]="http-port transport-port"
 This allows your app to [dynamically bind][12factor_backing_services] to the desired Elasticsearch service group at runtime. For example, if your app's target Elasticsearch service group was `"es.my_app"`, then you would start it with:
 
 ```sh
-hab start acmecorp/my_app --bind elasticsearch:es.my_app
+doj start acmecorp/my_app --bind elasticsearch:es.my_app
 ```
 
 ## App Type Detection
@@ -378,12 +378,10 @@ Other Scaffolding packages may offer framework-specific app type detection in or
 [12factor_dependencies]: https://12factor.net/dependencies
 [12factor_port]: https://12factor.net/port-binding
 [12factor_processes]: https://12factor.net/processes
-[bindings]: https://www.habitat.sh/docs/run-packages-binding/
-[`core/busybox-static`]: https://app.habitat.sh/#/pkgs/core/busybox-static
-[`core/node`]: https://app.habitat.sh/#/pkgs/core/node
-[`core/yarn`]: https://app.habitat.sh/#/pkgs/core/yarn
+[`karate/busybox-static`]: https://bldr.karate.company/#/pkgs/core/busybox-static
+[`karate/node`]: https://bldr.karate.company/#/pkgs/core/node
+[`karate/yarn`]: https://bldr.karate.company/#/pkgs/core/yarn
 [Elasticsearch]: https://www.elastic.co/products/elasticsearch
-[habitat]: https://www.habitat.sh/
 [npm]: https://www.npmjs.com/
 [`.nvmrc`]: https://github.com/creationix/nvm#nvmrc
 [`package.json`]: https://docs.npmjs.com/files/package.json
@@ -391,5 +389,4 @@ Other Scaffolding packages may offer framework-specific app type detection in or
 [package_json_scripts]: https://docs.npmjs.com/files/package.json#scripts
 [`Procfile`]: https://devcenter.heroku.com/articles/procfile
 [shebangs]: https://en.wikipedia.org/wiki/Shebang_(Unix)
-[try_hab]: https://www.habitat.sh/try/
 [Yarn]: https://yarnpkg.com/en/

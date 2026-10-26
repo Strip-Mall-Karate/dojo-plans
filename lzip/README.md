@@ -4,7 +4,7 @@ A lossless data compressor with a user interface similar to the one of gzip or b
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

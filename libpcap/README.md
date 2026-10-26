@@ -4,7 +4,7 @@ A portable C/C++ library for network traffic capture.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

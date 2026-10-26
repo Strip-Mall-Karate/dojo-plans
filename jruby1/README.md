@@ -4,7 +4,7 @@ A high performance, stable, fully threaded Java implementation of the Ruby progr
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

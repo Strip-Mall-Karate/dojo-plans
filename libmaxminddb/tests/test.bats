@@ -12,18 +12,18 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 
 @test "City lookup successful" {
   source results/last_build.env
-  run mmdblookup --file $(hab pkg path ${pkg_origin}/libmaxminddb)/share/GeoIP/GeoLite2-City_20190409/GeoLite2-City.mmdb --ip 8.8.8.8
+  run mmdblookup --file $(doj pkg path ${pkg_origin}/libmaxminddb)/share/GeoIP/GeoLite2-City_20190409/GeoLite2-City.mmdb --ip 8.8.8.8
   [ $status -eq 0 ]
 }
 
 @test "Country lookup successful" {
   source results/last_build.env
-  run mmdblookup --file $(hab pkg path ${pkg_origin}/libmaxminddb)/share/GeoIP/GeoLite2-Country_20190409/GeoLite2-Country.mmdb --ip 8.8.8.8
+  run mmdblookup --file $(doj pkg path ${pkg_origin}/libmaxminddb)/share/GeoIP/GeoLite2-Country_20190409/GeoLite2-Country.mmdb --ip 8.8.8.8
   [ $status -eq 0 ]
 }
 
 @test "ASN lookup successful" {
   source results/last_build.env
-  run mmdblookup --file $(hab pkg path ${pkg_origin}/libmaxminddb)/share/GeoIP/GeoLite2-ASN_20190402/GeoLite2-ASN.mmdb --ip 8.8.8.8
+  run mmdblookup --file $(doj pkg path ${pkg_origin}/libmaxminddb)/share/GeoIP/GeoLite2-ASN_20190402/GeoLite2-ASN.mmdb --ip 8.8.8.8
   [ $status -eq 0 ]
 }

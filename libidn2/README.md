@@ -4,7 +4,7 @@ Implementation of IDNA2008, Punycode and TR46 (Internationalized domain names)
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

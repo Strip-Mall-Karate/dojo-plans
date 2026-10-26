@@ -4,7 +4,7 @@ Boost provides free peer-reviewed portable C++ source libraries.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -16,6 +16,6 @@ This is a library usually used at build time, thus you should use it like so in 
 
 ```
 pkg_build_deps=(
-    core/boost
+    karate/boost
 )
 ```

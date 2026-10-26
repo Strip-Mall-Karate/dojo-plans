@@ -4,6 +4,6 @@ Minio is a high performance distributed object storage server, designed for larg
 
 ## Usage
 
-`hab svc start core/minio`
+`doj svc start karate/minio`
 
 Access the web browser on `http://fqdn:9000`

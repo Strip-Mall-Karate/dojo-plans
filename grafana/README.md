@@ -1,7 +1,7 @@
-Grafana in habitat.sh
+Grafana in Dojo
 ====
 
-This Habitat plan installs stock grafana and optionally adds a bound prometheus datasource along with some sample dashboards
+This Dojo plan installs stock grafana and optionally adds a bound prometheus datasource along with some sample dashboards
 
 Config
 ---
@@ -12,12 +12,12 @@ Basic Usage
 ----
 
 1) clone this repo
-2) install the hab binary from https://habitat.sh
+2) install the doj binary (https://github.com/Strip-Mall-Karate/dojo)
 3) Run these commands:
 ```
-hab studio enter # stay in studio
+doj studio enter # stay in studio
  build grafana
- hab pkg export docker <yourOrg>/grafana
+ doj pkg export docker <yourOrg>/grafana
  # exit studio
 docker run -p 3000:80 --name my_grafana <yourOrg>/grafana
 ```

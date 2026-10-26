@@ -2,20 +2,20 @@
 
 This plan provides for the installation of [Cockroach Labs](https://www.cockroachlabs.com)' [CockroachDB](https://github.com/cockroachdb/cockroach). It currently only replaces the installation step and does not provide any configuration management or supervision.
 
-To get started, follow the [official getting started guide](https://www.cockroachlabs.com/docs/stable/start-a-local-cluster.html), substituting `hab pkg exec core/cockroach cockroach` in place of the bare `cockroach` command.
+To get started, follow the [official getting started guide](https://www.cockroachlabs.com/docs/stable/start-a-local-cluster.html), substituting `doj pkg exec karate/cockroach cockroach` in place of the bare `cockroach` command.
 
 ## Quick start
 
 - Start single node:
 
     ```bash
-    hab pkg exec core/cockroach cockroachoss start --insecure --host=localhost &
+    doj pkg exec karate/cockroach cockroachoss start --insecure --host=localhost &
     ```
 - Open web UI at http://localhost:8080
 - Connect with included command-line SQL client:
 
     ```bash
-    hab pkg exec core/cockroach cockroachoss sql --insecure
+    doj pkg exec karate/cockroach cockroachoss sql --insecure
     ```
 - Test some SQL:
 
@@ -30,11 +30,11 @@ To get started, follow the [official getting started guide](https://www.cockroac
 
 ## Cluster
 
-This plan supports running clustered CockroachDB by utilizing Habitat's native leader election. The leader is only used to establish the initial node in a minimum 3-node cluster, after that all nodes are able to accept reads and writes.
+This plan supports running clustered CockroachDB by utilizing Dojo's native leader election. The leader is only used to establish the initial node in a minimum 3-node cluster, after that all nodes are able to accept reads and writes.
 
 You can run an example cluster via docker-compose after exporting a docker container from this plan:
 ```
-$ hab pkg export docker $(ls -1t results/*cockroach*.hart | head -1)
+$ doj pkg export docker $(ls -1t results/*cockroach*.hart | head -1)
 ```
 
 The docker post-process should create a docker image named `myorigin/cockroach` and it should be available on your local machine
@@ -47,7 +47,7 @@ services:
   roach1:
     image: myorigin/cockroach:latest
     environment:
-      HAB_COCKROACH: |
+      DOJ_COCKROACH: |
         insecure = false
     ports:
       - "8080:8080"
@@ -64,7 +64,7 @@ services:
   roach2:
     image: myorigin/cockroach:latest
     environment:
-      HAB_COCKROACH: |
+      DOJ_COCKROACH: |
         insecure = false
     ports:
       - "8081:8080"
@@ -82,7 +82,7 @@ services:
   roach3:
     image: myorigin/cockroach:latest
     environment:
-      HAB_COCKROACH: |
+      DOJ_COCKROACH: |
         insecure = false
     ports:
       - "8082:8080"

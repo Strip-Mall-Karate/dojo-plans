@@ -12,8 +12,8 @@ From the perspective of the end user, the broker is transparent: users connect t
 
 Source: https://www.perforce.com/perforce/r17.1/manuals/p4dist/Content/P4Dist/chapter.broker.html
 
-#### Habitat Version
-The habitat version of this is an endeavor to allow effortless deployment of P4Broker daemons as needed, and support round-robin HA through multiple instances. Shared certificates and configurations are essential for HA.
+#### Dojo Version
+The dojo version of this is an endeavor to allow effortless deployment of P4Broker daemons as needed, and support round-robin HA through multiple instances. Shared certificates and configurations are essential for HA.
 
 ## Maintainers
 
@@ -25,19 +25,19 @@ Service
 
 ## Usage
 
-First, load the service into your habitat environment:
+First, load the service into your dojo environment:
 ```
-hab svc load core/p4broker
+doj svc load karate/p4broker
 ```
 
 If the service did not auto start (verify with the status command below), initiate service start:
 ```
-hab svc start core/p4broker
+doj svc start karate/p4broker
 ```
 
 To verify that the package service is running, execute the following:
 ```
-hab svc status | grep p4broker
+doj svc status | grep p4broker
 ```
 
 ## Bindings
@@ -52,7 +52,7 @@ Address and port bindings are specified in the `default.toml` file, and a custom
 
 Currently, standalone is the only supported Topologies, but additional formats are being considered. To run in standalone topology, run the following command.
 ```
-hab start core/p4broker
+doj start karate/p4broker
 ```
 See Configuration Updates below to configure the service.
 
@@ -68,11 +68,11 @@ See Configuration Updates below to configure the service.
 
 ### Configuration Updates
 
-For more information on update strategies, see [this documentation](https://www.habitat.sh/docs/using-habitat/#update-strategy)
+For more information on update strategies, see this documentation
 
-The [`default.toml`](https://github.com/dbhagen/core-plans/blob/master/p4broker/default.toml) is located [here](https://github.com/dbhagen/core-plans/blob/master/p4broker/default.toml). Make a copy of it and configure it as suitable to your needs and then use the deploy commands mentioned in the document linked above. I would suggest a command like this:
+The [`default.toml`](https://github.com/dbhagen/dojo-plans/blob/master/p4broker/default.toml) is located [here](https://github.com/dbhagen/dojo-plans/blob/master/p4broker/default.toml). Make a copy of it and configure it as suitable to your needs and then use the deploy commands mentioned in the document linked above. I would suggest a command like this:
 ```
-hab config apply core/p4broker $(date +%s) myconfig.toml
+doj config apply karate/p4broker $(date +%s) myconfig.toml
 ```
 
 The service will detect the new configuration and restart itself to incorporate them.
@@ -98,6 +98,6 @@ p4 info
 
 ## Notes
 
-I am not the originator of P4Broker, or affiliated in any way. I find it is a great tool within the Helix ecosystem, and just want to wrap it in such a way to make it easier for myself and others to deploy in our environments. This has been my first Habitat package project, and it's been a blast to get involved. I'm totally open to collaboration, so please contact me if you would like to improve something!
+I am not the originator of P4Broker, or affiliated in any way. I find it is a great tool within the Helix ecosystem, and just want to wrap it in such a way to make it easier for myself and others to deploy in our environments. This has been my first Dojo package project, and it's been a blast to get involved. I'm totally open to collaboration, so please contact me if you would like to improve something!
 
-My original code origin is here: https://github.com/dbhagen/core-plans/tree/master/p4broker
+My original code origin is here: https://github.com/dbhagen/dojo-plans/tree/master/p4broker

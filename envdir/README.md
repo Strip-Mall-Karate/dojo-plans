@@ -4,7 +4,7 @@ Envdir runs another program with a modified environment according to files in a 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

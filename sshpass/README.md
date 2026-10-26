@@ -1,4 +1,4 @@
-# Habitat package: sshpass
+# Dojo package: sshpass
 
 ## Description
 
@@ -7,7 +7,7 @@ Non-interactive ssh password auth
 ## Usage
 
 ```
-hab pkg exec core/sshpass sshpass -h
+doj pkg exec karate/sshpass sshpass -h
 
 Usage: sshpass [-f|-d|-p|-e] [-hV] command parameters
    -f filename   Take password to use from file

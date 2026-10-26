@@ -1,4 +1,4 @@
-## Habitat Package: Fluentd
+## Dojo Package: Fluentd
 
 > Fluentd is an open source data collector for unified logging layer.
 
@@ -12,7 +12,7 @@ This plan provides base Fluentd package without any external plugin installed an
 #### Starting
 
 ```shell
-hab start core/fluentd
+doj start karate/fluentd
 ```
 
 By default, this package will accept logs/events on below ports and stream them to stdout.
@@ -22,7 +22,7 @@ By default, this package will accept logs/events on below ports and stream them 
 #### Stopping
 
 ```shell
-hab sup stop core/fluentd
+doj sup stop karate/fluentd
 ```
 
 #### Customizing
@@ -33,8 +33,8 @@ For example, Make a fluentd package with `fluent-plugin-elasticsearch` and `flue
 - clone this folder
 
 ```shell
-git clone git@github.com:habitat-sh/core-plans.git
-cp -a core-plans/fluentd ./
+git clone git@github.com:Strip-Mall-Karate/dojo-plans.git
+cp -a dojo-plans/fluentd ./
 cd fluentd
 ```
 
@@ -45,14 +45,14 @@ pkg_name=fluentd-example
 pkg_origin=example
 pkg_version=0.14.3
 pkg_deps=(
-  core/ruby
-  core/coreutils
-  core/bundler
+  karate/ruby
+  karate/coreutils
+  karate/bundler
 )
 pkg_build_deps=(
-  core/make
-  core/gcc
-  core/gcc-libs
+  karate/make
+  karate/gcc
+  karate/gcc-libs
 )
 pkg_upstream_url=https://www.fluentd.org/
 pkg_description="Fluentd is an open source data collector, which lets \
@@ -99,7 +99,7 @@ GEMFILE
 
 do_install() {
   cp -R . "$pkg_prefix/"
-  fix_interpreter "$pkg_prefix/bin/*" core/coreutils bin/env
+  fix_interpreter "$pkg_prefix/bin/*" karate/coreutils bin/env
 }
 
 ```
@@ -108,9 +108,9 @@ do_install() {
 - Build and export it
 
 ```shell
-hab studio enter
+doj studio enter
 > build
-> hab pkg export docker $HAB_ORIGIN/fluentd-example
+> doj pkg export docker $DOJ_ORIGIN/fluentd-example
 > exit
 ```
 

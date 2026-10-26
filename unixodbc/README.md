@@ -5,7 +5,7 @@ ODBC driver manager for Unix. ODBC is an open specification for providing applic
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -23,8 +23,8 @@ Include unixODBC and msodbcsql17 as runtime dependencies in your application:
 
 ```bash
 pkg_deps=(
-  core/msodbcsql17
-  core/unixodbc
+  karate/msodbcsql17
+  karate/unixodbc
 )
 ```
 
@@ -33,7 +33,7 @@ Include odbcinst.ini in your application config:
 ```
 [ODBC Driver 17 for SQL Server]
 Description=Microsoft ODBC Driver 17 for SQL Server
-Driver={{pkgPathFor "core/msodbcsql17"}}/lib/libmsodbcsql-17.2.so.0.1
+Driver={{pkgPathFor "karate/msodbcsql17"}}/lib/libmsodbcsql-17.2.so.0.1
 UsageCount=1
 ```
 

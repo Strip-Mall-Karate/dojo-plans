@@ -1,4 +1,4 @@
-Habitat plan for Prometheus's node exporter
+Dojo plan for Prometheus's node exporter
 ======
 
 Downloads a tarball for a released branch of node_exporter, compiles and runs it
@@ -6,7 +6,7 @@ Downloads a tarball for a released branch of node_exporter, compiles and runs it
 Config
 ---
 
-Minimal, as node_exporter joins a hab ring, the core/prometheus service will
+Minimal, as node_exporter joins a doj ring, the karate/prometheus service will
 automatically add each as a target for metric scraping.
 
 Running
@@ -28,13 +28,13 @@ docker run -d -p 9100:9100 \
   -collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
 ```
 
-Here's an example of using the optional bindings from core/prometheus to
+Here's an example of using the optional bindings from karate/prometheus to
 dynamically populate prometheus's metric target list with any node_exporter
 that appears in the ring
 
 ```
-$ docker run -ti -P --rm --name node_exporter core/node_exporter --topology standalone --group demo
-$ docker run -ti --rm -P --name prom0 core/prometheus --topology standalone --peer 172.17.0.3 --group demo --bind targets:node_exporter.demo
+$ docker run -ti -P --rm --name node_exporter karate/node_exporter --topology standalone --group demo
+$ docker run -ti --rm -P --name prom0 karate/prometheus --topology standalone --peer 172.17.0.3 --group demo --bind targets:node_exporter.demo
 ```
 
 Room for Improvement

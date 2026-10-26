@@ -1,8 +1,8 @@
-# Habitat Ruby Scaffolding
+# Dojo Ruby Scaffolding
 
-Ruby Scaffolding is a Habitat package which helps you build your Ruby-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Habitat Supervisor. The Supervisor will facilitate clustering, discovery of database services, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
+Ruby Scaffolding is a Dojo package which helps you build your Ruby-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Dojo Supervisor. The Supervisor will facilitate clustering, discovery of database services, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
 
-* [Habitat Website](https://www.habitat.sh/)
+* Dojo Website
 * [Ruby Scaffolding Quickstart Guide](doc/quickstart.md)
 * [Ruby Scaffolding Documentation](doc/reference.md)
 
@@ -13,7 +13,7 @@ If you receive this error when running a build with this scaffolding:
 ```bash
 The latest bundler is 1.15.4, but you are currently running 1.15.1.
 To update, run `gem install bundler`
-ERROR:  Could not find a valid gem '/hab/pkgs/core/bundler/1.15.1/20170621175238/cache/bundler-1.15.1
+ERROR:  Could not find a valid gem '/doj/pkgs/core/bundler/1.15.1/20170621175238/cache/bundler-1.15.1
 1.15.1.
 bundler`.gem' (>= 0) in any repository
    widget_world: Build time: 0m41s

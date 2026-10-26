@@ -2,7 +2,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -13,5 +13,5 @@ Binary package
 Provides the `protoc` binary for compiling Protocol Buffer definitions; e.g.:
 
 ```
-hab pkg exec core/protobuf2 protoc --help
+doj pkg exec karate/protobuf2 protoc --help
 ```

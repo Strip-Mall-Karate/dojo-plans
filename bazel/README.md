@@ -4,7 +4,7 @@ Build and test software of any size, quickly and reliably
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -12,4 +12,4 @@ Binary package
 
 ## Usage
 
-`hab pkg exec core/bazel bazel build`
+`doj pkg exec karate/bazel bazel build`

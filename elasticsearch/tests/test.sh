@@ -4,16 +4,16 @@ TESTDIR="$(dirname "${0}")"
 PLANDIR="$(dirname "${TESTDIR}")"
 SKIPBUILD=${SKIPBUILD:-0}
 
-hab pkg install --binlink core/bats
-hab pkg install --binlink core/which
-hab pkg install --binlink core/jre8
-hab pkg install --binlink core/curl
-hab pkg install --binlink core/jq-static
+doj pkg install --binlink karate/bats
+doj pkg install --binlink karate/which
+doj pkg install --binlink karate/jre8
+doj pkg install --binlink karate/curl
+doj pkg install --binlink karate/jq-static
 
-hab pkg install core/busybox-static
-hab pkg binlink core/busybox-static ps
-hab pkg binlink core/busybox-static nc
-hab pkg binlink core/busybox-static netstat
+doj pkg install karate/busybox-static
+doj pkg binlink karate/busybox-static ps
+doj pkg binlink karate/busybox-static nc
+doj pkg binlink karate/busybox-static netstat
 
 source "${PLANDIR}/plan.sh"
 
@@ -22,8 +22,8 @@ if [ "${SKIPBUILD}" -eq 0 ]; then
   pushd "${PLANDIR}" > /dev/null
   build
   source results/last_build.env
-  hab pkg install --binlink --force "results/${pkg_artifact}"
-  hab svc load "${pkg_ident}"
+  doj pkg install --binlink --force "results/${pkg_artifact}"
+  doj svc load "${pkg_ident}"
   popd > /dev/null
   set +e
 

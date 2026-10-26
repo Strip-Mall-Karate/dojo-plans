@@ -6,69 +6,64 @@ This MySQL plan supports standalone and clustered modes
 
 To run a standalone MySQL instance simply run
 ```
-hab start core/mysql
+doj start karate/mysql
 ```
-or
-```
-docker run habitat/mysql
-```
-if you want to bring up the pre-exported docker image.
 
 ## Cluster
 
-This plan supports running clustered MySQL by utilizing Habitat's native leader election.
+This plan supports running clustered MySQL by utilizing Dojo's native leader election.
 
 You can run an example cluster via docker-compose after exporting a docker container from this plan:
 ```
-$ hab pkg export docker $(ls -1t results/*.hart | head -1)
+$ doj pkg export docker $(ls -1t results/*.hart | head -1)
 ```
 
-The docker post-process should create a docker image named `core/mysql` and it should be available on your local machine
+The docker post-process should create a docker image named `karate/mysql` and it should be available on your local machine
 
 example `docker-compose.yml` file:
 ```
 version: '3'
 services:
   mysql1:
-    image: habitat/mysql:latest
+    image: karate/mysql:latest
     environment:
-      HAB_MYSQL: |
+      DOJ_MYSQL: |
         app_username = 'appadmin'
         app_password = 'SuperSecurePassword42'
         bind = '0.0.0.0'
         root_password = 'EvenMoreSecurePassword2018'
         server_id = 1
     volumes:
-      - mysql1-data:/hab/svc/mysql/data
+      - mysql1-data:/doj/svc/mysql/data
     command: --group cluster
       --topology leader
 
   mysql2:
-    image: habitat/mysql:latest
+    image: karate/mysql:latest
     environment:
-      HAB_MYSQL: |
+      DOJ_MYSQL: |
         app_username = 'appadmin'
         app_password = 'SuperSecurePassword42'
         bind = '0.0.0.0'
         root_password = 'EvenMoreSecurePassword2018'
         server_id = 2
     volumes:
-      - mysql2-data:/hab/svc/mysql/data
+      - mysql2-data:/doj/svc/mysql/data
     command: --peer mysql1
       --group cluster
       --topology leader
 
   mysql3:
-    image: habitat/mysql:latest
+    image: karate/mysql:latest
     environment:
-      HAB_MYSQL: |
+      DOJ_MYSQL: |
         app_username = 'appadmin'
         app_password = 'SuperSecurePassword42'
         bind = '0.0.0.0'
         root_password = 'EvenMoreSecurePassword2018'
         server_id = 3
     volumes:
-      - mysql3-data:/hab/svc/mysql/data
+      - mysql3-data:/doj/svc/mysql/data
     command: --peer mysql1
       --group cluster
       --topology leader
@@ -84,12 +79,12 @@ volumes:
 Consuming services can bind to MySQL via:
 
 ```
-hab start <origin>/<app> --bind database:mysql.default --peer <pg-host>
+doj start <origin>/<app> --bind database:mysql.default --peer <pg-host>
 ```
 
 Superuser access is exposed to consumers when binding and we advise that required databases, schemas and roles be created and migrations get run in the init hook of the consuming service. The created roles (with restricted access) should then be exposed to the application code that will get run.
 
-In the template of the consuming service, there is currently a difference between the binding syntax for binding to the leader in a clustered topology vs binding to any member.  A [future enhancement](https://github.com/habitat-sh/habitat/issues/4127) may improve upon that, but for now something like this could work if used in an interpreted script file:
+In the template of the consuming service, there is currently a difference between the binding syntax for binding to the leader in a clustered topology vs binding to any member.  A future enhancement may improve upon that, but for now something like this could work if used in an interpreted script file:
 
 ```
 # Use the eachAlive and @first helpers to bind to the oldest alive member of the bound service group

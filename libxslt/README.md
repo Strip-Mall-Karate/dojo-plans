@@ -4,7 +4,7 @@ Libxslt is the XSLT C library developed for the GNOME project
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

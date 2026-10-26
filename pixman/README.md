@@ -4,7 +4,7 @@ A low-level software library for pixel manipulation
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

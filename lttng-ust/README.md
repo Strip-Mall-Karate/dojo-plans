@@ -4,7 +4,7 @@ LTTng is an open source tracing framework for Linux.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

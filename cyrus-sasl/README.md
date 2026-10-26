@@ -4,7 +4,7 @@ Cyrus Simple Authentication Service Layer (SASL) library
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -1,4 +1,4 @@
-# Habitat package: artifactory-pro
+# Dojo package: artifactory-pro
 
 Artifactory is an advanced Binary Repository Manager for use by build tools (like Maven and Gradle), dependency management tools (like Ivy and NuGet) and build servers (like Jenkins, Hudson, TeamCity and Bamboo).
 
@@ -25,7 +25,7 @@ Unless you have a license for Artifactory Pro HA (Enterprise License(https://jfr
 recommended you run this using the standalone topology.
 
 ```text
-hab start core/artifactory-pro
+doj start karate/artifactory-pro
 ```
 
 ## Update Strategies

@@ -6,7 +6,7 @@ the GNU General Public License version 2 with a Classpath exception.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -16,17 +16,17 @@ Binary package
 
 Install:
 ```
-hab pkg install core/corretto
+doj pkg install karate/corretto
 ```
 
 Execute:
 ```
-hab pkg exec core/corretto java -h
+doj pkg exec karate/corretto java -h
 ```
 
 Add to a plan:
 ```
 pkg_deps=(
-  core/corretto
+  karate/corretto
 )
 ```

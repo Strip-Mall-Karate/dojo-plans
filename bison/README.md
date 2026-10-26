@@ -4,7 +4,7 @@ A parser generator that converts an annotated context-free grammar into a parser
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

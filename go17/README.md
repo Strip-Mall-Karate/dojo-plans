@@ -5,7 +5,7 @@ Go is an open source programming language that makes it easy to
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -8,7 +8,7 @@ scaffolding_load() {
   pkg_deps=(
     "${pkg_deps[@]}"
     "$scaffold_inspec"
-    "core/cacerts"
+    "karate/cacerts"
   )
   pkg_build_deps=(
     "${pkg_build_deps[@]}"
@@ -39,7 +39,7 @@ do_default_build_service() {
   cat << EOF >> "$pkg_prefix/hooks/run"
 #/bin/sh
 
-export SSL_CERT_FILE="{{pkgPathFor "core/cacerts"}}/ssl/cert.pem"
+export SSL_CERT_FILE="{{pkgPathFor "karate/cacerts"}}/ssl/cert.pem"
 
 # InSpec will try to create a .cache directory in the user's home directory
 # so this needs to be someplace writeable by the user

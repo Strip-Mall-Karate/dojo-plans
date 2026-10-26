@@ -1,8 +1,8 @@
 # Gradle Scaffolding
 
-Gradle Scaffolding is a [Habitat][habitat] package which helps you build your Gradle-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Habitat Supervisor. The Supervisor will facilitate clustering, discovery of external services such as databases, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
+Gradle Scaffolding is a Dojo package which helps you build your Gradle-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Dojo Supervisor. The Supervisor will facilitate clustering, discovery of external services such as databases, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
 
-For more about Habitat, you can check out [Try Habitat][try_hab]. For more about building your apps, read on!
+For more about building your apps, read on!
 
 ## Use Gradle Scaffolding for Your App
 
@@ -12,13 +12,13 @@ Check out the [Gradle Scaffolding QuickStart Guide](quickstart.md).
 
 To properly load and use this Scaffolding, the implementation looks for a [`build.gradle`][] or a [`settings.gradle`][] in your app's root directory. Either directory structure is supported:
 
-A Plan in a `habitat/` subdirectory:
+A Plan in a `dojo/` subdirectory:
 
 ```
 .
 ├── build.gradle
 ├── settings.gradle
-└── habitat
+└── dojo
     └── plan.sh
 ```
 
@@ -41,13 +41,13 @@ Most non-trivial apps need more than their own codebase to run correctly. Many h
 
 ### Default Dependencies
 
-The following Habitat package dependencies will be injected into your app's Plan:
+The following Dojo package dependencies will be injected into your app's Plan:
 
-* [`core/busybox-static`][]: Used by process bins to have valid [shebangs][] and a consistent minimal command set. Will be injected into your Plan's `pkg_deps` array.
+* [`karate/busybox-static`][]: Used by process bins to have valid [shebangs][] and a consistent minimal command set. Will be injected into your Plan's `pkg_deps` array.
 
 ### Detected Dependencies
 
-Currently no additional Habitat packages are added based on the contents of the `build.gradle` or the `settings.gradle` files, although some may be added in the future.
+Currently no additional Dojo packages are added based on the contents of the `build.gradle` or the `settings.gradle` files, although some may be added in the future.
 
 Additional checks performed by this scaffolding are:
 
@@ -57,12 +57,12 @@ Additional checks performed by this scaffolding are:
 
 ###  Specifying Run Dependencies in Your Plan
 
-Generally speaking, your app needs additional Habitat packages present at runtime for one of two reasons:
+Generally speaking, your app needs additional Dojo packages present at runtime for one of two reasons:
 
 1. Your app expects certain programs present which it may shell out or bind to in some way.
 2. Your application has Java package dependencies with native extensions, requiring additional linked libraries.
 
-In both cases, this means your app needs additional Habitat packages installed at runtime. For this, we use the `pkg_deps` array in your Plan.
+In both cases, this means your app needs additional Dojo packages installed at runtime. For this, we use the `pkg_deps` array in your Plan.
 
 For this example, let's suppose your app resizes images to generate thumbnails by using the `mogrify` program from the [ImageMagick][] software. To add this package, update your `pkg_deps` line to the following below:
 
@@ -71,8 +71,8 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-gradle
-pkg_deps=(core/imagemagick)
+pkg_scaffolding=karate/scaffolding-gradle
+pkg_deps=(karate/imagemagick)
 ```
 
 ###  Specifying Build Dependencies in Your Plan
@@ -86,17 +86,17 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-gradle
-pkg_build_deps=(core/makesmall)
+pkg_scaffolding=karate/scaffolding-gradle
+pkg_build_deps=(karate/makesmall)
 ```
 
 ## Gradle Version
 
 ### Selecting a Version of Gradle
 
-By default the latest version of the [`core/gradle`][] package will be injected into your Plan's `pkg_build_deps` array. To specify a non-default version of Gradle, there is one location you can do this:
+By default the latest version of the [`karate/gradle`][] package will be injected into your Plan's `pkg_build_deps` array. To specify a non-default version of Gradle, there is one location you can do this:
 
-1. Set the `scaffolding_gradle_pkg` variable in your Plan with a valid Habitat package identifier corresponding to a package with a `gradle` program
+1. Set the `scaffolding_gradle_pkg` variable in your Plan with a valid Dojo package identifier corresponding to a package with a `gradle` program
 
 #### Specifying a Gradle Version in Your Plan
 
@@ -107,20 +107,20 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-gradle
+pkg_scaffolding=karate/scaffolding-gradle
 
 scaffolding_gradle_pkg=myown/gradle
 ```
 
-The value of this variable will be used to determine the Habitat package to satisfy the role of your app's Gradle implementation.
+The value of this variable will be used to determine the Dojo package to satisfy the role of your app's Gradle implementation.
 
 ## JDK Version
 
 ### Selecting a Version of the Java Compiler
 
-By default the latest version of the [`core/jdk8`][] package will be injected into your Plan's `pkg_build_deps` array. To specify a non-default version of the JDK, there is one location you can do this:
+By default the latest version of the [`karate/jdk8`][] package will be injected into your Plan's `pkg_build_deps` array. To specify a non-default version of the JDK, there is one location you can do this:
 
-1. Set the `scaffolding_jdk_pkg` variable in your Plan with a valid Habitat package identifier corresponding to a package with a `javac` program
+1. Set the `scaffolding_jdk_pkg` variable in your Plan with a valid Dojo package identifier corresponding to a package with a `javac` program
 
 #### Specifying a JDK Version in Your Plan
 
@@ -131,20 +131,20 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-gradle
+pkg_scaffolding=karate/scaffolding-gradle
 
 scaffolding_jdk_pkg=myown/jdk
 ```
 
-The value of this variable will be used to determine the Habitat package to satisfy the role of your app's JDK implementation.
+The value of this variable will be used to determine the Dojo package to satisfy the role of your app's JDK implementation.
 
 ## JRE Version
 
 ### Selecting a Version of the Java Runtime
 
-By default the latest version of the [`core/jre8`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of the JRE, there is one location you can do this:
+By default the latest version of the [`karate/jre8`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of the JRE, there is one location you can do this:
 
-1. Set the `scaffolding_jre_pkg` variable in your Plan with a valid Habitat package identifier corresponding to a package with a `java` program
+1. Set the `scaffolding_jre_pkg` variable in your Plan with a valid Dojo package identifier corresponding to a package with a `java` program
 
 #### Specifying a JRE Version in Your Plan
 
@@ -155,12 +155,12 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-gradle
+pkg_scaffolding=karate/scaffolding-gradle
 
 scaffolding_jre_pkg=myown/jre
 ```
 
-The value of this variable will be used to determine the Habitat package to satisfy the role of your app's JRE implementation.
+The value of this variable will be used to determine the Dojo package to satisfy the role of your app's JRE implementation.
 
 ## Process Bins
 
@@ -211,7 +211,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-gradle
+pkg_scaffolding=karate/scaffolding-gradle
 
  # Declare the associative array (hash) in bash
 declare -A scaffolding_process_bins
@@ -254,7 +254,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-gradlee
+pkg_scaffolding=karate/scaffolding-gradlee
 
  # Declare the associative array (hash) in bash
 declare -A scaffolding_env
@@ -284,13 +284,13 @@ The Scaffolding creates some default app config settings, but to further customi
 
 You can add more config settings by creating a `default.toml` file in the same directory containing your `plan.sh` file. Either directory structure is supported:
 
-A Plan in a `habitat/` subdirectory:
+A Plan in a `dojo/` subdirectory:
 
 ```
 .
 ├── build.gradle
 ├── settings.gradle
-└── habitat
+└── dojo
     ├── default.toml
     └── plan.sh
 ```
@@ -307,7 +307,7 @@ A Plan in the same directory as the `build.gradle` or the `settings.gradle` file
 
 ## Service Bindings
 
-[Service bindings][bindings] are a powerful way to declare your app's [service dependencies][12factor_backing_services] which the Supervisor will honor when running your app.
+Service bindings are a powerful way to declare your app's [service dependencies][12factor_backing_services] which the Supervisor will honor when running your app.
 
 ### Default Service Bindings
 
@@ -322,7 +322,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-gradle
+pkg_scaffolding=karate/scaffolding-gradle
 
  # We require both the HTTP and transport ports from this
  # service binding
@@ -332,7 +332,7 @@ pkg_binds[elasticsearch]="http-port transport-port"
 This allows your app to [dynamically bind][12factor_backing_services] to the desired Elasticsearch service group at runtime. For example, if your app's target Elasticsearch service group was `"es.my_app"`, then you would start it with:
 
 ```sh
-hab start acmecorp/my_app --bind elasticsearch:es.my_app
+doj start acmecorp/my_app --bind elasticsearch:es.my_app
 ```
 
 ## App Type Detection
@@ -366,14 +366,11 @@ This app type will be built using a variant of `gradle installDist -x test`.
 [12factor_dependencies]: https://12factor.net/dependencies
 [12factor_port]: https://12factor.net/port-binding
 [12factor_processes]: https://12factor.net/processes
-[bindings]: https://www.habitat.sh/docs/run-packages-binding/
 [`build.gradle`]: https://docs.gradle.org/current/userguide/writing_build_scripts.html
-[`core/busybox-static`]: https://app.habitat.sh/#/pkgs/core/busybox-static
-[`core/node`]: https://app.habitat.sh/#/pkgs/core/node
-[`core/yarn`]: https://app.habitat.sh/#/pkgs/core/yarn
+[`karate/busybox-static`]: https://bldr.karate.company/#/pkgs/core/busybox-static
+[`karate/node`]: https://bldr.karate.company/#/pkgs/core/node
+[`karate/yarn`]: https://bldr.karate.company/#/pkgs/core/yarn
 [Elasticsearch]: https://www.elastic.co/products/elasticsearch
-[habitat]: https://www.habitat.sh/
 [`Procfile`]: https://devcenter.heroku.com/articles/procfile
 [`settings.gradle`]: https://docs.gradle.org/current/dsl/org.gradle.api.initialization.Settings.html
 [shebangs]: https://en.wikipedia.org/wiki/Shebang_(Unix)
-[try_hab]: https://www.habitat.sh/try/

@@ -2,7 +2,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -11,9 +11,9 @@ Binary package
 ## Usage
 
 ```
-    hab pkg install core/docutils
-    hab pkg exec core/docutils rst2man.py --version
+    doj pkg install karate/docutils
+    doj pkg exec karate/docutils rst2man.py --version
     --------
-    hab pkg install core/docutils --binlink
+    doj pkg install karate/docutils --binlink
     rst2man.py --version
 ```

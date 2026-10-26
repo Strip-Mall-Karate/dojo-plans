@@ -4,14 +4,14 @@ ASP.NET Core is a cross-platform, high-performance, open-source framework for bu
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
 Binary package
 
 ## Testing
-To test the Linux package run the following command from the Habitat Studio:
+To test the Linux package run the following command from the Dojo Studio:
 ```
 ./tests/test.sh
 ```

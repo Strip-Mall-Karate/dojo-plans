@@ -4,7 +4,7 @@
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 * Ben Dang: <me@bdang.it>
 
 ## Type of Package
@@ -13,12 +13,12 @@ Binary package
 
 ## Usage
 
-To compile cuda code (ie. `*.cu`), just add `core/cuda` to your `plan.sh`.  You will then have
+To compile cuda code (ie. `*.cu`), just add `karate/cuda` to your `plan.sh`.  You will then have
 access to compiler tools like `nvcc`, `cuda-gdb` and more.  Furthermore, `LD_RUN_PATH`, `CFLAGS`,
 `CXXFLAGS`, `CPPFLAGS`, and `LDFLAGS` will be updated with any of the cuda shared/static libraries.
 
-If you require shared libraries during runtime, it is recommended that you add `core/cuda-libs` to
-`pkg_deps` and add `core/cuda` to `pkg_build_deps`.
+If you require shared libraries during runtime, it is recommended that you add `karate/cuda-libs` to
+`pkg_deps` and add `karate/cuda` to `pkg_build_deps`.
 
 ### Example
 
@@ -29,12 +29,12 @@ pkg_name=myawesomecudaapp
 pkg_origin=myorigin
 
 pkg_deps=(
-  core/cuda-libs
-  core/gcc-libs
+  karate/cuda-libs
+  karate/gcc-libs
 )
 pkg_build_deps=(
-  core/cuda
-  core/make
+  karate/cuda
+  karate/make
 )
 
 do_build() {
@@ -62,7 +62,7 @@ $ ls /usr/lib64/libcuda*
 An example of how you will run your binary:
 
 ```shell
-LD_LIBRARY_PATH=/usr/lib64 hab pkg exec myorigin/myawesomecudaapp myawesomecudaapp
+LD_LIBRARY_PATH=/usr/lib64 doj pkg exec myorigin/myawesomecudaapp myawesomecudaapp
 ```
 
 Similarly, this is how you can write a `run` hook to execute your binary if it is a service:

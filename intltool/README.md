@@ -4,7 +4,7 @@ intltool is a set of tools to centralize translation of many different file form
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

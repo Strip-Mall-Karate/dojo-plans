@@ -1,8 +1,8 @@
 # Ruby Scaffolding
 
-Ruby Scaffolding is a [Habitat][habitat] package which helps you build your Ruby-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Habitat Supervisor. The Supervisor will facilitate clustering, discovery of database services, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
+Ruby Scaffolding is a Dojo package which helps you build your Ruby-based **web applications**, **services**, and **processes** (hereafter referred to as "apps") into a package which runs consistently on a wide range of containers, virtual machines, or servers via the Dojo Supervisor. The Supervisor will facilitate clustering, discovery of database services, dynamically update configuration and credentials, coordinate reliable rolling updates, and a lot more!
 
-For more about Habitat, you can check out [Try Habitat][try_hab]. For more about building your apps, read on!
+For more about building your apps, read on!
 
 ## Use Ruby Scaffolding for Your App
 
@@ -12,12 +12,12 @@ Check out the [Ruby Scaffolding QuickStart Guide](quickstart.md).
 
 To properly load and use this Scaffolding, the implementation looks for a [`Gemfile`][] in your app's root directory. Either directory structure is supported:
 
-A Plan in a `habitat/` subdirectory:
+A Plan in a `dojo/` subdirectory:
 
 ```
 .
 ├── Gemfile
-└── habitat
+└── dojo
     └── plan.sh
 ```
 
@@ -35,24 +35,24 @@ A [`Gemfile`][] must be present for this Scaffolding to function correctly. If n
 
 ## Package Dependencies
 
-Most non-trivial apps need more than their own codebase to run correctly. Many have gem dependencies which require compiling native gem extensions. Others require certain software present for shelling out to (for example: ImageMagick). This Scaffolding uses app detection logic to conditionally inject some common Habitat packages into your Plan. However, if more packages are required, it is generally easy to add these to your Plan to fully describe your app's [build and runtime dependencies][12factor_dependencies].
+Most non-trivial apps need more than their own codebase to run correctly. Many have gem dependencies which require compiling native gem extensions. Others require certain software present for shelling out to (for example: ImageMagick). This Scaffolding uses app detection logic to conditionally inject some common Dojo packages into your Plan. However, if more packages are required, it is generally easy to add these to your Plan to fully describe your app's [build and runtime dependencies][12factor_dependencies].
 
 ### Default Dependencies
 
-The following Habitat package dependencies will be injected into your app's Plan:
+The following Dojo package dependencies will be injected into your app's Plan:
 
-* [`core/busybox-static`][]: Used by process bins to have valid [shebangs][] and a consistent minimal command set. Will be injected into your Plan's `pkg_deps` array.
-* `core/git`: Used to detect if your app exists within a git repository to better support installing your app while honoring the `.gitignore` file. Will be injected into your Plan's `pkg_build_deps` array.
+* [`karate/busybox-static`][]: Used by process bins to have valid [shebangs][] and a consistent minimal command set. Will be injected into your Plan's `pkg_deps` array.
+* `karate/git`: Used to detect if your app exists within a git repository to better support installing your app while honoring the `.gitignore` file. Will be injected into your Plan's `pkg_build_deps` array.
 
 ### Detected Dependencies
 
-The following gems will checked for in the `Gemfile.lock` to conditionally inject commonly known Habitat packages into your app's Plan:
+The following gems will checked for in the `Gemfile.lock` to conditionally inject commonly known Dojo packages into your app's Plan:
 
-* If the `sqlite3` gem is detected, then sqlite-related Habitat packages will be injected into your Plan's `pkg_deps` array.
-* If any of several PostgreSQL-related gems are detected, then PostgreSQL-related Habitat packages will be injected into your Plan's `pkg_deps` array. See the PostgreSQL Database Detection section for more details.
-* If the `nokogiri` gem is detected, then XML/XSLT-related Habitat packages will be injected into your Plan's `pkg_deps` array.
-* If the `execjs` gem is detected, then Node-related Habitat packages will be injected into your Plan's `pkg_deps` array.
-* If the `webpacker` gem is detected, then Yarn-related Habitat packages will be injected into your Plan's `pkg_deps` array.
+* If the `sqlite3` gem is detected, then sqlite-related Dojo packages will be injected into your Plan's `pkg_deps` array.
+* If any of several PostgreSQL-related gems are detected, then PostgreSQL-related Dojo packages will be injected into your Plan's `pkg_deps` array. See the PostgreSQL Database Detection section for more details.
+* If the `nokogiri` gem is detected, then XML/XSLT-related Dojo packages will be injected into your Plan's `pkg_deps` array.
+* If the `execjs` gem is detected, then Node-related Dojo packages will be injected into your Plan's `pkg_deps` array.
+* If the `webpacker` gem is detected, then Yarn-related Dojo packages will be injected into your Plan's `pkg_deps` array.
 
 Additional checks performed by this scaffolding are:
 
@@ -60,12 +60,12 @@ Additional checks performed by this scaffolding are:
 
 ###  Specifying Run Dependencies in Your Plan
 
-Generally speaking, your app needs additional Habitat packages present at runtime for one of two reasons:
+Generally speaking, your app needs additional Dojo packages present at runtime for one of two reasons:
 
 1. Your app expects certain programs present which it may shell out or bind to in some way.
 2. Your `Gemfile` has gem dependencies with native extensions, requiring additional linked libraries.
 
-In both cases, this means your app needs additional Habitat packages installed at runtime. For this, we use the `pkg_deps` array in your Plan.
+In both cases, this means your app needs additional Dojo packages installed at runtime. For this, we use the `pkg_deps` array in your Plan.
 
 For this example, let's suppose you are using the [rbnacl][] gem for bindings to the [libsodium][] library. Additionally, your app resizes images to generate thumbnails by using the `mogrify` program from the [ImageMagick][] software. To add both of these packages, update your `pkg_deps` line to the following below:
 
@@ -74,8 +74,8 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-ruby
-pkg_deps=(core/imagemagick core/libsodium)
+pkg_scaffolding=karate/scaffolding-ruby
+pkg_deps=(karate/imagemagick karate/libsodium)
 ```
 
 ###  Specifying Build Dependencies in Your Plan
@@ -89,18 +89,18 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-ruby
-pkg_build_deps=(core/rust)
+pkg_scaffolding=karate/scaffolding-ruby
+pkg_build_deps=(karate/rust)
 ```
 
 ## Ruby Version
 
 ### Selecting a Version of Ruby
 
-By default the latest version of the [MRI][]-based [`core/ruby`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of Ruby, there are two locations you can do this:
+By default the latest version of the [MRI][]-based [`karate/ruby`][] package will be injected into your Plan's `pkg_deps` array. To specify a non-default version of Ruby, there are two locations you can do this:
 
 1. Use the [`ruby`][gemfile_ruby] keyword in your app's `Gemfile`
-2. Set the `scaffolding_ruby_pkg` variable in your Plan with a valid Habitat package identifier corresponding to a package with a `ruby` program
+2. Set the `scaffolding_ruby_pkg` variable in your Plan with a valid Dojo package identifier corresponding to a package with a `ruby` program
 
 A set Plan variable will win over setting a version in your `Gemfile`, however it is recommended to the `Gemfile` strategy first as this is portable across other Ruby app build and deployment solutions.
 
@@ -116,9 +116,9 @@ ruby "2.4.1"
  # ...
 ```
 
-The value of this keyword will be used to determine the version of the Habitat [`core/ruby`][] package. For example, the `Gemfile` above would result in `core/ruby/2.4.1` being injected into your Plan's `pkg_deps` array.
+The value of this keyword will be used to determine the version of the Dojo [`karate/ruby`][] package. For example, the `Gemfile` above would result in `karate/ruby/2.4.1` being injected into your Plan's `pkg_deps` array.
 
-Currently only releases of the [`core/ruby`] package will work so if further customizing is required you may need to specify a version of Ruby in your Plan as described below. Additionally, only MRI versions of Ruby are supported, however future support for JRuby implementations of Ruby is possible. Consequently, this means that the `:engine` and `:engine_version` options are not used.
+Currently only releases of the [`karate/ruby`] package will work so if further customizing is required you may need to specify a version of Ruby in your Plan as described below. Additionally, only MRI versions of Ruby are supported, however future support for JRuby implementations of Ruby is possible. Consequently, this means that the `:engine` and `:engine_version` options are not used.
 
 #### Specifying a Ruby Version in Your Plan
 
@@ -129,12 +129,12 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-ruby
+pkg_scaffolding=karate/scaffolding-ruby
 
-scaffolding_ruby_pkg=core/ruby/2.4.1
+scaffolding_ruby_pkg=karate/ruby/2.4.1
 ```
 
-The value of this variable will be used to determine the Habitat package to satisfy the role of your app's Ruby implementation.
+The value of this variable will be used to determine the Dojo package to satisfy the role of your app's Ruby implementation.
 
 Currently only MRI versions of Ruby are supported, however future support for JRuby implementations of Ruby is possible.
 
@@ -188,7 +188,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-ruby
+pkg_scaffolding=karate/scaffolding-ruby
 
  # Declare the associative array (hash) in bash
 declare -A scaffolding_process_bins
@@ -230,7 +230,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-ruby
+pkg_scaffolding=karate/scaffolding-ruby
 
  # Declare the associative array (hash) in bash
 declare -A scaffolding_env
@@ -261,12 +261,12 @@ By default, the detected app type will determine some of the app's config settin
 
 You can add more config settings by creating a `default.toml` file in the same directory containing your `plan.sh` file. Either directory structure is supported:
 
-A Plan in a `habitat/` subdirectory:
+A Plan in a `dojo/` subdirectory:
 
 ```
 .
 ├── Gemfile
-└── habitat
+└── dojo
     ├── default.toml
     └── plan.sh
 ```
@@ -282,7 +282,7 @@ A Plan in the same directory as the `Gemfile`:
 
 ## Service Bindings
 
-[Service bindings][bindings] are a powerful way to declare your app's [service dependencies][12factor_backing_services] which the Supervisor will honor when running your app.
+Service bindings are a powerful way to declare your app's [service dependencies][12factor_backing_services] which the Supervisor will honor when running your app.
 
 ### Default Service Bindings
 
@@ -297,7 +297,7 @@ pkg_name=my_app
 pkg_origin=acmecorp
 pkg_version=0.1.0
  # ...
-pkg_scaffolding=core/scaffolding-ruby
+pkg_scaffolding=karate/scaffolding-ruby
 
  # We require both the HTTP and transport ports from this
  # service binding
@@ -307,7 +307,7 @@ pkg_binds[elasticsearch]="http-port transport-port"
 This allows your app to [dynamically bind][12factor_backing_services] to the desired Elasticsearch service group at runtime. For example, if your app's target Elasticsearch service group was `"es.my_app"`, then you would start it with:
 
 ```sh
-hab start acmecorp/my_app --bind elastic search:es.my_app
+doj start acmecorp/my_app --bind elastic search:es.my_app
 ```
 
 ## App Type Detection
@@ -388,7 +388,7 @@ The following default config settings will be created:
 
 ### Rails 4.x Applications
 
-**Note:** This app type is not fully supported yet, but may be in the future. If your use case is interesting, please join our [public Slack][habislack] and let us know!
+**Note:** This app type is not fully supported yet, but may be in the future. If your use case is interesting, please join our public Slack and let us know!
 
 #### Detection
 
@@ -396,7 +396,7 @@ A Rails 4 app type will be detected if the app's `Gemfile.lock` contains a `rail
 
 ### Rails 3.x Applications
 
-**Note:** This app type is not fully supported yet, but may be in the future. If your use case is interesting, please join our [public Slack][habislack] and let us know!
+**Note:** This app type is not fully supported yet, but may be in the future. If your use case is interesting, please join our public Slack and let us know!
 
 #### Detection
 
@@ -404,7 +404,7 @@ A Rails 3 app type will be detected if the app's `Gemfile.lock` contains a `rail
 
 ### Rails 2.x Applications
 
-**Note:** This app type is not fully supported yet, but may be in the future. If your use case is interesting, please join our [public Slack][habislack] and let us know!
+**Note:** This app type is not fully supported yet, but may be in the future. If your use case is interesting, please join our public Slack and let us know!
 
 #### Detection
 
@@ -437,7 +437,7 @@ The following default config settings will be created:
 
 ### Ruby Applications
 
-**Note:** This app type is not fully supported yet, but may be in the future. If your use case is interesting, please join our [public Slack][habislack] and let us know!
+**Note:** This app type is not fully supported yet, but may be in the future. If your use case is interesting, please join our public Slack and let us know!
 
 #### Detection
 
@@ -485,10 +485,10 @@ To use the service binding, you will need to add the following option when loadi
 Where `<SERVICE_GROUP>` is a service group running PostgreSQL exporting the `port` configuration. For example:
 
 ```sh
-hab start acmecorp/my_app --bind database:postgresql.default
+doj start acmecorp/my_app --bind database:postgresql.default
 ```
 
-If your database is not currently running in a Habitat ring under a Supervisor, you may omit adding the `--bind database:...` option when loading and/or starting your app service. This means that you must provide at least one additional config setting: `db.host` (as explained above).
+If your database is not currently running in a Dojo ring under a Supervisor, you may omit adding the `--bind database:...` option when loading and/or starting your app service. This means that you must provide at least one additional config setting: `db.host` (as explained above).
 
 [12factor_backing_services]: https://12factor.net/backing-services
 [12factor_build]: https://12factor.net/build-release-run
@@ -497,15 +497,12 @@ If your database is not currently running in a Habitat ring under a Supervisor, 
 [12factor_logs]: https://12factor.net/logs
 [12factor_port]: https://12factor.net/port-binding
 [12factor_processes]: https://12factor.net/processes
-[bindings]: https://www.habitat.sh/docs/run-packages-binding/
 [commit_lockfile]: http://yehudakatz.com/2010/12/16/clarifying-the-roles-of-the-gemspec-and-gemfile/
-[`core/busybox-static`]: https://app.habitat.sh/#/pkgs/core/busybox-static
-[`core/ruby`]: https://app.habitat.sh/#/pkgs/core/ruby
+[`karate/busybox-static`]: https://bldr.karate.company/#/pkgs/core/busybox-static
+[`karate/ruby`]: https://bldr.karate.company/#/pkgs/core/ruby
 [Elasticsearch]: https://www.elastic.co/products/elasticsearch
 [`Gemfile`]: http://bundler.io/man/gemfile.5.html
 [gemfile_ruby]: http://bundler.io/man/gemfile.5.html#RUBY
-[habitat]: https://www.habitat.sh/
-[habislack]: http://slack.habitat.sh/
 [Helix]: https://usehelix.com/
 [ImageMagick]: https://www.imagemagick.org/script/index.php
 [libsodium]: https://download.libsodium.org/doc/
@@ -514,4 +511,3 @@ If your database is not currently running in a Habitat ring under a Supervisor, 
 [`Procfile`]: https://devcenter.heroku.com/articles/procfile
 [rbnacl]: https://github.com/cryptosphere/rbnacl
 [shebangs]: https://en.wikipedia.org/wiki/Shebang_(Unix)
-[try_hab]: https://www.habitat.sh/try/

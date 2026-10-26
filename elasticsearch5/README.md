@@ -4,7 +4,7 @@ Elasticsearch is a distributed, RESTful search and analytics engine capable of s
 
 ## Maintainers
 
-* The Habitat Maintainers <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,8 +15,8 @@ Service package
 Install the package, and load the serivce:
 
 ```
-hab pkg install core/elasticsearch5
-hab svc load core/elasticsearch5
+doj pkg install karate/elasticsearch5
+doj svc load karate/elasticsearch5
 ```
 
 ## Bindings
@@ -24,7 +24,7 @@ hab svc load core/elasticsearch5
 Services consuming Elasticsearch can bind via:
 
 ```
-hab start origin/package --bind elastic:elasticsearch5.default
+doj start origin/package --bind elastic:elasticsearch5.default
 ```
 
 Elasticsearch's contract presents the following ports to bind to:

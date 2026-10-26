@@ -1,4 +1,4 @@
-# Habitat package: delmo
+# Dojo package: delmo
 
 ## Description
 
@@ -9,8 +9,8 @@ This plan provides the static binary for execution within other plans.
 ## Usage
 
 ```
-hab pkg install core/delmo
-hab pkg binlink core/delmo delmo
+doj pkg install karate/delmo
+doj pkg binlink karate/delmo delmo
 
 delmo --help
 ```

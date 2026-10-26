@@ -4,7 +4,7 @@ CMake is an open-source, cross-platform family of tools designed to build, test 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

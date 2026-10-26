@@ -4,7 +4,7 @@ Cppcheck is a static analysis tool for C/C++ code. It provides unique code analy
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
@@ -12,4 +12,4 @@ binary package
 
 ## Usage
 
-Place `core/cppcheck` into your `pkg_build_deps` and you will have `cppcheck` on the `PATH`.
+Place `karate/cppcheck` into your `pkg_build_deps` and you will have `cppcheck` on the `PATH`.

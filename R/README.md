@@ -4,7 +4,7 @@ R is a free software environment for statistical computing and graphics.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -13,7 +13,7 @@ Binary package
 ## Usage
 
 ```
-[0][default:/src:0]# hab pkg install -b core/R
+[0][default:/src:0]# doj pkg install -b core/R
 [1][default:/src:0]# R --help
 Usage: R [options] [< infile] [> outfile]
    or: R CMD command [arguments]

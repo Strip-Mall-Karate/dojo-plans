@@ -4,7 +4,7 @@ Oracle Java Runtime Environment. This package is made available to you to allow 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

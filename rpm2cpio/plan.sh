@@ -23,7 +23,7 @@ do_prepare() {
     -e "s,%%xz%%,$(pkg_path_for xz)/bin/xz,g" \
     -e "s,%%bzip2%%,$(pkg_path_for bzip2)/bin/bzip2,g" \
     -e "s,%%lzma%%,$(pkg_path_for xz)/bin/lzma,g" \
-    "$PLAN_CONTEXT/hab-path.patch" \
+    "$PLAN_CONTEXT/doj-path.patch" \
     | patch -p0
   fix_interpreter rpm2cpio core/perl bin/perl
 }

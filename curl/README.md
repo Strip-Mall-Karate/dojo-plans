@@ -6,17 +6,17 @@ This package provides the curl binaries.
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
 ```
-$ hab pkg install core/curl
-$ hab pkg binlink core/curl
+$ doj pkg install karate/curl
+$ doj pkg binlink karate/curl
 $ curl --help
 
 Usage: curl [options...] <url>

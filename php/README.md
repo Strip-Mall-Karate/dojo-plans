@@ -4,7 +4,7 @@ PHP is a popular general-purpose scripting language that is especially suited to
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

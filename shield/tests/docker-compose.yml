@@ -12,7 +12,7 @@ services:
   agent:
     image: starkandwayne/shield-agent:edge
     environment:
-      HAB_SHIELD_AGENT: |
+      DOJ_SHIELD_AGENT: |
         install_pg_tools=true
         shield_endpoint="https://shield"
         provisioning_key="autoprovision"
@@ -23,7 +23,7 @@ services:
     image: starkandwayne/shield-agent:edge
     command: "start starkandwayne/shield-agent --peer shield --bind daemon:shield.default"
     environment:
-      HAB_SHIELD_AGENT: |
+      DOJ_SHIELD_AGENT: |
         [schedules]
         auto = "daily 4am"
     links:

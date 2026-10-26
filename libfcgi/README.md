@@ -6,7 +6,7 @@ This package contains library and include files, as well as the `cgi-fcgi` binar
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Usage
 

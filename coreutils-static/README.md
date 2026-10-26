@@ -4,7 +4,7 @@ Basic file, shell and text manipulation utilities of the GNU operating system.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -11,7 +11,7 @@ disableIndexing = "false"
 disableServersList = "false"
 # Override DNS
 dnsNameServer = "8.8.8.8"
-# duration to keep objects without Last-modified (ie. Habitat artifacts)
+# duration to keep objects without Last-modified (ie. Dojo artifacts)
 maxNoModifiedAge = "7d"
 # 4X the default
 objectHighMark = 8192

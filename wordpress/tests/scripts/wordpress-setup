@@ -2,7 +2,7 @@
 
 set -e
 
-path="--path=/hab/svc/wordpress/data/"
+path="--path=/doj/svc/wordpress/data/"
 # setup wordpress
 wp --allow-root $path core install --title="WP-CLI" --admin_user=wpcli --admin_password=wpcli --admin_email=info@wp-cli.org --url=localhost
 

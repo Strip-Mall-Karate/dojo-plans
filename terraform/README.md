@@ -4,7 +4,7 @@ Terraform is a tool for building, changing, and combining infrastructure safely 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

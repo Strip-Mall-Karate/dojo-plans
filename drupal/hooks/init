@@ -17,15 +17,15 @@ then
 fi
 
 # Copy the php-fom config into position
-cp -n {{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf.default \
-      {{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf
+cp -n {{pkgPathFor "karate/php"}}/etc/php-fpm.d/www.conf.default \
+      {{pkgPathFor "karate/php"}}/etc/php-fpm.d/www.conf
 
 # Set the correct permissions
 chmod +x {{pkg.svc_data_path}}
-chown -R hab:hab {{pkg.svc_data_path}}
+chown -R doj:doj {{pkg.svc_data_path}}
 
 # Deplay the nginx config and then launch it
 cp -r {{pkg.svc_config_path}}/nginx.conf \
-      {{pkgPathFor "core/nginx"}}/config/nginx.conf
+      {{pkgPathFor "karate/nginx"}}/config/nginx.conf
 
-hab svc load core/nginx --group {{svc.group}} --force
+doj svc load karate/nginx --group {{svc.group}} --force

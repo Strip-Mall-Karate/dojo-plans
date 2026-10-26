@@ -4,7 +4,7 @@ Enterprise-class centralized version control for the masses
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

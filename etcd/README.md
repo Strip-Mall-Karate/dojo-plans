@@ -1,5 +1,5 @@
-# Habitat Package: etcd
-The Habitat Maintainers <humans@habitat.sh>
+# Dojo Package: etcd
+Strip Mall Karate Company
 
 ## Description
 
@@ -14,8 +14,8 @@ The Habitat Maintainers <humans@habitat.sh>
 
 ## Usage
 
-- On the first node: `hab sup start core/etcd --topology leader`
-- On subsequent nodes: `hab sup start core/etcd --topology leader --peer <first node ip>`
+- On the first node: `doj sup start karate/etcd --topology leader`
+- On subsequent nodes: `doj sup start karate/etcd --topology leader --peer <first node ip>`
 
 On all nodes the following ports are available:
 
@@ -48,22 +48,22 @@ f1986a6cf0ad46aa, started, node-0, https://192.168.222.10:2380, https://192.168.
 
 - To create a key:
 ```
-$ curl -L -X PUT -k https://10.0.2.15:2379/v2/keys/new -d value="Hello Habitat"
-{"action":"set","node":{"key":"/new","value":"Hello Habitat","modifiedIndex":5,"createdIndex":5}}
+$ curl -L -X PUT -k https://10.0.2.15:2379/v2/keys/new -d value="Hello Dojo"
+{"action":"set","node":{"key":"/new","value":"Hello Dojo","modifiedIndex":5,"createdIndex":5}}
 ```
 
 
 - To read the key:
 ```
 $ curl -L -k https://10.0.2.15:2379/v2/keys/new
-{"action":"get","node":{"key":"/new","value":"Hello Habitat","modifiedIndex":5,"createdIndex":5}}
+{"action":"get","node":{"key":"/new","value":"Hello Dojo","modifiedIndex":5,"createdIndex":5}}
 ```
 
 
 - To delete the key:
 ```
 $ curl -L -X DELETE -k https://10.0.2.15:2379/v2/keys/new
-{"action":"delete","node":{"key":"/new","modifiedIndex":6,"createdIndex":5},"prevNode":{"key":"/new","value":"Hello Habitat","modifiedIndex":5,"createdIndex":5}}
+{"action":"delete","node":{"key":"/new","modifiedIndex":6,"createdIndex":5},"prevNode":{"key":"/new","value":"Hello Dojo","modifiedIndex":5,"createdIndex":5}}
 ```
 
 
@@ -74,6 +74,6 @@ $ curl -L -k https://10.0.2.15:2379/v2/keys/new
 
 ## Notes
 
-- hab v0.22/0.23 due to a bug in domain resolution inside these versions
-of Habitat, etcd configuration is only using IP addresses to contact
+- doj v0.22/0.23 due to a bug in domain resolution inside these versions
+of Dojo, etcd configuration is only using IP addresses to contact
 other peers.

@@ -4,7 +4,7 @@ A dead simple, no frills Go cross compile tool
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

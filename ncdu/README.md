@@ -4,7 +4,7 @@ Ncdu is a disk usage analyzer with an ncurses interface
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

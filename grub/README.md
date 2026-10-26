@@ -4,7 +4,7 @@ GNU GRUB is a Multiboot boot loader.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

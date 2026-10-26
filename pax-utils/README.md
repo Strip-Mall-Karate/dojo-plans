@@ -5,7 +5,7 @@ ELF related utils for ELF 32/64 binaries that can check files
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

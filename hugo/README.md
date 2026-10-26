@@ -10,7 +10,7 @@ Hugo is designed to work well for any kind of website including blogs, tumbles, 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -19,6 +19,6 @@ Binary package
 ## Usage
 
 ```
-hab pkg install core/hugo
-hab pkg exec core/hugo hugo
+doj pkg install karate/hugo
+doj pkg exec karate/hugo hugo
 ```

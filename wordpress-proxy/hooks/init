@@ -4,4 +4,4 @@
 exec 2>&1
 
 mkdir -p {{pkg.svc_var_path}}/nginx
-chown hab:hab {{pkg.svc_var_path}}
+chown doj:doj {{pkg.svc_var_path}}

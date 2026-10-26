@@ -1,4 +1,4 @@
-# Habitat package: sensu-backend
+# Dojo package: sensu-backend
 
 ## Description
 
@@ -10,18 +10,18 @@ The sensu backend should be using in conjunction with one or more sensu backends
 
 Ex:
 ```bash
-  hab sup run core/sensu-backend --peer some.ip --topology standalone --strategy at-once
+  doj sup run karate/sensu-backend --peer some.ip --topology standalone --strategy at-once
 ```
 
 ## Testing
 
-Bring up the sensu backend inside of hab studio (and forward ports 3000 and 8080 if on mac).
+Bring up the sensu backend inside of doj studio (and forward ports 3000 and 8080 if on mac).
 
 Ex:
 ```bash
-  HAB_DOCKER_OPTS="-p 3000:3000 -p 8080:8080" hab studio enter
+  DOJ_DOCKER_OPTS="-p 3000:3000 -p 8080:8080" doj studio enter
   build
-  hab svc load core/sensu-backend
+  doj svc load karate/sensu-backend
 ```
 
 #### Dashboard

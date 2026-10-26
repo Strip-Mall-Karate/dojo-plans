@@ -35,6 +35,6 @@ do
   ln -vsf {{pkg.svc_config_path}}/$file {{pkg.svc_var_path}}/tc/$target
 done
 
-chown -R hab:hab {{pkg.svc_path}}/*
+chown -R doj:doj {{pkg.svc_path}}/*
 
 echo "Done preparing TOMCAT_HOME"

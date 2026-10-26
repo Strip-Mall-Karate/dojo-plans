@@ -2,19 +2,19 @@
 
 source {{pkg.svc_config_path}}/environment.sh
 
-bsdtar_path="{{pkgPathFor "core/libarchive"}}/bin/bsdtar"
+bsdtar_path="{{pkgPathFor "karate/libarchive"}}/bin/bsdtar"
 echo Setting up default path to bsdtar
 rm -rf /var/vcap/packages/bsdtar/bin 2>/dev/null
 mkdir -p /var/vcap/packages/bsdtar/bin
 ln -s ${bsdtar_path} /var/vcap/packages/bsdtar/bin/bsdtar
 
 # This is to satisfy the hard coded path in the postgresql plugin
-psql_path=$(find /hab/pkgs -name 'psql' | tail -n1)
+psql_path=$(find /doj/pkgs -name 'psql' | tail -n1)
 {{ #if cfg.install_pg_tools }}
 if [[ "${psql_path}" == "" ]]; then
-  echo "Installing core/postgresql to support backing up pg"
-  hab install core/postgresql
-  psql_path=$(find /hab/pkgs -name 'psql' | tail -n1)
+  echo "Installing karate/postgresql to support backing up pg"
+  doj install karate/postgresql
+  psql_path=$(find /doj/pkgs -name 'psql' | tail -n1)
 fi
 {{ /if}}
 if [[ "${psql_path}" != "" ]]; then

@@ -1,4 +1,4 @@
-# Habitat package: envconsul
+# Dojo package: envconsul
 
 ## Description
 
@@ -8,7 +8,7 @@ configuration values from HashiCorp's Consul or Vault.
 ## Usage
 
 ```
-hab pkg exec core/envconsul envconsul -h
+doj pkg exec karate/envconsul envconsul -h
 Usage:  [options] <command>
 
   Watches values from Consul's K/V store and Vault secrets to set environment

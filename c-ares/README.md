@@ -4,7 +4,7 @@ A C library for asynchronous DNS requests
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -12,4 +12,4 @@ Binary package
 
 ## Usage
 
-Add `core/c-ares` if your C/C++ apps depend on this.
+Add `karate/c-ares` if your C/C++ apps depend on this.

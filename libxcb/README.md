@@ -4,7 +4,7 @@ X11 C Bindings
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,4 +15,4 @@ Binary package
 Typically this is a runtime dependency that can be added to your
 plan.sh:
 
-    pkg_deps=(core/libxcb)
+    pkg_deps=(karate/libxcb)

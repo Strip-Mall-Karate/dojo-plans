@@ -1,33 +1,33 @@
 version: '2'
 services:
   rabbitmq:
-    image: core/rabbitmq
+    image: karate/rabbitmq
     environment:
-      - HAB_RABBITMQ=rabbitmq={default_vhost='/sensu',default_user='sensu',default_pass='sensu',management={enabled=true}}
+      - DOJ_RABBITMQ=rabbitmq={default_vhost='/sensu',default_user='sensu',default_pass='sensu',management={enabled=true}}
     ports:
       - "5672:5672"
       - "15672:15672"
   redis:
-    image: core/redis
+    image: karate/redis
     links:
       - rabbitmq
     environment:
-      - HAB_REDIS=protected-mode='no'
+      - DOJ_REDIS=protected-mode='no'
     ports:
       - "6379:6379"
-    command: start core/redis --peer rabbitmq
+    command: start karate/redis --peer rabbitmq
   sensu-server:
-    image: $HAB_ORIGIN/sensu
+    image: $DOJ_ORIGIN/sensu
     links:
       - rabbitmq
       - redis
     environment:
-      - HAB_SENSU=log_level='debug'
-    command: start $HAB_ORIGIN/sensu --peer rabbitmq --bind rabbitmq:rabbitmq.default --bind redis:redis.default
+      - DOJ_SENSU=log_level='debug'
+    command: start $DOJ_ORIGIN/sensu --peer rabbitmq --bind rabbitmq:rabbitmq.default --bind redis:redis.default
   sensu-client:
-    image: $HAB_ORIGIN/sensu
+    image: $DOJ_ORIGIN/sensu
     links:
       - rabbitmq
     environment:
-      - HAB_SENSU=mode='client'
-    command: start $HAB_ORIGIN/sensu --peer rabbitmq --bind rabbitmq:rabbitmq.default
+      - DOJ_SENSU=mode='client'
+    command: start $DOJ_ORIGIN/sensu --peer rabbitmq --bind rabbitmq:rabbitmq.default

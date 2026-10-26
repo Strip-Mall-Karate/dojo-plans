@@ -1,31 +1,31 @@
 source "${BATS_TEST_DIRNAME}/../plan.sh"
 
-NONHAB_FILE="/hab/svc/${pkg_name}/data/lost+found"
+NONDOJ_FILE="/doj/svc/${pkg_name}/data/lost+found"
 
 function setup() {
-  touch "${NONHAB_FILE}"
-  chown root:root "${NONHAB_FILE}"
-  chmod 600 "${NONHAB_FILE}"
+  touch "${NONDOJ_FILE}"
+  chown root:root "${NONDOJ_FILE}"
+  chmod 600 "${NONDOJ_FILE}"
 }
 
 function teardown() {
-    rm -f ${NONHAB_FILE}
+    rm -f ${NONDOJ_FILE}
 }
 
-@test "Non-hab owned files in /data are allowed" {
-  ORIGIN=$(hab svc status |grep ${pkg_name}| cut -f1 -d'/')
-  hab svc stop "${ORIGIN}/${pkg_name}"
+@test "Non-Dojo owned files in /data are allowed" {
+  ORIGIN=$(doj svc status |grep ${pkg_name}| cut -f1 -d'/')
+  doj svc stop "${ORIGIN}/${pkg_name}"
 
-  hab svc start "${ORIGIN}/${pkg_name}"
+  doj svc start "${ORIGIN}/${pkg_name}"
 
   # Wait for service to start
   sleep 1
 
-  # We still have a non-hab owned file in data/
-  [ -f "${NONHAB_FILE}" ]
-  [ "root" == $(stat -c %U "${NONHAB_FILE}") ]
-  [ "root" == $(stat -c %G "${NONHAB_FILE}") ]
-  [ "-rw-------" == $(stat -c %A "${NONHAB_FILE}") ]
+  # We still have a non-Dojo owned file in data/
+  [ -f "${NONDOJ_FILE}" ]
+  [ "root" == $(stat -c %U "${NONDOJ_FILE}") ]
+  [ "root" == $(stat -c %G "${NONDOJ_FILE}") ]
+  [ "-rw-------" == $(stat -c %A "${NONDOJ_FILE}") ]
 
-  [ "$(hab svc status | grep "${pkg_name}.default" | awk '{print $4}' | grep up)" ]
+  [ "$(doj svc status | grep "${pkg_name}.default" | awk '{print $4}' | grep up)" ]
 }

@@ -6,6 +6,6 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Hello World" {
-  result=$(luajit -e 'print("Hello Habitat")')
-  [ "$result" = "Hello Habitat" ]
+  result=$(luajit -e 'print("Hello Dojo")')
+  [ "$result" = "Hello Dojo" ]
 }

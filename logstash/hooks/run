@@ -6,7 +6,7 @@ export USE_RUBY=1
 
 # The `path.logs' config is no-op as we disable all file based logging
 # via a custom `log4j2.properites' file. We only set it so a hard-coded
-# and confusing `puts' message is not printed during startup. Habitat
+# and confusing `puts' message is not printed during startup. Dojo
 # apps should just print log messages to the console!
 exec {{pkg.path}}/bin/logstash \
   --path.config {{pkg.svc_config_path}} \

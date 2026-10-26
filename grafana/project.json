@@ -1,8 +1,8 @@
 {
-  "origin": "core",
+  "origin": "karate",
   "plan_path": "grafana/plan.sh",
   "github": {
-    "organization": "habitat",
-    "repo": "core-plans"
+    "organization": "Strip-Mall-Karate",
+    "repo": "dojo-plans"
   }
 }

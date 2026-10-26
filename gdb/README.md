@@ -4,7 +4,7 @@ GDB, the GNU Project debugger, allows you to see what is going on 'inside' anoth
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

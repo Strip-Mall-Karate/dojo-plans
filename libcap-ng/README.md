@@ -4,7 +4,7 @@ The libcap-ng library is intended to make programming with posix capabilities mu
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

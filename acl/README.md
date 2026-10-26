@@ -4,7 +4,7 @@ Commands for Manipulating POSIX Access Control Lists.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

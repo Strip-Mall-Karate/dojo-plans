@@ -4,7 +4,7 @@ Camlp4 is a software system for writing extensible parsers for programming langu
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

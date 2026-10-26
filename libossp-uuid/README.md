@@ -4,7 +4,7 @@ OSSP uuid is a ISO-C:1999 application programming interface (API) and correspond
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

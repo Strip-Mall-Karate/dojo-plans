@@ -4,7 +4,7 @@ QEMU is a generic and open source machine emulator and virtualizer.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

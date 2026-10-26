@@ -4,7 +4,7 @@ A full-featured and high-performance (see benchmark) event loop that is loosely 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

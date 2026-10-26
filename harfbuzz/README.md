@@ -4,7 +4,7 @@ HarfBuzz is an OpenType text shaping engine
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

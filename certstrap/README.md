@@ -4,7 +4,7 @@ A simple certificate manager written in Go, to bootstrap your own certificate au
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

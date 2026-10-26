@@ -4,17 +4,17 @@ The [AWS Command Line Interface](https://aws.amazon.com/cli/) (CLI) is a unified
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper package](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper package
 
 ## Usage
 
 ```bash
-hab pkg install core/aws-cli
-hab pkg binlink core/aws-cli aws   # do not try to binlink all the python deps
+doj pkg install karate/aws-cli
+doj pkg binlink karate/aws-cli aws   # do not try to binlink all the python deps
 
 aws --version
 ```

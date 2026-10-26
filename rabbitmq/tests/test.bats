@@ -6,7 +6,7 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Service is running" {
-  [ "$(hab svc status | grep "rabbitmq\.default" | awk '{print $4}' | grep up)" ]
+  [ "$(doj svc status | grep "rabbitmq\.default" | awk '{print $4}' | grep up)" ]
 }
 
 @test "Listening on port 4369, 5672, 25672" {

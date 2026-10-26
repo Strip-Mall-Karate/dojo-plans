@@ -4,7 +4,7 @@ Yasm is a complete rewrite of the NASM assembler
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

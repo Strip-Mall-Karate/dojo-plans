@@ -4,7 +4,7 @@ Runtime libraries shipped by [NVIDIA CUDA](https://developer.nvidia.com/cuda-zon
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 * Ben Dang: <me@bdang.it>
 
 ## Type of Package
@@ -14,4 +14,4 @@ Binary package
 ## Usage
 
 This package just contains the runtime libraries.  If you need to compile any cuda code, you will
-need to use `core/cuda`.  Refer to [Usage](../cuda/README.md) in `core/cuda`.
+need to use `karate/cuda`.  Refer to [Usage](../cuda/README.md) in `karate/cuda`.

@@ -4,7 +4,7 @@ A Go based command line tool for exercism.io.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

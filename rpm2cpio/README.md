@@ -1,4 +1,4 @@
-# Habitat package: rpm2cpio
+# Dojo package: rpm2cpio
 
 ## Description
 
@@ -8,10 +8,10 @@ Why does the world need another rpm2cpio?  Because the existing one won't build 
 
 Dumps the contents of an RPM to stdout as a GNU cpio archive
 
-`hab pkg exec core/rpm2cpio rpm2cpio RPM_FILE | cpio`
+`doj pkg exec karate/rpm2cpio rpm2cpio RPM_FILE | cpio`
 
 or
 
-`hab pkg exec core/rpm2cpio rpm2cpio < RPMFILE | cpio`
+`doj pkg exec karate/rpm2cpio rpm2cpio < RPMFILE | cpio`
 
-If required, there is a `core/cpio` package available via `hab pkg install`.
+If required, there is a `karate/cpio` package available via `doj pkg install`.

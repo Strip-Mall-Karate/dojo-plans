@@ -4,7 +4,7 @@ GoReplay is an open-source tool for capturing and replaying live HTTP traffic in
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

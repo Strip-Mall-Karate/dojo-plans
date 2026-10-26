@@ -24,11 +24,11 @@ source "${BATS_TEST_DIRNAME}/../plan.sh"
 }
 
 @test "Check libclang.so exists" {
-  run file "/hab/pkgs/${pkg_ident}/lib/libclang.so"
+  run file "/doj/pkgs/${pkg_ident}/lib/libclang.so"
   [ $status -eq 0 ]
 }
 
 @test "Check libclang.so does not have any \"not found\" shared libs" {
-  run bash -c "ldd \"/hab/pkgs/${pkg_ident}/lib/libclang.so\" | grep \"not found\""
+  run bash -c "ldd \"/doj/pkgs/${pkg_ident}/lib/libclang.so\" | grep \"not found\""
   [ $status -eq 1 ]
 }

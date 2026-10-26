@@ -4,7 +4,7 @@ A dynamic, functional language designed for building scalable and maintainable a
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

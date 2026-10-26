@@ -4,7 +4,7 @@ Vim is a greatly improved version of the good old UNIX editor Vi
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

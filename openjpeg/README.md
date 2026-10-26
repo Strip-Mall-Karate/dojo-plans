@@ -4,7 +4,7 @@ An open source JPEG 2000 codec
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

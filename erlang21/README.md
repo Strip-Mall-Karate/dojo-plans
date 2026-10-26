@@ -4,7 +4,7 @@ A programming language for massively scalable soft real-time systems.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -15,6 +15,6 @@ Binary package
 Simple example of invoking `erl`:
 
 ```
-hab pkg install core/erlang20
-hab pkg exec core/erlang20 erl
+doj pkg install karate/erlang20
+doj pkg exec karate/erlang20 erl
 ```

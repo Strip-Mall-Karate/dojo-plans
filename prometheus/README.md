@@ -4,7 +4,7 @@ Build a named release branch of prometheus from git, leveraging the promu compil
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
@@ -18,7 +18,7 @@ Otherwise you can modify the included templated config as you see fit.
 
 ## Bindings
 
-This prometheus package exports the http endpoint as `prom_ds_http` with the expectation that you might bind that to `core/grafana` with `--bind prom:<this_service_group>`
+This prometheus package exports the http endpoint as `prom_ds_http` with the expectation that you might bind that to `karate/grafana` with `--bind prom:<this_service_group>`
 
 The below command would start a single prometheus instance and add any node_exporter metric source that appears in the service group ```node_exporter.demo```
 ```

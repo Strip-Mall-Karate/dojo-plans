@@ -4,7 +4,7 @@ Libgcrypt is a general purpose cryptographic library originally based on code fr
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

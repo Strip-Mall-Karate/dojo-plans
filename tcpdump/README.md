@@ -4,7 +4,7 @@ A powerful command-line packet analyzer.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

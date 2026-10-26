@@ -11,8 +11,8 @@ wait_listen() {
   done
 }
 
-hab pkg install core/busybox-static
-hab pkg binlink core/busybox-static nc
+doj pkg install karate/busybox-static
+doj pkg binlink karate/busybox-static nc
 
 # Wait for supervisor to start
 echo "Waiting for supervisor to start"
@@ -20,7 +20,7 @@ wait_listen tcp 9632 30
 
 # Ensure environment is clean for service testing
 source ./plan.sh
-hab svc unload "${HAB_ORIGIN}/${pkg_name}"
+doj svc unload "${DOJ_ORIGIN}/${pkg_name}"
 
 # Build and install
 echo "------------------------------"
@@ -29,7 +29,7 @@ echo "------------------------------"
 set -e
 build
 source results/last_build.env
-hab pkg install "results/${pkg_artifact}"
-hab svc load "${pkg_ident}"
-hab pkg exec "${pkg_ident}" wrapper --help
+doj pkg install "results/${pkg_artifact}"
+doj svc load "${pkg_ident}"
+doj pkg exec "${pkg_ident}" wrapper --help
 set +e

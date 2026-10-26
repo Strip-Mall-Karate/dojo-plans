@@ -4,7 +4,7 @@ libpipeline is a C library for manipulating pipelines of subprocesses in a flexi
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

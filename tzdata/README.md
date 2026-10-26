@@ -4,7 +4,7 @@ Sources for time zone and daylight saving time data
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -1,1 +1,1 @@
-# Habitat Plan for Apache Tomcat 8
+# Dojo Plan for Apache Tomcat 8

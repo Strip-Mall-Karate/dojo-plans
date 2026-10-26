@@ -5,7 +5,7 @@ Go is an open source programming language that makes it easy to
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -13,7 +13,7 @@ Binary package
 
 ## Testing
 
-To test the build, enter the Habitat Studio and run:
+To test the build, enter the Dojo Studio and run:
 ```
 ./tests/test.sh
 ```

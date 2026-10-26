@@ -4,7 +4,7 @@ The Liberation Fonts are intended to be replacements for the three most commonly
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

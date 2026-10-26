@@ -4,7 +4,7 @@ Yarn is a package manager for your code. It allows you to use and share code wit
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

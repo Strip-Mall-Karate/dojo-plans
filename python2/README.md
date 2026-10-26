@@ -4,7 +4,7 @@ Python is a programming language that lets you work quickly and integrate system
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

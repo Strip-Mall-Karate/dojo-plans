@@ -4,7 +4,7 @@ Oracle Java Development Kit. This package is made available to you to allow you 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

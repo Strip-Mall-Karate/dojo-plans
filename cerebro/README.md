@@ -4,7 +4,7 @@ Simple [Cerebro][1] installation.
 
 ## Maintainers
 
-The Habitat Maintainers (humans@habitat.sh).
+Strip Mall Karate Company.
 
 ## Type of package
 
@@ -13,7 +13,7 @@ Service package.
 ## Usage
 
 ```
-hab svc load core/cerebro
+doj svc load karate/cerebro
 ```
 
 Browse to the node on port `9000` (default port).

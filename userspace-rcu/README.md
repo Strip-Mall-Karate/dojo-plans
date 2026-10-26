@@ -6,7 +6,7 @@ liburcu is a LGPLv2.1 userspace RCU (read-copy-update) library.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

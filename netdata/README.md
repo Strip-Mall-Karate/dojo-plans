@@ -4,14 +4,14 @@
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Usage
 
 netdata strives to be as useful as possible without configuration, so to get started you just need to load the service:
 
 ```bash
-hab svc load core/netdata
+doj svc load karate/netdata
 ```
 
 Once it's running, open up the web interface on port 19999: [http://localhost:19999](http://localhost:19999)

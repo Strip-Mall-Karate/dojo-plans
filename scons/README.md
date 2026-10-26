@@ -4,7 +4,7 @@ Substitute for classic 'make' tool with autoconf/automake functionality
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

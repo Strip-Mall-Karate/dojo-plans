@@ -4,7 +4,7 @@ man-db is an implementation of the standard Unix documentation system accessed u
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

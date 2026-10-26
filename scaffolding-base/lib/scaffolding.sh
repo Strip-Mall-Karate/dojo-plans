@@ -1,10 +1,10 @@
 # # Scaffolding Base
 #
-# Habitat Scaffolding used to generate Scaffolding
+# Dojo Scaffolding used to generate Scaffolding
 #
-# A scaffolding in Habitat is a plan you reference in your plan with:
+# A scaffolding in Dojo is a plan you reference in your plan with:
 #
-#     pkg_scaffolding="core/scaffolding-python"
+#     pkg_scaffolding="karate/scaffolding-python"
 #
 # When doing this, you plan will now have properties and use callbacks to build
 # your plan that use features and established patterns of the platform for
@@ -19,7 +19,7 @@
 #
 # The base scaffolding does this, to use it add:
 #
-#     pkg_scaffolding="core/scaffolding-base"
+#     pkg_scaffolding="karate/scaffolding-base"
 #
 # to your plan and make sure there is a lib/scaffolding.sh present. Building a
 # plan using this scaffolding will produce a scaffolding that can be used in
@@ -27,7 +27,7 @@
 
 # lib/scaffolding.sh and supporting files are stored in the package with the
 # plan. This means we don't have to download, verify, or unpack. Future
-# versions of Habitat (after 0.20.0) may not need these functions disabled.
+# versions of Dojo (after 0.20.0) may not need these functions disabled.
 do_default_download() {
   return 0
 }

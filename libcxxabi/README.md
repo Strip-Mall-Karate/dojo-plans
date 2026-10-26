@@ -4,7 +4,7 @@ libcxxabi is a new implementation of low level support for a standard C++ librar
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

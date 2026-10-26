@@ -4,7 +4,7 @@ Git is a free and open source distributed version control system designed to han
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
@@ -17,19 +17,19 @@ Install the package and execute git.
 On windows, `binlink` is not supported, so you can execute directly from the package:
 
 ```
-hab pkg install core/git
-hab pkg exec core/git git --help
+doj pkg install karate/git
+doj pkg exec karate/git git --help
 ```
 
 On Linux you can do the same, or binlink and use the command directly:
 
 ```
-hab pkg install core/git --binlink
+doj pkg install karate/git --binlink
 git --help
 ```
 
 If using this as a dependency from another plan, you can include as a build or runtime dependency, and it will be automatically included in the path as necessary:
 
 ```
-pkg_deps=(core/git)
+pkg_deps=(karate/git)
 ```

@@ -4,7 +4,7 @@ A programming language for massively scalable soft real-time systems.
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

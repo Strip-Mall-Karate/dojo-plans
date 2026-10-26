@@ -6,7 +6,7 @@ elfutils is a collection of various binary tools such as
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

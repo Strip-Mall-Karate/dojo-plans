@@ -1,10 +1,10 @@
 source "${BATS_TEST_DIRNAME}/../plan.sh"
 
 @test "Binlink dependencies" {
-  run hab pkg binlink core/go
+  run doj pkg binlink karate/go
   [ $status -eq 0 ]
 
-  run hab pkg binlink core/git
+  run doj pkg binlink karate/git
   [ $status -eq 0 ]
 }
 

@@ -12,7 +12,7 @@ chmod g+w -R {{pkg.svc_data_path}}/spool
 
 # setup environment
 if [[ ! -f /etc/services ]]; then
-  cp -v {{pkgPathFor "core/iana-etc"}}/etc/services /etc/services
+  cp -v {{pkgPathFor "karate/iana-etc"}}/etc/services /etc/services
 fi
 
 # initial aliases database

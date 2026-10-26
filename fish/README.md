@@ -4,7 +4,7 @@ fish is a smart and user-friendly command line shell for macOS, Linux, and the r
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

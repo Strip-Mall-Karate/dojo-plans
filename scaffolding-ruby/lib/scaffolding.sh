@@ -149,12 +149,12 @@ if ! $pkg_prefix/libexec/is_db_connected; then
   >&2 echo ""
 {{~#if bind.database}}
   >&2 echo "This app started with a database bind and will discovery the"
-  >&2 echo "hostname and port number in the Habitat ring."
+  >&2 echo "hostname and port number in the Dojo ring."
   >&2 echo ""
   >&2 echo "There are 3 remaining config settings which must be set correctly:"
 {{else}}
   >&2 echo "This app started without a database bind meaning that the"
-  >&2 echo "database is assumed to be running outside of a Habitat ring."
+  >&2 echo "database is assumed to be running outside of a Dojo ring."
   >&2 echo "Therefore, you must provide all the database connection values."
   >&2 echo ""
   >&2 echo "There are 5 config settings which must be set correctly:"
@@ -440,7 +440,7 @@ _setup_funcs() {
 
 _setup_vars() {
   # The default Ruby package if one cannot be detected
-  _default_ruby_pkg="core/ruby"
+  _default_ruby_pkg="karate/ruby"
   # The absolute path to the `gemfile-parser` program
   _gemfile_parser="$(pkg_path_for scaffolding-ruby)/bin/gemfile-parser"
   # `$scaffolding_ruby_pkg` is empty by default
@@ -642,20 +642,20 @@ _update_svc_run() {
 
 _add_busybox() {
   build_line "Adding Busybox package to run dependencies"
-  pkg_deps=(core/busybox-static ${pkg_deps[@]})
+  pkg_deps=(karate/busybox-static ${pkg_deps[@]})
   debug "Updating pkg_deps=(${pkg_deps[*]}) from Scaffolding detection"
 }
 
 _add_git() {
   build_line "Adding git to build dependencies"
-  pkg_build_deps=(core/git ${pkg_build_deps[@]})
+  pkg_build_deps=(karate/git ${pkg_build_deps[@]})
   debug "Updating pkg_build_deps=(${pkg_build_deps[*]}) from Scaffolding detection"
 }
 
 _detect_execjs() {
   if _has_gem execjs; then
     build_line "Detected 'execjs' gem in Gemfile.lock, adding node packages"
-    pkg_deps=(core/node ${pkg_deps[@]})
+    pkg_deps=(karate/node ${pkg_deps[@]})
     debug "Updating pkg_deps=(${pkg_deps[*]}) from Scaffolding detection"
   fi
 }
@@ -672,7 +672,7 @@ _detect_nokogiri() {
   if _has_gem nokogiri; then
     build_line "Detected 'nokogiri' gem in Gemfile.lock, adding libxml2 & libxslt packages"
     export BUNDLE_BUILD__NOKOGIRI="--use-system-libraries"
-    pkg_deps=(core/libxml2 core/libxslt ${pkg_deps[@]})
+    pkg_deps=(karate/libxml2 karate/libxslt ${pkg_deps[@]})
     debug "Updating pkg_deps=(${pkg_deps[*]}) from Scaffolding detection"
   fi
 }
@@ -681,7 +681,7 @@ _detect_pg() {
   for gem in "${_pg_gems[@]}"; do
     if _has_gem "$gem"; then
       build_line "Detected '$gem' gem in Gemfile.lock, adding postgresql package"
-      pkg_deps=(core/postgresql ${pkg_deps[@]})
+      pkg_deps=(karate/postgresql ${pkg_deps[@]})
       debug "Updating pkg_deps=(${pkg_deps[*]}) from Scaffolding detection"
       _uses_pg=true
       return 0
@@ -790,10 +790,10 @@ _detect_ruby() {
   else
     lockfile_version="$($_gemfile_parser ruby-version ./Gemfile.lock || true)"
     if [[ -n "$lockfile_version" ]]; then
-      # TODO fin: Add more robust Gemfile to Habitat package matching
+      # TODO fin: Add more robust Gemfile to Dojo package matching
       case "$lockfile_version" in
         *)
-          _ruby_pkg="core/ruby/$(
+          _ruby_pkg="karate/ruby/$(
             echo "$lockfile_version" | cut -d ' ' -f 2)"
           ;;
       esac
@@ -810,7 +810,7 @@ _detect_ruby() {
 _detect_sqlite3() {
   if _has_gem sqlite3; then
     build_line "Detected 'sqlite3' gem in Gemfile.lock, adding sqlite packages"
-    pkg_deps=(core/sqlite ${pkg_deps[@]})
+    pkg_deps=(karate/sqlite ${pkg_deps[@]})
     debug "Updating pkg_deps=(${pkg_deps[*]}) from Scaffolding detection"
   fi
 }
@@ -818,7 +818,7 @@ _detect_sqlite3() {
 _detect_webpacker() {
   if _has_gem webpacker; then
     build_line "Detected 'webpacker' gem in Gemfile.lock, adding yarn packages"
-    pkg_deps=(core/yarn ${pkg_deps[@]})
+    pkg_deps=(karate/yarn ${pkg_deps[@]})
     debug "Updating pkg_deps=(${pkg_deps[*]}) from Scaffolding detection"
   fi
 }
@@ -991,7 +991,7 @@ _set_if_unset() {
 # * No extended attributes are copied
 # * Some file editor backup files are skipped
 # * Some version control-related directories are skipped
-# * Any `./habitat/` directory is skipped
+# * Any `./dojo/` directory is skipped
 # * Any `./vendor/bundle` directory is skipped as it may have native gems
 _tar_pipe_app_cp_to() {
   local dst_path tar
@@ -1004,7 +1004,7 @@ _tar_pipe_app_cp_to() {
       --no-xattrs \
       --exclude-backups \
       --exclude-vcs \
-      --exclude='habitat' \
+      --exclude='dojo' \
       --exclude='vendor/bundle' \
       --exclude='results' \
       --files-from=- \

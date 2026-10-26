@@ -4,7 +4,7 @@ Sysstat and the utilities it provides: iostat, mpstat, pidstat, sar, sa1, sa2 an
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

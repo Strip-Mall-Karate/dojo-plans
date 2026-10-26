@@ -4,7 +4,7 @@ FreeTDS is a set of libraries for Unix and Linux that allows your programs to na
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

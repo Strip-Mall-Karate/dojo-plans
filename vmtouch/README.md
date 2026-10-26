@@ -4,7 +4,7 @@ vmtouch is a tool for learning about and controlling the file system cache of un
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

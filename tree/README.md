@@ -6,19 +6,19 @@ This package provides the tree binaries
 
 ## Maintainers
 
-The Habitat Maintainers humans@habitat.sh
+Strip Mall Karate Company
 
 ## Type of Package
 
-[binary wrapper packages](https://www.habitat.sh/docs/best-practices/#binary-wrapper-packages)
+binary wrapper packages
 
 ## Usage
 
-tree can be used in the habitat studio to help visualize the directory structures of your application and the habitat it lives in.
+tree can be used in the dojo studio to help visualize the directory structures of your application and the dojo it lives in.
 
 ```
-$ hab pkg install core/tree
-$ hab pkg binlink core/tree
+$ doj pkg install karate/tree
+$ doj pkg binlink karate/tree
 $ tree --help
 
 usage: tree [-acdfghilnpqrstuvxACDFJQNSUX] [-H baseHREF] [-T title ]

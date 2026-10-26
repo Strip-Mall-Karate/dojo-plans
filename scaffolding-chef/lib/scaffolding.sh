@@ -18,12 +18,12 @@ scaffolding_load() {
   pkg_deps=(
     "${pkg_deps[@]}"
     "$scaffold_chef_client"
-    "core/cacerts"
+    "karate/cacerts"
   )
   pkg_build_deps=(
     "${pkg_build_deps[@]}"
     "$scaffold_chef_dk"
-    "core/git"
+    "karate/git"
   )
 
   pkg_svc_user="root"
@@ -56,11 +56,11 @@ chef_client_cmd()
   chef-client -z -l {{cfg.log_level}} -c $pkg_svc_config_path/client-config.rb -j $pkg_svc_config_path/attributes.json --once --no-fork --run-lock-timeout {{cfg.run_lock_timeout}}
 }
 
-SPLAY_DURATION=\$({{pkgPathFor "core/coreutils"}}/bin/shuf -i 0-{{cfg.splay}} -n 1)
+SPLAY_DURATION=\$({{pkgPathFor "karate/coreutils"}}/bin/shuf -i 0-{{cfg.splay}} -n 1)
 
-SPLAY_FIRST_RUN_DURATION=\$({{pkgPathFor "core/coreutils"}}/bin/shuf -i 0-{{cfg.splay_first_run}} -n 1)
+SPLAY_FIRST_RUN_DURATION=\$({{pkgPathFor "karate/coreutils"}}/bin/shuf -i 0-{{cfg.splay_first_run}} -n 1)
 
-export SSL_CERT_FILE="{{pkgPathFor "core/cacerts"}}/ssl/cert.pem"
+export SSL_CERT_FILE="{{pkgPathFor "karate/cacerts"}}/ssl/cert.pem"
 
 cd {{pkg.path}}
 

@@ -4,7 +4,7 @@ A small utility to modify the dynamic linker and RPATH of ELF executables
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

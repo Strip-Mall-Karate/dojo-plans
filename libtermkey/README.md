@@ -4,7 +4,7 @@ This library allows easy processing of keyboard entry from terminal-based progra
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 

@@ -4,7 +4,7 @@ This is htop, an interactive process viewer for Unix systems. It is a text-mode 
 
 ## Maintainers
 
-* The Habitat Maintainers: <humans@habitat.sh>
+* Strip Mall Karate Company
 
 ## Type of Package
 
