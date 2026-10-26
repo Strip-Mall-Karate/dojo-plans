@@ -565,3 +565,7 @@
     (let [dir (f:match "^(.*)/[^/]+$")
           origins (icollect [_ lib (ipairs v-ghc-lib-paths)] (.. "$ORIGIN/" (relative dir lib)))]
       (b:run ["patchelf" "--set-rpath" (.. (or (b:getenv "LD_RUN_PATH") "") ":" (table.concat origins ":")) f]))))
+
+== PLAN_CONTEXT=$(abspath ../bash)
+--
+;; The plan pointed its plan directory at bash's; nothing it runs reads from there.

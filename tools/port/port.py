@@ -203,6 +203,15 @@ def metadata(plan, name, emitter):
     return lines
 
 
+# Arrays a plan never sets although a plan it sources does, in a callback the
+# plan replaces: empty, as the shell had them.
+UNSET_ARRAYS = {
+    # bash-static's do_begin replaces bash's, which sourced bash-patches.sh: it
+    # applied none of bash's patches.
+    "bash-static": ["_patch_files", "_patch_shasums"],
+}
+
+
 def read_plan(path):
     with open(path, encoding="utf-8") as f:
         text = f.read()
@@ -214,6 +223,8 @@ def read_plan(path):
 def port(package_dir):
     name = os.path.basename(os.path.normpath(package_dir))
     plan, text = read_plan(os.path.join(package_dir, "plan.sh"))
+    for array in UNSET_ARRAYS.get(os.path.basename(os.path.normpath(package_dir)), []):
+        plan.arrays.setdefault(array, [])
     emitter = Emitter(name)
     for var, why in plan.unresolved.items():
         if var.startswith("pkg_") and var not in ("pkg_distname", "pkg_dist_name"):
