@@ -9,3 +9,4 @@ rust-nightly
 cargo-nightly
 aws-cli
 boringssl
+phantomjs
