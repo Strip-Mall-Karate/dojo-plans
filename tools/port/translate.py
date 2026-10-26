@@ -104,6 +104,8 @@ class Scope:
             return self.locals[name]
         if name in BUILD_VARS:
             return BUILD_VARS[name]
+        if name == "PWD":
+            return base(self)  # The shell's directory, not the builder's environment.
         if name in SVC_VARS:
             return fstr(f"/doj/svc/{self.name}{SVC_VARS[name]}")
         if name == "pkg_dirname" and "pkg_dirname" not in self.plan.scalars:

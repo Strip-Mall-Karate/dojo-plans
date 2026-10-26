@@ -15,5 +15,5 @@
  :build (fn [b]
           (b:fix_interpreter [(b:join b.src "bin/artifactory.sh")] "karate/bash" "bin/bash"))
  :install (fn [b]
-          (b:log (.. "Copying files from " (or (b:getenv "PWD") "")))
+          (b:log (.. "Copying files from " b.src))
           (each [_ p (ipairs (b:glob b.src "*"))] (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$")))))}

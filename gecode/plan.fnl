@@ -17,4 +17,4 @@
           (b:run ["./configure" (.. "--prefix=" b.prefix) "--disable-doc-dot" "--disable-doc-search" "--disable-doc-tagfile" "--disable-doc-chm" "--disable-doc-docset" "--disable-qt" "--disable-examples"])
           (b:run ["make" "-j" (tostring b.jobs)]))
  :check (fn [b]
-          (b:run ["make" "check"] {:env {"LD_LIBRARY_PATH" (or (b:getenv "PWD") "")}}))}
+          (b:run ["make" "check"] {:env {"LD_LIBRARY_PATH" b.src}}))}

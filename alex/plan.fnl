@@ -20,7 +20,7 @@
           (b:run ["cabal" "v1-configure" (.. "--prefix=" b.prefix)])
           (b:run ["cabal" "v1-build"]))
  :check (fn [b]
-          (b:env "PATH" (.. (or (b:getenv "PWD") "") "/dist/build/alex:" (or (b:getenv "PATH") "")))
+          (b:env "PATH" (.. b.src "/dist/build/alex:" (or (b:getenv "PATH") "")))
           (b:run ["cabal" "v1-test"]))
  :install (fn [b]
           (b:run ["cabal" "v1-copy"]))}
