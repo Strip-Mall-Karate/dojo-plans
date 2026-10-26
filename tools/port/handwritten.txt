@@ -2,3 +2,4 @@
 cacerts
 grub
 patchelf
+netcat-openbsd
