@@ -103,9 +103,11 @@
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src "gcc/config/i386/t-linux64") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          ;; Each file under the source (but its top-level dot files) naming /usr/bin/file names file.
-          (each [_ f (ipairs (b:find b.src "*"))]
-            (when (and (not (b:exists (b:join f "."))) (not (: (f:sub (+ (length b.src) 2)) :match "^%.")))
+          ;; Each file under the source naming /usr/bin/file names file. In gcc 16.2.0 those are
+          ;; the configure scripts and libtool's files; reading all of gcc's sources holds more
+          ;; than a plan may.
+          (each [_ name (ipairs ["configure" "configure.tgt" "ltmain.sh" "libtool.m4"])]
+            (each [_ f (ipairs (b:find b.src name))]
               (let [(fixed n) (: (b:read f) :gsub "/usr/bin/file" "file")]
                 (when (> n 0) (b:write f fixed)))))
           (set v-build-cflags "-O2")
