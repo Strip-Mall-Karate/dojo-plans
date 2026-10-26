@@ -20,7 +20,7 @@
           (set v-python-version (b:capture [v-python "-c" "import sys; print(\"python{}.{}\".format(sys.version_info.major,sys.version_info.minor))"]))
           (b:runtime_env_push "PYTHONPATH" (b:capture [v-python "-c" "import site; print(\":\".join(site.getsitepackages()))"]))
           (b:runtime_env_push "PYTHONPATH" (.. b.prefix "/lib/" v-python-version "/site-packages"))
-          (b:run ["unset" "python"])
+          (set v-python "")
           (b:mkdir (.. b.prefix "/lib/" v-python-version "/site-packages"))
           (b:run ["patch" "-p0" "-i" (.. b.plan_dir "/patches/000_fix_rpath.patch")]))
  :build (fn [b]

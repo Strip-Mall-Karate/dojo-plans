@@ -908,6 +908,12 @@ BUILDER_HELPERS = {"update_pkg_version", "pkg_interpreter_for", "abspath", "trim
                    "set_buildtime_env", "push_buildtime_env", "_resolve_dependency", "_render_metadata_FILES"}
 
 
+# The shell's own commands: none is a program for b:run.
+SHELL_BUILTINS = {"set", "unset", "shopt", "trap", "read", "type", "command", "hash", "wait", "ulimit", "umask",
+                  "alias", "exec", "export", "local", "declare", "return", "exit", "source", ".", "[", "[[", "test",
+                  "cd", "pushd", "popd", "let", "eval", "builtin", "readonly", "shift", "getopts", "false"}
+
+
 # Variables a plan sets without `export` that the build reads anyway (the
 # shell exported them from the builder).
 ENV_LIKE = {"CFLAGS", "CXXFLAGS", "CPPFLAGS", "LDFLAGS", "LD_RUN_PATH", "PATH", "LD_LIBRARY_PATH",
@@ -1151,6 +1157,10 @@ def _command(cmd, args, scope, stdin):
         return [f"({env_helper[cmd]} {word(rest[0], scope)} {word(rest[1], scope)})"]
     if cmd in BUILDER_HELPERS:
         raise Unported("the source project's builder function " + cmd)
+    if cmd == "unset" and args and all(a in scope.locals for a in args if not a.startswith("-")):
+        return [f'(set {scope.locals[a]} "")' for a in args if not a.startswith("-")]
+    if cmd in SHELL_BUILTINS:
+        raise Unported("the shell's " + cmd)
     if cmd.startswith("do_default_") and not args:
         phase = cmd[len("do_default_"):]
         if phase not in ORDER:
