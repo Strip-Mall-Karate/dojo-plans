@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# The container's gcc, g++, cc and c++ for a first build, before karate's gcc exists. A program
+# linked against a karate glibc runs only with that glibc's dynamic linker, and the host compiler
+# names the host's, so when the build's LD_RUN_PATH holds a karate glibc this adds that glibc's
+# dynamic linker to a link. Compiling and preprocessing pass through untouched.
+set -euo pipefail
+
+name=$(basename "$0")
+real="/usr/bin/${name}"
+
+linking=yes
+for arg in "$@"; do
+  case "${arg}" in
+    -c | -S | -E | -M | -MM) linking=no ;;
+  esac
+done
+
+linker=""
+if [[ "${linking}" == yes ]]; then
+  # The glibc's lib directory: from LD_RUN_PATH, else a -L in the arguments or LDFLAGS.
+  IFS=: read -ra dirs <<< "${LD_RUN_PATH:-}"
+  read -ra ldflags <<< "${LDFLAGS:-}"
+  for arg in "$@" "${ldflags[@]}"; do
+    if [[ "${arg}" == -L* ]]; then dirs+=("${arg#-L}"); fi
+  done
+  for dir in "${dirs[@]}"; do
+    if [[ "${dir}" == /doj/pkgs/karate/glibc/* && -x "${dir}/ld-linux-x86-64.so.2" ]]; then
+      linker="${dir}/ld-linux-x86-64.so.2"
+      break
+    fi
+  done
+fi
+
+if [[ -n "${linker}" ]]; then
+  exec "${real}" "$@" "-Wl,--dynamic-linker=${linker}"
+fi
+exec "${real}" "$@"

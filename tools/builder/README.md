@@ -30,6 +30,10 @@ merges, `tools` takes a checkout of its branch.
   container's own tools, which are on PATH, and a real build of the package sorts after `0.0.0`
   and replaces it. Builds are not isolated from the container: the second, isolated pass waits on
   `doj-plan-build` gaining that mode.
+- **The container's compiler links against karate's glibc.** A program linked against a karate
+  glibc runs only with that glibc's dynamic linker, and the container's gcc names its own, so
+  `gcc`, `cc`, `g++` and `c++` are wrappers (`cc-wrapper`) that add the karate glibc's dynamic
+  linker to a link when the build has one. Once karate's gcc is built it comes first on PATH.
 - **Artifacts are not signed.** `doj` here is a stand-in that resolves installed packages and
   writes the file it is asked to sign with a header line, not a signature, until Dojo's own `doj`
   builds with the current toolchain. The origin key in `/doj/cache/keys` is an empty placeholder.

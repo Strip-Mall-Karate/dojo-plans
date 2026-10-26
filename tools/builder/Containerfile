@@ -32,6 +32,8 @@ RUN (! getent passwd "${BUILDER_UID}" || userdel -r "$(getent passwd "${BUILDER_
  && chown builder: /doj /work
 
 COPY doj /usr/local/bin/doj
+COPY cc-wrapper /usr/local/libexec/cc-wrapper
+RUN for name in gcc cc g++ c++; do ln -s /usr/local/libexec/cc-wrapper "/usr/local/bin/${name}"; done
 USER builder
 WORKDIR /work
 CMD ["sleep", "infinity"]

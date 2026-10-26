@@ -39,7 +39,7 @@ shift
 
 case "${command}" in
   image)
-    tar -C "${SCRIPT_DIR}" -cf - Containerfile doj \
+    tar -C "${SCRIPT_DIR}" -cf - Containerfile doj cc-wrapper \
       | on_host "set -e; s=\$(mktemp -d); trap 'rm -rf \"\$s\"' EXIT; tar -xf - -C \"\$s\";
                  docker build -f \"\$s/Containerfile\" -t ${IMAGE} \
                    --build-arg BUILDER_UID=\$(id -u) --build-arg BUILDER_GID=\$(id -g) \"\$s\""
