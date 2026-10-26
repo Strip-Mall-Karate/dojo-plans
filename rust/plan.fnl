@@ -46,8 +46,11 @@
           (b:run ["./install.sh" (.. "--prefix=" b.prefix) "--disable-ldconfig"])
           (each [_ v-b (ipairs ["rustc" "cargo" "rustdoc" "cargo-fmt" "rustfmt"])]
             (b:run ["patchelf" "--interpreter" (.. (b:path_for "glibc") "/lib/ld-linux-x86-64.so.2") "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") (.. b.prefix "/bin/" v-b)]))
-          (each [_ f (ipairs (b:find (b:join b.prefix "lib") "*.so"))]
-            (b:run ["patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") f]))
+          ;; Every shared library, versioned names included (libLLVM.so.23.1-...), but the link
+          ;; scripts beside them (libLLVM-23-....so is text): patchelf reads only ELF files.
+          (each [_ f (ipairs (b:find (b:join b.prefix "lib") "*.so*"))]
+            (when (= 0 (b:run ["patchelf" "--print-rpath" f] {:check false}))
+              (b:run ["patchelf" "--set-rpath" (or (b:getenv "LD_RUN_PATH") "") f])))
           ;; Each extra target's standard library, unpacked beside the source, installed into rustc's sysroot.
           (let [sysroot (b:capture [(.. b.prefix "/bin/rustc") "--print" "sysroot"])]
             (each [_ source (ipairs ["https://static.rust-lang.org/dist/rust-std-1.99.1-x86_64-unknown-linux-musl.tar.gz"])]
