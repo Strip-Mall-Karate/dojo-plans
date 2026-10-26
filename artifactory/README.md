@@ -8,7 +8,7 @@ Service package
 
 ## Usage
 
-This application runs Artifactory open source. If you are interested in the pro version there is another plan published that you can find [here](https://github.com/Strip-Mall-Karate/dojo-plans/tree/master/artifactory-pro).
+This application runs Artifactory open source. If you are interested in the pro version there is another plan published that you can find [here](https://github.com/StripMallKarateCompany/dojo-plans/tree/master/artifactory-pro).
 
 
 By default, Artifactory is set to use an internal derby database with a native jdbc driver. Other DB systmes can be

@@ -9,7 +9,7 @@
  :maintainer "Strip Mall Karate Company"
  :license ["Apache-2.0"]
  :description "Dojo Plan Scaffolding for Ruby Applications"
- :upstream_url "https://github.com/Strip-Mall-Karate/dojo-plans/tree/main/scaffolding-ruby"
+ :upstream_url "https://github.com/StripMallKarateCompany/dojo-plans/tree/main/scaffolding-ruby"
  :deps ["karate/bundler" "karate/ruby" "karate/tar" "karate/busybox-static" "karate/gcc" "karate/make" "karate/pkg-config"]
  :build (fn [b] nil)
  :install (fn [b]

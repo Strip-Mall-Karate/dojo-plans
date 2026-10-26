@@ -6,7 +6,7 @@ check the result. They go when the last `plan.sh` does.
 ## Running it
 
 From the repository root, with `DPB` the `doj-plan-build` built from Dojo's `components/plan` (the
-runtime the plans need is Strip-Mall-Karate/dojo#6 and, for scaffoldings, #7 stacked on it; until
+runtime the plans need is StripMallKarateCompany/dojo#6 and, for scaffoldings, #7 stacked on it; until
 they merge, build #7's branch):
 
 ```sh
@@ -82,7 +82,7 @@ Go plans and the test apps in `buildtest/apps` were built this way, and their bi
 ## Choices made in the port (Claude's judgment, open to Jamie)
 
 - Builds may write anywhere in `b.cache`: the source project's plans move downloads, unpack beside
-  the source and configure in `../<name>-build` there (Strip-Mall-Karate/dojo#6).
+  the source and configure in `../<name>-build` there (StripMallKarateCompany/dojo#6).
 - The source project's stage1 studio does not exist in Dojo; branches for it are notes.
 - A tool link the source never names (linux's `/bin/pwd`) is a note, not a `use-dependency-path`.
 - bash-static's own `do_begin` replaced bash's, which read the patch list: it applied no patches,
@@ -103,7 +103,7 @@ from the entry after porting.
 
 A scaffolding is a package shipping `lib/scaffolding.fnl`, a Fennel module: phases, helpers plans
 call through `b.scaffolding`, and a `metadata` function that reads the app's files and adds
-dependencies, the service and exports to the plan (Strip-Mall-Karate/dojo#7). A plan gives it
+dependencies, the service and exports to the plan (StripMallKarateCompany/dojo#7). A plan gives it
 settings with `:scaffolding {:package <ident> :settings {...}}`. scaffolding-base, scaffolding-go,
 scaffolding-node and scaffolding-ruby are ported; chef, inspec, gradle and go17 were dropped
 (Jamie, 2026-10-26).

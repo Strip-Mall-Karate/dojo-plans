@@ -12,7 +12,7 @@ Basic Usage
 ----
 
 1) clone this repo
-2) install the doj binary (https://github.com/Strip-Mall-Karate/dojo)
+2) install the doj binary (https://github.com/StripMallKarateCompany/dojo)
 3) Run these commands:
 ```
 doj studio enter # stay in studio
