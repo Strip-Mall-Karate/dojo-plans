@@ -426,3 +426,12 @@ true
 export LATER_VALUE
 LATER_VALUE="set after export"
 sh -c 'echo "$LATER_VALUE"' > seen
+
+== glob-pattern-variable
+-- setup
+mkdir -p src dest
+touch src/liba.so.1 src/liba.so.2 src/libb.so.1 src/libc.so.1
+-- body
+for lib in liba libb; do
+  cp -a "src/${lib}".* dest/
+done

@@ -26,7 +26,7 @@
  :install (fn [b]
           (b:mkdir (.. b.prefix "/lib"))
           (each [_ v-lib (ipairs ["libasan" "libatomic" "libgcc_s" "libgfortran" "libgomp" "libitm" "liblsan" "libquadmath" "libstdc++" "libtsan" "libubsan" "libvtv"])]
-            (each [_ p (ipairs (b:glob (.. (b:path_for "gcc") "/lib") "${lib}.*"))] (b:copy p (b:join (.. b.prefix "/lib/") (: p :match "[^/]+$")))))
+            (each [_ p (ipairs (b:glob (.. (b:path_for "gcc") "/lib") (.. v-lib ".*")))] (b:copy p (b:join (.. b.prefix "/lib/") (: p :match "[^/]+$")))))
           (each [_ p (ipairs (b:glob (.. b.prefix "/lib") "*.spec"))] (b:remove p))
           (each [_ p (ipairs (b:glob (.. b.prefix "/lib") "*.py"))] (b:remove p))
           (b:mkdir (.. b.prefix "/share/licenses"))
