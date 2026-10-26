@@ -4,3 +4,4 @@ grub
 patchelf
 netcat-openbsd
 prometheus-cpp
+img
