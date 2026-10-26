@@ -27,7 +27,8 @@ OUTSIDE = re.compile(r'\(b:(?:write|remove|mkdir|chmod|copy|move) (?:"[^"]*" )?"
 HELPER_RUN = re.compile(r'\(b:(?:run|capture) \["(update_pkg_version|pkg_interpreter_for|abspath|trim|record|'
                         r'exists_in_path|add_path_env|pkg_path_for|fix_interpreter|download_file|attach|exit_with|'
                         r'build_line|warn|info|debug|set_runtime_env|push_runtime_env|set_buildtime_env|'
-                        r'push_buildtime_env|do_default_\w+|set|unset|shopt|trap|read|type|command|hash|wait|'
+                        r'push_buildtime_env|verify_file|unpack_file|exists|add_env|_[a-z_]+|'
+                        r'do_default_\w+|set|unset|shopt|trap|read|type|command|hash|wait|'
                         r'ulimit|umask|alias|exec|export|local|declare|return|exit|source|\.|\[|\[\[|test|cd|'
                         r'pushd|popd|let|eval|builtin|readonly|shift|getopts)"')
 SHELL_RUN = re.compile(r'\(b:(run|capture)\s+\[\s*"(bash|sh|zsh|/bin/sh|/bin/bash)"\s+"-c"|\(b:(run|capture)\s+\[\s*"eval"')

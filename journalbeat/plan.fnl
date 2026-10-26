@@ -13,7 +13,7 @@
  :svc {:user "root" :group "root"}
  :build (fn [b]
           (var v-systemd-include-path (.. (b:path_for "karate/systemd") "/include"))
-          (b:env "GOPATH" (b:capture ["dirname" b.cache]))
+          (b:env "GOPATH" (or (: (: b.cache :gsub "/+$" "") :match "^(.*)/[^/]*$") "."))
           (b:run ["go" "get" "github.com/elastic/beats/journalbeat"] {:env {"CGO_CFLAGS" (.. "-I" v-systemd-include-path)}})
           (b:run ["git" "checkout" (.. "v" b.version)] {:cwd (.. b.cache "/github.com/elastic/beats/journalbeat")})
           (b:run ["go" "build" "github.com/elastic/beats/journalbeat"] {:cwd (.. b.cache "/github.com/elastic/beats/journalbeat") :env {"CGO_CFLAGS" (.. "-I" v-systemd-include-path)}}))

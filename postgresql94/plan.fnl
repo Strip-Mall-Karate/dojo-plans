@@ -39,11 +39,10 @@
           (b.default.download b)
           (b:download "http://download.osgeo.org/postgis/source/postgis-2.4.2.tar.gz" "23625bc99ed440d53a20225721095a3f5c653b62421c4d597c8038f0d7a321d9" "postgis-2.4.2.tar.gz"))
  :verify (fn [b]
-          (b.default.verify b)
-          (b:run ["verify_file" "postgis-2.4.2.tar.gz" "23625bc99ed440d53a20225721095a3f5c653b62421c4d597c8038f0d7a321d9"]))
+          (b.default.verify b))
  :unpack (fn [b]
           (b.default.unpack b)
-          (b:run ["unpack_file" "postgis-2.4.2.tar.gz"]))
+          (b:run ["tar" "xf" (b:join b.cache "postgis-2.4.2.tar.gz")] {:cwd b.cache}))
  :build (fn [b]
           (b:run ["./configure" "--disable-rpath" "--with-openssl" (.. "--prefix=" b.prefix) "--with-uuid=ossp" (.. "--with-includes=" (or (b:getenv "LD_INCLUDE_PATH") "")) (.. "--with-libraries=" (or (b:getenv "LD_LIBRARY_PATH") "")) "--sysconfdir=/doj/svc/postgresql94/config" "--localstatedir=/doj/svc/postgresql94/var"])
           (b:run ["make" "world"]))

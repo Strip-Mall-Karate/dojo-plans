@@ -20,8 +20,6 @@
           (b:download "https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg" "16b93904e4b3133fe4b5f95f46e3db998c3b2f9d9cee6d4c2eb531f98028bcb3" "app-signing-pubkey.gpg"))
  :verify (fn [b]
           (b.default.verify b)
-          (b:run ["verify_file" (.. b.name "-" b.version "-linux-amd64.tar.gz.asc") "cc4bdd4f0a83efa46a34b590544ba7bb3ad494d07d43cf3f85933b660b97638a"])
-          (b:run ["verify_file" "app-signing-pubkey.gpg" "16b93904e4b3133fe4b5f95f46e3db998c3b2f9d9cee6d4c2eb531f98028bcb3"])
           (b:log (.. "Verifying " b.name "-" b.version "-linux-amd64.tar.gz signature"))
           (var v-gnupghome (b:capture ["mktemp" "-d" "-p" b.cache]))
           (b:run ["gpg" "--import" "--keyid-format" "LONG" (.. b.cache "/app-signing-pubkey.gpg")])

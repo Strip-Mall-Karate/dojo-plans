@@ -19,7 +19,6 @@
           (b:download (.. "https://cdn.crate.io/downloads/releases/" b.name "-" b.version ".tar.gz.asc") "4e6007a35b99c0da75356cb6cd7aeafd7d380e1a5f5fa26b79a0dfa0a9898924" (.. b.name "-" b.version ".tar.gz.asc")))
  :verify (fn [b]
           (b.default.verify b)
-          (b:run ["verify_file" (.. b.name "-" b.version ".tar.gz.asc") "4e6007a35b99c0da75356cb6cd7aeafd7d380e1a5f5fa26b79a0dfa0a9898924"])
           (b:log (.. "Verifying crate-" b.version ".tar.gz signature"))
           (var v-gnupghome (b:capture ["mktemp" "-d" "-p" b.cache]))
           (b:run ["gpg" "--keyserver" "ha.pool.sks-keyservers.net" "--recv-keys" "90C23FC6585BC0717F8FBFC37FAAE51A06F6EAEB"])

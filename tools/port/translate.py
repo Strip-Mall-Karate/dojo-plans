@@ -301,7 +301,9 @@ def substitution(command, scope):
         return f"(b:path_for {_dep(words[1], scope)} {word(words[2], scope)})"
     cut = re.fullmatch(r'echo\s+("?\$\{?(\w+)\}?"?)\s*\|\s*cut\s+-d\s*["\']?(.)["\']?\s+-f\s*(\d+)(?:-(\d+))?', command)
     if cut:
-        value = word(cut.group(1), scope)
+        name = cut.group(2)
+        value = (fstr(scope.plan.scalars[name]) if name in scope.plan.scalars and name not in scope.locals
+                 else word(cut.group(1), scope))
         if not (value.startswith('"') and value.endswith('"')):
             raise Unported(f"$({command})")
         fields = value[1:-1].split(cut.group(3))
@@ -320,6 +322,12 @@ def substitution(command, scope):
         raise Unported(f"$({command})")
     if words[0] in BUILDER_HELPERS:
         raise Unported(f"the source project's builder function {words[0]}")
+    if words[0] in ("basename", "dirname") and len(words) == 2:
+        # Text only: the last part of a path, or what is before it.
+        value = word(words[1], scope)
+        if words[0] == "basename":
+            return f'(: (: {value} :gsub "/+$" "") :match "[^/]*$")'
+        return f'(or (: (: {value} :gsub "/+$" "") :match "^(.*)/[^/]*$") ".")'
     if words[0] == "nproc" and len(words) == 1:
         return "(tostring b.jobs)"
     if any(w in ("|", "||", "&&", ";") or w.startswith(("|", ">", "<", "2>")) for w in words) or "|" in command:
@@ -963,7 +971,8 @@ def assignment(stmt, scope, exported):
 BUILDER_HELPERS = {"update_pkg_version", "pkg_interpreter_for", "abspath", "trim", "record", "exists_in_path",
                    "add_path_env", "add_env", "pkg_path_for", "fix_interpreter", "download_file", "attach",
                    "exit_with", "build_line", "warn", "info", "debug", "set_runtime_env", "push_runtime_env",
-                   "set_buildtime_env", "push_buildtime_env", "_resolve_dependency", "_render_metadata_FILES"}
+                   "set_buildtime_env", "push_buildtime_env", "_resolve_dependency", "_render_metadata_FILES",
+                   "verify_file", "unpack_file", "exists", "add_env"}
 
 
 # The shell's own commands: none is a program for b:run.
@@ -1250,10 +1259,39 @@ def _command(cmd, args, scope, stdin):
         if len(rest) != 2:
             raise Unported(cmd + " arity")
         return [f"({env_helper[cmd]} {word(rest[0], scope)} {word(rest[1], scope)})"]
+    if cmd == "unpack_file" and len(args) == 1:
+        # The source project's builder's extractor: the program its extension names, in the cache.
+        try:
+            name = bashplan.expand(args[0], dict(scope.plan.scalars))
+        except bashplan.Unresolved:
+            raise Unported("unpack_file of a name not known when porting")
+        file = f"(b:join b.cache {word(args[0], scope)})"
+        if re.search(r"\.(tar(\.(gz|bz2|xz|Z|lz))?|tgz|tbz2|txz)$", name):
+            argv_ = f'["tar" "xf" {file}]'
+        elif name.endswith(".zip"):
+            argv_ = f'["unzip" "-o" {file}]'
+        elif name.endswith(".bz2"):
+            argv_ = f'["bunzip2" {file}]'
+        elif name.endswith(".gz"):
+            argv_ = f'["gunzip" {file}]'
+        else:
+            raise Unported("unpack_file of " + name)
+        return [f"(b:run {argv_} {{:cwd b.cache}})"]
+    if cmd == "verify_file":
+        return []  # b:download checked the file's SHA-256 when it fetched it.
     if cmd in BUILDER_HELPERS and cmd not in ("fix_interpreter", "download_file"):
         raise Unported("the source project's builder function " + cmd)
-    if cmd == "unset" and args and all(a in scope.locals for a in args if not a.startswith("-")):
-        return [f'(set {scope.locals[a]} "")' for a in args if not a.startswith("-")]
+    if cmd == "unset" and args and not any(a == "-f" for a in args):
+        out = []
+        for a in args:
+            if a.startswith("-"):
+                continue
+            if a in scope.locals:
+                out.append(f'(set {scope.locals[a]} "")')
+            elif re.fullmatch(r"[A-Z][A-Z0-9_]*", a):
+                out.append(f"(b:unsetenv {fstr(a)})")
+            # A lowercase name not set here (a loop's variable, gone with its loop) is already unset.
+        return out
     if cmd.startswith("do_default_") and not args:
         phase = cmd[len("do_default_"):]
         if phase not in ORDER:
@@ -1305,6 +1343,21 @@ def _command(cmd, args, scope, stdin):
     if cmd in ("sh", "bash") and args and not args[0].startswith("-"):
         # The package's own script, as ./configure is; a plan's code is never shell.
         return [f"(b:run {argv([cmd] + args, scope)}{scope_cwd(scope)})"]
+    if cmd in ("source", ".") and len(args) == 1 and scope.plan.dir:
+        # A data file of the plan's (arrays of patch URLs and their checksums): read
+        # now, so the values it sets are the plan's.
+        target = bashplan.expand(args[0], {"PLAN_CONTEXT": scope.plan.dir})
+        if target.startswith(scope.plan.dir) and target.endswith(".sh"):
+            import os
+            with open(target, encoding="utf-8") as f:
+                data = bashplan.read(f.read(), dict(scope.plan.scalars), scope.plan.dir)
+            if data.functions or data.unread or data.unresolved:
+                raise Unported("source of " + os.path.basename(target))
+            scope.plan.scalars.update(data.scalars)
+            scope.plan.arrays.update(data.arrays)
+            scope.plan.assocs.update(data.assocs)
+            scope.plan.data_files.append(os.path.basename(target))
+            return [f";; The values {os.path.basename(target)} set, read when the plan was ported."]
     if cmd in ("bash", "sh", "eval", "source", "."):
         raise Unported(cmd)
     if cmd.startswith(("pkg_", "_")) or cmd in scope.plan.functions:
@@ -1415,6 +1468,9 @@ def block(text, scope):
         if other:
             return [f"(if {cond}\n  (do {' '.join(then) or 'nil'})\n  (do {' '.join(other)}))"]
         return [f"(when {cond}\n  {' '.join(then)})"]
+    counted = re.match(r"for\s+(\w+)\s+in\s+\$\(\s*seq\s+0\s+\$\(\(\s*\$\{#(\w+)\[@\]\}\s*-\s*1\s*\)\)\s*\)\s*;?\s*do\b(.*)\bdone$", t, re.S)
+    if counted:
+        return counted_loop(counted, scope)
     m = re.match(r"for\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\s+(.*?)\s*;?\s*do\b(.*)\bdone$", t, re.S)
     if m:
         var = m.group(1)
@@ -1454,6 +1510,29 @@ def block(text, scope):
         items = "[" + " ".join(word(w, scope) for w in words) + "]"
         return [f"(each [_ {name} (ipairs {items})]\n  {' '.join(body)})"]
     raise Unported(t.split(None, 1)[0])
+
+
+def counted_loop(m, scope):
+    """`for i in $(seq 0 $((${#a[@]} - 1)))`: i over a's indexes, ${a[$i]} its items, and
+    ${b[$i]} the same item of another array the plan sets."""
+    index, array, body_text = m.group(1), m.group(2), m.group(3)
+    arrays = {name: values for name, values in scope.plan.arrays.items()}
+    if array not in arrays:
+        raise Unported("for over the indexes of " + array)
+    def item(match):
+        name = match.group(1)
+        if name not in arrays:
+            raise Unported("${" + name + "[$" + index + "]}")
+        return f"__ITEM_{name}__"
+    marked = re.sub(r"\$\{(\w+)\[\$" + index + r"\]\}", item, body_text)
+    if re.search(r"\$\{?" + index + r"\b", marked):
+        raise Unported("the index used other than as ${a[$i]}")
+    for name in set(re.findall(r"__ITEM_(\w+)__", marked)):
+        scope.locals[f"__ITEM_{name}__"] = f"(. {_local(name)}s n)"
+    body = body_forms(marked.replace("__ITEM_", "$__ITEM_"), scope)
+    lists = " ".join(f"{_local(n)}s [" + " ".join(fstr(v) for v in arrays[n]) + "]"
+                     for n in sorted(set(re.findall(r"__ITEM_(\w+)__", marked))))
+    return [f"(let [{lists}]\n  (for [n 1 {len(arrays[array])}]\n    {' '.join(body)}))"]
 
 
 def body_forms(text, scope):

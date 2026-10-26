@@ -33,6 +33,9 @@ class Plan:
     sourced: list = field(default_factory=list)
     # Helpers the Fennel port of this plan needs, by name (translate.py).
     helpers: set = field(default_factory=set)
+    # The plan's directory, and data files a callback sourced from it (translate.py).
+    dir: str = ""
+    data_files: list = field(default_factory=list)
 
 
 # ---------------------------------------------------------------- splitting

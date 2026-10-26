@@ -258,3 +258,11 @@ mkdir -p d; printf '#!/usr/bin/env node\n' > d/a; printf 'plain\n' > d/b; printf
 grep -rl '^#!/usr/bin/env' d | while read -r target; do
   sed -e "s#/usr/bin/env node#/opt/node#" -i "$target"
 done
+
+== basename-dirname
+-- setup
+true
+-- body
+local p="/a/b/file.tar.gz"
+local q="tail/"
+echo "$(basename "$p") $(dirname "$p") $(basename "$q") $(dirname "$q")" > names

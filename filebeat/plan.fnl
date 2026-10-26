@@ -12,7 +12,7 @@
  :bin_dirs ["bin"]
  :binds_optional {"kibana" ["port"] "elasticsearch" ["http-port"] "logstash" ["port"]}
  :download (fn [b]
-          (b:env "GOPATH" (b:capture ["dirname" b.cache]))
+          (b:env "GOPATH" (or (: (: b.cache :gsub "/+$" "") :match "^(.*)/[^/]*$") "."))
           (b:run ["go" "get" "github.com/elastic/beats/filebeat"])
           (b:run ["git" "checkout" (.. "v" b.version)] {:cwd (.. b.cache "/github.com/elastic/beats/filebeat")}))
  :unpack (fn [b]

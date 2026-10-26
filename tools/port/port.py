@@ -205,7 +205,9 @@ def metadata(plan, name, emitter):
 def read_plan(path):
     with open(path, encoding="utf-8") as f:
         text = f.read()
-    return bashplan.read(text, MARKERS, os.path.dirname(os.path.abspath(path))), text
+    plan = bashplan.read(text, MARKERS, os.path.dirname(os.path.abspath(path)))
+    plan.dir = os.path.dirname(os.path.abspath(path))
+    return plan, text
 
 
 def port(package_dir):
