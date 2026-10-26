@@ -67,7 +67,6 @@
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))})
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/testsuite-fix.patch")])
           (let [text (b:read (b:join b.src "scripts/test-installation.pl")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]
