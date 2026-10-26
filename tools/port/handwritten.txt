@@ -3,3 +3,4 @@ cacerts
 grub
 patchelf
 netcat-openbsd
+prometheus-cpp
