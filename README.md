@@ -13,7 +13,8 @@ only.
 each plan lives.
 
 [swamp](swamp/README.md) builds a plan and everything it depends on, in dependency order, with
-`doj-plan-build`.
+`doj-plan-build`. [The builder](tools/builder/README.md) is where that runs: a container on
+smk-1 that builds `x86_64-linux` packages natively.
 
 ## License
 

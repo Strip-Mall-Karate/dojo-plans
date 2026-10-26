@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Runs the plan builder: a container on the build host (smk-1 unless DOJO_BUILD_HOST says
+# otherwise) with Ubuntu as stage 0, swamp and doj-plan-build. Run from a dojo-plans checkout on
+# the Mac. tools/builder/README.md says what each command does and why.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+readonly BUILD_HOST="${DOJO_BUILD_HOST:-smk-1}"
+readonly IMAGE=dojo-builder
+readonly CONTAINER=dojo-builder
+readonly ROOT_VOLUME=dojo-root
+# On the build host: the plans, Dojo's plan crate and the builder's home, mounted at /work.
+readonly HOST_DIR=dojo-builder
+
+usage() {
+  echo >&2 "usage: $(basename "$0") image | start | sync | tools <dojo-checkout> | standins | run <command>... | shell | stop | remove"
+  exit 2
+}
+
+on_host() { ssh "${BUILD_HOST}" "$@"; }
+
+# The committed tree of a checkout, unpacked on the build host into ~/dojo-builder/<name> over
+# what was there, keeping the paths named in the remaining arguments.
+send_tree() {
+  local checkout=$1 path=$2 name=$3
+  shift 3
+  local keep=()
+  for k in "$@"; do keep+=("--exclude=${k}"); done
+  git -C "${checkout}" archive --format=tar HEAD -- "${path}" \
+    | on_host "set -e; s=\$(mktemp -d); trap 'rm -rf \"\$s\"' EXIT; tar -xf - -C \"\$s\";
+               mkdir -p ${HOST_DIR}/${name};
+               rsync -a --delete ${keep[*]} \"\$s/${path%/}/\" ${HOST_DIR}/${name}/"
+}
+
+(( $# >= 1 )) || usage
+command=$1
+shift
+
+case "${command}" in
+  image)
+    tar -C "${SCRIPT_DIR}" -cf - Containerfile doj \
+      | on_host "set -e; s=\$(mktemp -d); trap 'rm -rf \"\$s\"' EXIT; tar -xf - -C \"\$s\";
+                 docker build -f \"\$s/Containerfile\" -t ${IMAGE} \
+                   --build-arg BUILDER_UID=\$(id -u) --build-arg BUILDER_GID=\$(id -g) \"\$s\""
+    ;;
+  start)
+    on_host "set -e; mkdir -p ${HOST_DIR}/home;
+             docker volume create ${ROOT_VOLUME} >/dev/null;
+             docker run -d --name ${CONTAINER} --cpus 16 --memory 32g --restart unless-stopped \
+               -v ${ROOT_VOLUME}:/doj -v \$HOME/${HOST_DIR}:/work -e HOME=/work/home \
+               -e PATH=/work/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+               ${IMAGE};
+             docker exec ${CONTAINER} sh -c 'mkdir -p /doj/cache/keys /work/bin &&
+               : > /doj/cache/keys/karate-20200101000000.sig.key'"
+    ;;
+  sync)
+    send_tree "$(git rev-parse --show-toplevel)" . plans swamp/.swamp/ swamp/results/ results/
+    ;;
+  tools)
+    (( $# == 1 )) || usage
+    send_tree "$1" components/plan/ dojo-plan target/
+    exec ssh "${BUILD_HOST}" "docker exec ${CONTAINER} nice -n 15 sh -c '
+      cargo build --release --manifest-path /work/dojo-plan/Cargo.toml --target-dir /work/dojo-plan/target &&
+      ln -sf /work/dojo-plan/target/release/doj-plan-build /work/bin/doj-plan-build &&
+      doj-plan-build show /work/plans/zlib --target x86_64-linux >/dev/null && echo doj-plan-build ready'"
+    ;;
+  standins)
+    # An empty karate/<name>/0.0.0 package for every base plan, so a first build resolves its
+    # dependencies; the tools themselves are the container's, on PATH. A real build of the
+    # package is a newer version and replaces the stand-in.
+    on_host "docker exec ${CONTAINER} sh -c '
+      for name in \$(sed -n \"s|^dojo-plans/\\([^ ]*\\).*|\\1|p\" /work/plans/base-plans.txt | sort -u); do
+        dir=/doj/pkgs/karate/\$name/0.0.0/20200101000000
+        mkdir -p \$dir && echo karate/\$name/0.0.0/20200101000000 > \$dir/IDENT
+      done; ls /doj/pkgs/karate | wc -l'"
+    ;;
+  run)
+    (( $# >= 1 )) || usage
+    exec ssh -t "${BUILD_HOST}" "docker exec -it -w /work/plans/swamp ${CONTAINER} nice -n 15 $(printf '%q ' "$@")"
+    ;;
+  shell)
+    exec ssh -t "${BUILD_HOST}" "docker exec -it -w /work/plans/swamp ${CONTAINER} bash"
+    ;;
+  stop)
+    on_host "docker stop ${CONTAINER}"
+    ;;
+  remove)
+    on_host "docker rm -f ${CONTAINER} && docker volume rm ${ROOT_VOLUME}"
+    ;;
+  *)
+    usage
+    ;;
+esac

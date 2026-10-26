@@ -1,0 +1,35 @@
+# The plan builder: Ubuntu as the stage 0 for building plans, with swamp and doj-plan-build.
+# tools/builder/builder builds it on the build host and runs it; see tools/builder/README.md.
+FROM ubuntu:26.04
+
+ARG BUILDER_UID=1000
+ARG BUILDER_GID=1000
+
+ENV DEBIAN_FRONTEND=noninteractive
+# The host tools a base plan's first build uses, Rust for doj-plan-build, and what the
+# swamp installer and the packager need.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      build-essential bison gawk m4 texinfo python3 perl file patch rsync \
+      xz-utils bzip2 zstd curl ca-certificates git sudo \
+      rustc cargo \
+ && rm -rf /var/lib/apt/lists/*
+
+# swamp's current release. The installer checks its sha256 and the version the binary reports.
+RUN curl -fsSL https://swamp.club/install.sh -o /tmp/swamp-install.sh \
+ && sh /tmp/swamp-install.sh -d /usr/local/bin \
+ && rm /tmp/swamp-install.sh \
+ && swamp --version
+
+# The builder runs as the build host's user, so what it writes into the bind mounts stays that
+# user's. /doj, where packages install, is a volume the builder owns.
+RUN (! getent passwd "${BUILDER_UID}" || userdel -r "$(getent passwd "${BUILDER_UID}" | cut -d: -f1)" || true) \
+ && (getent group "${BUILDER_GID}" || groupadd -g "${BUILDER_GID}" builder) \
+ && useradd -m -u "${BUILDER_UID}" -g "${BUILDER_GID}" -s /bin/bash builder \
+ && mkdir -p /doj /work \
+ && chown builder: /doj /work
+
+COPY doj /usr/local/bin/doj
+USER builder
+WORKDIR /work
+CMD ["sleep", "infinity"]

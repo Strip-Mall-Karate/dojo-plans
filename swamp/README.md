@@ -4,7 +4,8 @@ This directory is a [swamp](https://swamp-club.com) repository that builds this 
 in dependency order, with the `@strip-mall-karate/dojo` behavior in
 [extensions/behaviors](extensions/behaviors/README.md). Its definition, `dojo`, builds the parent
 directory's plans for `x86_64-linux`. Run swamp from here on a machine that builds that target, with
-`doj-plan-build` on PATH:
+`doj-plan-build` on PATH: the [builder](../tools/builder/README.md) container is one
+(`tools/builder/builder run swamp ...`).
 
 ```sh
 cd swamp
