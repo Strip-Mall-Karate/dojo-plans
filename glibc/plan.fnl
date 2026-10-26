@@ -180,8 +180,8 @@
           (b:env "LDFLAGS" (.. "-Wl,--dynamic-linker=" v-dynamic-linker))
           (b:log (.. "Setting LDFLAGS=" (or (b:getenv "LDFLAGS") "")))
           (b:write (b:join b.src "nscd/Makefile") (.. (if (b:exists (b:join b.src "nscd/Makefile")) (b:read (b:join b.src "nscd/Makefile")) "") "LDFLAGS-nscd += -static-libgcc\n"))
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/rpcgen-path.patch")])
-          (b:run ["patch" "-p1"] {:stdin (let [text (b:read (.. b.plan_dir "/dont-use-system-ld-so.patch")) ends (= (text:sub -1) "\n") lines [] out []]
+          (b:run ["patch" "-p1" "-i" (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/rpcgen-path.patch")])
+          (b:run ["patch" "-p1"] {:stdin (let [text (b:read (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/dont-use-system-ld-so.patch")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]
               (var line l) (var deleted false) (local after [])
@@ -189,12 +189,12 @@
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))})
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/testsuite-fix.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/glibc-2.23-upstream_fixes-1.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/0005-fix-binutils-2-29-build.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/gcc-implicit-boolean.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/remove-sun-rpm-bug.patch")])
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/nss-nisplus-gcc7.patch")])
+          (b:run ["patch" "-p1" "-i" (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/testsuite-fix.patch")])
+          (b:run ["patch" "-p1" "-i" (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/glibc-2.23-upstream_fixes-1.patch")])
+          (b:run ["patch" "-p1" "-i" (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/0005-fix-binutils-2-29-build.patch")])
+          (b:run ["patch" "-p1" "-i" (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/gcc-implicit-boolean.patch")])
+          (b:run ["patch" "-p1" "-i" (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/remove-sun-rpm-bug.patch")])
+          (b:run ["patch" "-p1" "-i" (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/nss-nisplus-gcc7.patch")])
           (let [text (b:read (b:join b.src "scripts/test-installation.pl")) ends (= (text:sub -1) "\n") lines [] out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
             (each [n l (ipairs lines)]

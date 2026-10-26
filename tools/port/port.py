@@ -233,6 +233,7 @@ def port(package_dir):
     if os.path.isfile(kernel2_path):
         targets.append(KERNEL2)
         kernel2, _ = read_plan(kernel2_path)
+        kernel2.context = f'(.. b.plan_dir "/{KERNEL2}")'  # Its files are in its own directory.
     body.insert(3, ":targets [" + " ".join(fennel_string(t) for t in targets) + "]")
 
     phases, helpers = translate.callbacks(plan, emitter)

@@ -48,7 +48,7 @@
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src "Make.Rules") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/libcap-old-kernel-headers.patch")]))
+          (b:run ["patch" "-p1" "-i" (.. (.. b.plan_dir "/x86_64-linux-kernel2") "/libcap-old-kernel-headers.patch")]))
        :build (fn [b]
           (b:run ["make" (.. "KERNEL_HEADERS=" (b:path_for "linux-headers") "/include") (.. "LDFLAGS=" (or (b:getenv "LDFLAGS") ""))]))
        :install (fn [b]

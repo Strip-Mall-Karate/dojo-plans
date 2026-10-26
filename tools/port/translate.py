@@ -129,6 +129,8 @@ class Scope:
     def var(self, name):
         if name in self.locals:
             return self.locals[name]
+        if name == "PLAN_CONTEXT" and getattr(self.plan, "context", None):
+            return self.plan.context  # A target's own plan directory, inside the package's.
         if name in BUILD_VARS:
             return BUILD_VARS[name]
         if name in ("pkg_svc_user", "pkg_svc_group") and name not in self.plan.scalars:
