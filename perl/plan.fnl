@@ -35,7 +35,10 @@
           (each [_ v-i (ipairs [(or (b:getenv "LDFLAGS") "")])]
             (when (string.find v-i "^%-L/")
             (set v-loclibpth (.. v-loclibpth " " (pick-values 1 (string.gsub v-i "^%-L" "" 1))))))
-          (b:env "LD_LIBRARY_PATH" (.. (b:capture ["pwd"]) ":" (or (b:getenv "LD_RUN_PATH") "")))
+          ;; Only the build directory, where libperl is before it is installed: perl's programs
+          ;; find their dependencies by RUNPATH, and a glibc here is loaded by every program the
+          ;; build runs, the host's sh included, which a first build cannot have match.
+          (b:env "LD_LIBRARY_PATH" (b:capture ["pwd"]))
           (b:log (.. "Setting LD_LIBRARY_PATH=" (or (b:getenv "LD_LIBRARY_PATH") ""))))
  :build (fn [b]
           (b:env "BUILD_ZLIB" "False")
