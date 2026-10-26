@@ -422,7 +422,7 @@ def into_dir(dest_word):
 
 
 def cmd_cp(words, scope, move=False):
-    found, rest = flags(words, set("arRvfpLPdnuTt") | {"--preserve=mode", "--parents"} if not move else set("vfnT"))
+    found, rest = flags(words, set("arRvfpLPdnuTt") | {"--preserve=mode", "--preserve=links", "--parents"} if not move else set("vfnT"))
     if "--parents" in found or "t" in found:
         raise Unported("cp --parents/-t")
     if len(rest) < 2:
@@ -951,14 +951,6 @@ def statement(text, scope):
             return body_forms(stmt[1:-1], scope)
         finally:
             scope.cwd = saved
-    grep = GREP_Q.fullmatch(stmt)
-    if grep and "|" not in _unquoted(grep.group(1)):
-        return [f"(when (not {grep_found(grep.group(1), grep.group(3), scope)}) (error {fstr('grep -q ' + grep.group(3) + ' found nothing')}))"]
-    parts = split_list(stmt) if re.search(r"&&|\|\|", _unquoted(stmt)) else None
-    if parts:
-        return list_forms(parts, scope)
-    if re.search(r"(?<![<>|&])\|(?!\|)|(?<!\\);", _unquoted(stmt)):
-        raise Unported("pipeline or list")
     # Redirections.
     heredoc = re.match(r"(cat|tee)[ \t]*(>{1,2})?[ \t]*([^ \t\n<]+)?[ \t]*<<-?[ \t]*(['\"]?)([A-Za-z_]+)\4[ \t]*(>{1,2})?[ \t]*([^ \t\n]+)?[ \t]*\n(.*)\n[ \t]*\5[ \t]*$", stmt, re.S)
     if heredoc:
@@ -972,8 +964,16 @@ def statement(text, scope):
         if op == ">>":
             return [f"(b:write {dest} (.. (if (b:exists {dest}) (b:read {dest}) \"\") {content}))"]
         return [f"(b:write {dest} {content})"]
-    if "<<" in _unquoted(stmt):
+    if "<<" in _unquoted(stmt.split("\n", 1)[0]):
         raise Unported("heredoc")
+    grep = GREP_Q.fullmatch(stmt)
+    if grep and "|" not in _unquoted(grep.group(1)):
+        return [f"(when (not {grep_found(grep.group(1), grep.group(3), scope)}) (error {fstr('grep -q ' + grep.group(3) + ' found nothing')}))"]
+    parts = split_list(stmt) if re.search(r"&&|\|\|", _unquoted(stmt)) else None
+    if parts:
+        return list_forms(parts, scope)
+    if re.search(r"(?<![<>|&])\|(?!\|)|(?<!\\);", _unquoted(stmt)):
+        raise Unported("pipeline or list")
     if re.match(r"[A-Za-z_][A-Za-z0-9_]*\+?=\(", stmt):
         return assignment(stmt, scope, exported=False)
     array_local = re.match(r"(local|declare|readonly|typeset)\s+(?:-\w+\s+)*([A-Za-z_][A-Za-z0-9_]*\+?=\()", stmt)
@@ -1162,7 +1162,7 @@ def _command(cmd, args, scope, stdin):
         return cmd_patch(args, scope, stdin)
     if cmd in simple:
         return simple[cmd](args, scope)
-    if cmd in ("source", ".") and len(args) == 1 and _unquoted(args[0]).rstrip('"').endswith("bin/activate"):
+    if cmd in ("source", ".") and len(args) == 1 and args[0].strip('"\'').endswith("bin/activate"):
         # A virtualenv's activate: VIRTUAL_ENV, and its bin first on PATH.
         venv = word(args[0], scope)
         venv = venv[:-len('/bin/activate"')] + '"' if venv.endswith('/bin/activate"') else f'(: {venv} :gsub "/bin/activate$" "")'
@@ -1176,7 +1176,8 @@ def _command(cmd, args, scope, stdin):
     if cmd.startswith(("pkg_", "_")) or cmd in scope.plan.functions:
         return [f"({_local(cmd)} b {' '.join(word(a, scope) for a in args)})".replace(" )", ")")]
     for a in args:
-        if GLOB.search(_unquoted(a)):
+        # A glob character in a package spec (name:version, name@version, key=value) is literal.
+        if GLOB.search(_unquoted(a)) and not re.search(r"[:@=]", _unquoted(a)):
             raise Unported("glob argument to " + cmd)
     return [f"(b:run {argv([cmd] + args, scope)}{scope_cwd(scope)})"]
 
@@ -1212,6 +1213,9 @@ def condition(text, scope):
     if not m:
         raise Unported("condition " + t)
     words = bashplan.split_words(m.group(1))
+    if words and words[0] == "!":
+        negate = not negate
+        words = words[1:]
     if len(words) == 2 and words[0] in ("-f", "-e", "-d", "-L", "-x", "-s", "-r", "-h"):
         expr = f"(b:exists {path(words[1], scope)})"
     elif len(words) == 2 and words[0] in ("-z", "-n"):
