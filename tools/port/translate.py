@@ -705,6 +705,12 @@ def sed_to_lua(pattern, extended):
                     raise Unported("sed repeated group")
                 i += 2
                 continue
+            # X\{0,\}, X\{1,\}, X\+ and X\? after one character or class: Lua's *, +, +, ?.
+            repeat = re.match(r"\\\{([01]),\\\}|\\([+?])", pattern[i:]) if not extended else None
+            if repeat and out and out[-1] not in ("(", ")") and not out[-1].endswith(("*", "+", "?")):
+                out.append(repeat.group(2) or ("*" if repeat.group(1) == "0" else "+"))
+                i += repeat.end()
+                continue
             if nxt in "|+?{}" and not extended:
                 raise Unported("sed alternation or interval")
             if nxt in "[].*^$/\\-+?()":
@@ -781,6 +787,35 @@ def sed_replacement(text):
 
 
 def cmd_sed(words, scope):
+    ops, files, inplace = sed_words(words, scope)
+    if not inplace:
+        raise Unported("sed without -i")
+    return [each_path(f, scope, sed_body(ops, "(b:read {p})", lambda result: f"(b:write {{p}} {result})"))
+            for f in files]
+
+
+def sed_text(words, scope, text):
+    """The text a sed without -i prints: its file's, or `text` (its input) when it names none."""
+    ops, files, inplace = sed_words(words, scope)
+    if inplace or len(files) > 1 or (files and text) or not (files or text):
+        raise Unported("sed " + " ".join(words)[:40])
+    return sed_body(ops, f"(b:read {path(files[0], scope)})" if files else text, lambda result: result)
+
+
+def sed_body(ops, source, finish):
+    """The ops run over each line of `source`; `finish` wraps the resulting text."""
+    return ("(let [text " + source + " ends (= (text:sub -1) \"\\n\") lines [] out []]\n"
+            "  (each [l (string.gmatch (if ends text (.. text \"\\n\")) \"(.-)\\n\")] (table.insert lines l))\n"
+            "  (each [n l (ipairs lines)]\n"
+            "    (var line l) (var deleted false) (local after [])\n"
+            + "".join(f"    (when (not deleted) {op})\n" for op in ops) +
+            "    (when (not deleted) (table.insert out line))\n"
+            "    (each [_ x (ipairs after)] (table.insert out x)))\n"
+            "  " + finish("(.. (table.concat out \"\\n\") (if (and ends (> (length out) 0)) \"\\n\" \"\"))") + ")")
+
+
+def sed_words(words, scope):
+    """A sed command's words as (ops, files, in place)."""
     extended = False
     exprs = []
     rest = []
@@ -804,8 +839,6 @@ def cmd_sed(words, scope):
             raise Unported("sed " + w)
         else:
             rest.append(w)
-    if not inplace:
-        raise Unported("sed without -i")
     if not exprs:
         if not rest:
             raise Unported("sed arity")
@@ -816,20 +849,12 @@ def cmd_sed(words, scope):
         # Several commands in one expression: `211,217 d; 232 d`. Only split
         # expressions with no substitution, whose text holds no ; of its own.
         if (len(parts) == 1 and parts[0][0] == "lit" and ";" in parts[0][1]
-                and not re.search(r"(^|;)\s*(?:\d+(?:,(?:\d+|\$))?|\$|/(?:[^/\\]|\\.)*/)?\s*s[^\w\s]", parts[0][1])):
+                and not re.search(r"(^|;)\s*(?:\d+(?:,(?:\d+|\$))?|\$|/(?:[^/\\]|\\.)*/)?\s*(s[^\w\s]|[iac])", parts[0][1])):
             ops.extend(sed_operation([("lit", piece.strip())], extended)
                        for piece in parts[0][1].split(";") if piece.strip())
         else:
             ops.append(sed_operation(parts, extended))
-    body = ("(let [text (b:read {p}) ends (= (text:sub -1) \"\\n\") lines [] out []]\n"
-            "  (each [l (string.gmatch (if ends text (.. text \"\\n\")) \"(.-)\\n\")] (table.insert lines l))\n"
-            "  (each [n l (ipairs lines)]\n"
-            "    (var line l) (var deleted false) (local after [])\n"
-            + "".join(f"    (when (not deleted) {op})\n" for op in ops) +
-            "    (when (not deleted) (table.insert out line))\n"
-            "    (each [_ x (ipairs after)] (table.insert out x)))\n"
-            "  (b:write {p} (.. (table.concat out \"\\n\") (if (and ends (> (length out) 0)) \"\\n\" \"\"))))")
-    return [each_path(f, scope, body) for f in rest]
+    return ops, rest, inplace
 
 
 SED_ADDRESS = re.compile(r"(\d+)(?:,(\d+|\$))?|\$|/((?:[^/\\]|\\.)*)/")
@@ -869,13 +894,23 @@ def sed_operation(parts, extended):
         form = f"(set line (pick-values 1 (string.gsub line {pat} {rep}{count})))"
     elif command == "d" and text.strip() == "d" and len(parts) == 1:
         form = "(set deleted true)"
-    elif command in "ia" and len(parts) == 1:
+    elif command in "iac":
+        # The text runs to the end of the expression, variables and all.
+        if command == "c" and m and m.group(2):
+            raise Unported("sed c over a range")
         rest = text[1:]
-        rest = rest[1:] if rest.startswith("\\") else rest
-        rest = rest[1:] if rest.startswith("\n") else rest.lstrip()
-        if "\n" in rest:
+        if rest.startswith("\\"):
+            # `a\` keeps the whitespace after it; the text may start on the next line.
+            rest = rest[2:] if rest.startswith("\\\n") else rest[1:]
+        else:
+            rest = rest.lstrip()
+        pieces = ([fstr(rest)] if rest else []) + [fstr(t) if k == "lit" else t for k, t in parts[1:]]
+        if any("\n" in t for _, t in [("lit", rest)] + [p for p in parts[1:] if p[0] == "lit"]):
             raise Unported("sed multi-line text")
-        form = (f"(table.insert out {fstr(rest)})" if command == "i" else f"(table.insert after {fstr(rest)})")
+        line_text = concat(pieces) if pieces else '""'
+        form = {"i": f"(table.insert out {line_text})",
+                "a": f"(table.insert after {line_text})",
+                "c": f"(do (table.insert out {line_text}) (set deleted true))"}[command]
     else:
         raise Unported("sed " + text[:30])
     return form if cond is None else f"(when {cond} {form})"
@@ -986,12 +1021,14 @@ def cmd_download_file(words, scope):
     return [f"(b:download {word(url, scope)} {word(words[2], scope)} {word(name, scope)})"]
 
 
-def scope_cwd(scope, env=None):
+def scope_cwd(scope, env=None, stdin=None):
     fields = []
     if scope.cwd:
         fields.append(f":cwd {scope.cwd[-1]}")
     if env:
         fields.append(":env {" + " ".join(f"{fstr(k)} {v}" for k, v in env) + "}")
+    if stdin:
+        fields.append(f":stdin {stdin}")
     return " {" + " ".join(fields) + "}" if fields else ""
 
 
@@ -1149,6 +1186,15 @@ def statement(text, scope):
     grep = GREP_Q.fullmatch(stmt)
     if grep and "|" not in _unquoted(grep.group(1)):
         return [f"(when (not {grep_found(grep.group(1), grep.group(3), scope)}) (error {fstr('grep -q ' + grep.group(3) + ' found nothing')}))"]
+    local_lib = LOCAL_LIB.fullmatch(stmt.strip())
+    if local_lib and "-Mlocal::lib" in stmt:
+        # local::lib's settings, read from the process it sets them in rather than run as shell.
+        perl = argv(bashplan.split_words(local_lib.group(1) or local_lib.group(2)), scope)
+        if not perl.startswith("["):
+            raise Unported("local::lib with an array")
+        script = "print qq{$_=$ENV{$_}\\n} for qw(PATH PERL5LIB PERL_LOCAL_LIB_ROOT PERL_MB_OPT PERL_MM_OPT)"
+        return [f"(each [setting (string.gmatch (b:capture {perl[:-1]} \"-e\" {fstr(script)}]{scope_cwd(scope)}) \"[^\\n]+\")]\n"
+                f"  (let [(name value) (setting:match \"^([^=]+)=(.*)$\")] (b:env name value)))"]
     loop = READ_LOOP.fullmatch(stmt)
     if loop and "|" not in _unquoted(loop.group(1)):
         return read_loop(loop, scope)
@@ -1156,6 +1202,9 @@ def statement(text, scope):
     if parts:
         return list_forms(parts, scope)
     if re.search(r"(?<![<>|&])\|(?!\|)|(?<!\\);", _unquoted(stmt)):
+        fed = pipeline_forms(stmt, scope)
+        if fed is not None:
+            return fed
         raise Unported("pipeline or list")
     if re.match(r"[A-Za-z_][A-Za-z0-9_]*\+?=\(", stmt):
         return assignment(stmt, scope, exported=False)
@@ -1235,7 +1284,14 @@ def statement(text, scope):
     if stdout is not None:
         if stdout == "/dev/null":
             return _command(cmd, args, scope, stdin)
+        if stdin is not None:
+            fed = fed_program(words + [">>" if append else ">", stdout], scope, f"(b:read {path(stdin, scope)})")
+            if fed is None:
+                raise Unported("stdin redirect")
+            return fed
         dest = path(stdout, scope)
+        if cmd == "sed" and not append:
+            return [f"(b:write {dest} {sed_text(args, scope, None)})"]
         if cmd == "echo":
             content = concat([concat([word(a, scope) for a in _echo_args(args)]), '"\\n"'])
         else:
@@ -1244,6 +1300,63 @@ def statement(text, scope):
             return [f"(b:write {dest} (.. (if (b:exists {dest}) (b:read {dest}) \"\") {content}))"]
         return [f"(b:write {dest} {content})"]
     return _command(cmd, args, scope, stdin)
+
+
+# `eval "$(perl ... -Mlocal::lib=DIR)"` and `source <(perl ...)`: local::lib's shell settings.
+LOCAL_LIB = re.compile(r'eval\s+"\$\((perl\s.*)\)"|source\s+<\((perl\s.*)\)', re.S)
+
+
+# Commands that read their input the way a plan's code would: what they do is
+# ported as Fennel, not given text.
+FILTERS = {"while", "xargs", "grep", "tee", "head", "tail", "sort", "uniq", "cut", "tr", "awk", "sed", "wc",
+           "paste", "cat", "read", "echo", "printf", "for", "if"}
+
+
+def pipeline_forms(stmt, scope):
+    """`cat file | sed ... | program` and `sed ... file | program`: the program reads the text.
+    None when the pipeline is another kind."""
+    masked = _unquoted(stmt)
+    if re.search(r"\|\||&&|(?<!\\);|<\(|>\(", masked):
+        return None
+    cuts = [m.start() for m in re.finditer(r"(?<![<>|&])\|(?!\|)", masked)]
+    segments = [seg.strip() for seg in
+                (stmt[a:b] for a, b in zip([0] + [c + 1 for c in cuts], cuts + [len(stmt)]))]
+    # A line continued before or after the | leaves a backslash at a segment's edge.
+    words = [bashplan.split_words(seg.replace("\\\n", " ").strip().removesuffix("\\")) for seg in segments]
+    if any(not w for w in words):
+        return None
+    first, *middle, last = words
+    if first[0] == "cat" and len(first) == 2:
+        text = f"(b:read {path(first[1], scope)})"
+    elif first[0] == "sed":
+        text = sed_text(first[1:], scope, None)
+    else:
+        return None
+    for w in middle:
+        if w[0] != "sed":
+            return None
+        text = sed_text(w[1:], scope, text)
+    return fed_program(last, scope, text)
+
+
+def fed_program(words, scope, text):
+    """A program run with `text` as its input, or None when it is not a program."""
+    stdout = None
+    if len(words) >= 3 and words[-2] in (">", ">>"):
+        if words[-2] == ">>":
+            return None
+        words, stdout = words[:-2], words[-1]
+    cmd, args = words[0], words[1:]
+    if (cmd in FILTERS and cmd != "sed") or cmd in SHELL_BUILTINS or cmd in BUILDER_HELPERS or cmd in (
+            "sh", "bash", "eval", "source", ".", "exec") or cmd in scope.plan.functions or cmd.startswith(("pkg_", "_", "do_")):
+        return None
+    if cmd == "sed":
+        if stdout is None:
+            return None
+        return [f"(b:write {path(stdout, scope)} {sed_text(args, scope, text)})"]
+    if stdout is not None:
+        return [f"(b:write {path(stdout, scope)} (.. (b:capture {argv(words, scope)}{scope_cwd(scope, stdin=text)}) \"\\n\"))"]
+    return [f"(b:run {argv(words, scope)}{scope_cwd(scope, stdin=text)})"]
 
 
 def list_forms(parts, scope):
@@ -1388,7 +1501,10 @@ def _command(cmd, args, scope, stdin):
             scope.cwd.append(word(args[0], scope))
         return []
     if stdin is not None and cmd != "patch":
-        raise Unported("stdin redirect")
+        fed = fed_program([cmd] + args, scope, f"(b:read {path(stdin, scope)})")
+        if fed is None:
+            raise Unported("stdin redirect")
+        return fed
     simple = {"cp": cmd_cp, "rm": cmd_rm, "mkdir": cmd_mkdir, "ln": cmd_ln,
               "chmod": cmd_chmod, "install": cmd_install, "sed": cmd_sed,
               "fix_interpreter": cmd_fix_interpreter, "download_file": cmd_download_file}
@@ -1652,6 +1768,8 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
         if hand is not None:
             # A person's port of this statement wins over the translator's.
             forms.extend([hand] if hand else [])
+            if "(use-dependency-path " in hand:
+                scope.plan.helpers.add("use-dependency-path")
             continue
         try:
             if scope.lost_cwd:
@@ -1668,6 +1786,8 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
             hand = HAND.get(normalize(stmt))
             if hand is not None:
                 forms.extend([hand] if hand else [])
+                if "(use-dependency-path " in hand:
+                    scope.plan.helpers.add("use-dependency-path")
                 continue
             if re.match(r"\s*(pushd|cd|popd)\b", stmt) or re.search(r"\b(pushd|cd)\b", stmt.split("\n")[0]):
                 scope.lost_cwd = True

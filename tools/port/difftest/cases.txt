@@ -298,3 +298,36 @@ local inc="-I/a/include -I/b/include"
 echo "$(echo "$inc" | sed -e "s@-I@@g")" > cleaned
 mkdir sub || true
 mkdir sub || true
+
+== text-fed-to-a-program
+-- setup
+printf 'old one\nsame\n' > target
+printf -- '--- target\n+++ target\n@@ -1,2 +1,2 @@\n-old one\n+@NEW@\n same\n' > tmpl.patch
+printf 'a\nb\nc\n' > three
+-- body
+sed -e "s,@NEW@,new $pkg_name,g" tmpl.patch | patch -p0
+cat three | sed -e 's/b/B/' | md5sum > sum
+md5sum < three > sum-plain
+sed 's/a/A/' three > three-up
+
+== sed-text-commands-and-intervals
+-- setup
+printf '#!/usr/bin/env python\nimport os\n' > virtualenv
+printf 'a=1\nPATH=/usr/bin\nb=2\n' > postfix-install
+printf '#!/usr/bin/env node\nx\n' > bin1
+printf 'one\ntwo\n' > spaced
+-- body
+local pp="/opt/lib/python; x"
+sed -i "2iimport sys; sys.path.append(\"$pp\")" virtualenv
+sed -i '/^PATH=/c\ ' postfix-install
+local shebang="#!/opt/node/bin/node"
+sed -e "s|^#!.\{0,\}\$|${shebang}|" -i bin1
+sed -i 's/o\+/0/' spaced
+sed -i '1a\  indented' spaced
+
+== perl-local-lib
+-- setup
+true
+-- body
+eval "$(perl -Mlocal::lib=/tmp/difftest-local-lib)"
+echo "$PERL5LIB|$PERL_LOCAL_LIB_ROOT|$PERL_MB_OPT|$PERL_MM_OPT" > perl-env

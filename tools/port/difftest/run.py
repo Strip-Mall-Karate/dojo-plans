@@ -115,7 +115,13 @@ def main(argv):
         with open(os.path.join(tmp, "run.sh"), "w", encoding="utf-8") as f:
             f.write(VM_SCRIPT)
         archive = shutil.make_archive(os.path.join(tmp, "difftest"), "tar", tmp, ".")
-        remote = ("set -e; d=$(mktemp -d); tar --warning=no-timestamp -xf - -C \"$d\"; "
+        # Perl with local::lib, which the plans' Perl cases run.
+        perl = ("export NIX_CONFIG='extra-experimental-features = nix-command flakes'; "
+                "p=$(nix build --no-link --print-out-paths github:NixOS/nixpkgs/nixos-24.05#perl538 "
+                "github:NixOS/nixpkgs/nixos-24.05#perl538Packages.locallib 2>/dev/null); "
+                "export PATH=\"$(echo \"$p\" | grep -v local-lib | head -1)/bin:$PATH\" "
+                "PERL5LIB=\"$(ls -d \"$(echo \"$p\" | grep local-lib | head -1)\"/lib/perl5/site_perl/5*)\"; ")
+        remote = (perl + "set -e; d=$(mktemp -d); tar --warning=no-timestamp -xf - -C \"$d\"; "
                   "bash \"$d/run.sh\" \"$d\" \"$HOME/plan-file-ops/components/plan/target/debug/doj-plan-build\"; "
                   "s=$?; rm -rf \"$d\"; exit $s")
         env = dict(os.environ, DOJO_BUILDER_STATE=state, DOJO_BUILDER_PORT=port)

@@ -168,3 +168,24 @@
           (if (: kind :find "application/x-executable" 1 true) (b:run ["strip" "--strip-all" f])
               (: kind :find "application/x-sharedlib" 1 true) (b:run ["strip" "--strip-unneeded" f])
               (: kind :find "application/x-archive" 1 true) (b:run ["strip" "--strip-debug" f])))))))
+
+== if [[ ! -f "/bin/rm" ]]; then
+    hab pkg binlink core/coreutils rm --dest /bin
+    BINLINKED_RM=true
+  fi
+--
+;; The plan linked coreutils' rm to /bin/rm, which OpenSSL's build scripts name.
+;; Its comment held that the scripts must not change for the FIPS build; the
+;; validated part is openssl-fips's canister, which this does not touch.
+(use-dependency-path b "/bin/rm" (b:path_for "karate/coreutils" "bin/rm"))
+
+== if [[ $BINLINKED_RM == true ]]; then
+    rm -f /bin/rm
+  fi
+--
+
+== PLAN_CONTEXT="$(abspath "$PLAN_CONTEXT/../openssl")" _common_prepare
+--
+;; The plan read openssl's ca-dir.patch from beside it; a build reads only its own
+;; plan's directory, which holds a copy.
+(v--common-prepare b)
