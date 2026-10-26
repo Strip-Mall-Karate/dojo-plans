@@ -19,8 +19,8 @@
           (b.default.download b))
  :prepare (fn [b]
           ;; From do_setup_environment.
-          (b:run ["set_buildtime_env" "BUILD_DIR" "_build"])
-          (b:run ["push_runtime_env" "CMAKE_FIND_ROOT_PATH" (.. b.prefix "/lib/cmake/benchmark")])
+          (b:buildtime_env "BUILD_DIR" "_build")
+          (b:runtime_env_push "CMAKE_FIND_ROOT_PATH" (.. b.prefix "/lib/cmake/benchmark"))
           (b:mkdir (or (b:getenv "BUILD_DIR") "")))
  :build (fn [b]
           (var v-gtest-dir (b:path_for "karate/googletest"))

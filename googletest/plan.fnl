@@ -20,10 +20,17 @@
           (b.default.download b))
  :prepare (fn [b]
           ;; From do_setup_environment.
-          (b:run ["set_buildtime_env" "BUILD_DIR" "build"])
-          (b:run ["push_runtime_env" "CMAKE_FIND_ROOT_PATH" (.. b.prefix "/lib64/cmake/GTest")])
+          (b:buildtime_env "BUILD_DIR" "build")
+          (b:runtime_env_push "CMAKE_FIND_ROOT_PATH" (.. b.prefix "/lib64/cmake/GTest"))
           (b:mkdir (or (b:getenv "BUILD_DIR") ""))
-          (let [text (b:read (b:join b.src "CMakeLists.txt"))] (b:write (b:join b.src "CMakeLists.txt") (pick-values 1 (string.gsub text "[^\n]+" (fn [l] (var line l) (set line (pick-values 1 (string.gsub line "GOOGLETEST_VERSION 1.9.0" (.. "GOOGLETEST_VERSION " (pick-values 1 (: b.version :gsub "%%" "%%%%"))) 1))) line))))))
+          (let [text (b:read (b:join b.src "CMakeLists.txt")) ends (= (text:sub -1) "\n") lines [] out []]
+            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
+            (each [n l (ipairs lines)]
+              (var line l) (var deleted false) (local after [])
+              (when (not deleted) (set line (pick-values 1 (string.gsub line "GOOGLETEST_VERSION 1.9.0" (.. "GOOGLETEST_VERSION " (pick-values 1 (: b.version :gsub "%%" "%%%%"))) 1))))
+              (when (not deleted) (table.insert out line))
+              (each [_ x (ipairs after)] (table.insert out x)))
+            (b:write (b:join b.src "CMakeLists.txt") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
  :build (fn [b]
           (b:run ["cmake" (.. "-Dgtest_build_samples=" (or (b:getenv "DO_CHECK") "")) (.. "-Dgtest_build_tests=" (or (b:getenv "DO_CHECK") "")) (.. "-Dgmock_build_tests=" (or (b:getenv "DO_CHECK") "")) (.. "-DCMAKE_INSTALL_PREFIX=" (or (b:getenv "PREFIX") "")) ".."] {:cwd (or (b:getenv "BUILD_DIR") "")})
           (b:run ["make" (.. "-j" (b:capture ["nproc" "--ignore=1"]))] {:cwd (or (b:getenv "BUILD_DIR") "")}))

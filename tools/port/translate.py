@@ -253,6 +253,9 @@ def _param(text, i, scope):
     m = bashplan.NAME.match(text, i + 1)
     if m:
         return scope.var(m.group(0)), m.end()
+    if text[i + 1:i + 2] == "?":
+        # The last command's status: 0, as a failing one has already stopped the build.
+        return '"0"', i + 2
     d = re.match(r"\d", text[i + 1:i + 2])
     if d and 1 <= int(d.group(0)) <= scope.params:
         return f"a{d.group(0)}", i + 2
@@ -278,6 +281,17 @@ def substitution(command, scope):
         return fstr(cut.group(3).join(fields[lo - 1:hi]))
     if words[:3] == ["hab", "pkg", "path"] and len(words) == 4:
         return f"(b:path_for {_dep(words[3], scope)})"
+    if words[0] == "abspath" and len(words) == 2:
+        rel = word(words[1], scope)
+        if rel == '".."':
+            return f'(: {base(scope)} :match "^(.*)/[^/]+$")'
+        if rel in ('"."', '"./"'):
+            return base(scope)
+        if rel.startswith('"') and ".." not in rel:
+            return anchor(rel, scope)
+        raise Unported(f"$({command})")
+    if words[0] in BUILDER_HELPERS:
+        raise Unported(f"the source project's builder function {words[0]}")
     if words[0] == "nproc" and len(words) == 1:
         return "(tostring b.jobs)"
     if any(w in ("|", "||", "&&", ";") or w.startswith(("|", ">", "<", "2>")) for w in words) or "|" in command:
@@ -886,6 +900,14 @@ def assignment(stmt, scope, exported):
     return [f"(var {name} {value})"]
 
 
+# Functions of the source project's builder: none is a program, so a call to
+# one is translated or left for a person, never run.
+BUILDER_HELPERS = {"update_pkg_version", "pkg_interpreter_for", "abspath", "trim", "record", "exists_in_path",
+                   "add_path_env", "add_env", "pkg_path_for", "fix_interpreter", "download_file", "attach",
+                   "exit_with", "build_line", "warn", "info", "debug", "set_runtime_env", "push_runtime_env",
+                   "set_buildtime_env", "push_buildtime_env", "_resolve_dependency", "_render_metadata_FILES"}
+
+
 # Variables a plan sets without `export` that the build reads anyway (the
 # shell exported them from the builder).
 ENV_LIKE = {"CFLAGS", "CXXFLAGS", "CPPFLAGS", "LDFLAGS", "LD_RUN_PATH", "PATH", "LD_LIBRARY_PATH",
@@ -1045,10 +1067,10 @@ def statement(text, scope):
     if env:
         if stdout is not None or stdin is not None:
             raise Unported("environment with a redirect")
-        if cmd in ("make", "cmake", "./configure", "go", "cargo", "npm", "python", "python3", "perl", "ruby",
-                   "bundle", "gem", "pip", "mvn", "gradle", "ant", "meson", "ninja", "scons", "node") or "/" in cmd:
-            return [f"(b:run {argv([cmd] + args, scope)}{scope_cwd(scope, env)})"]
-        raise Unported("assignment before " + cmd)
+        if cmd in scope.plan.functions or cmd.startswith(("pkg_", "_", "do_")) or cmd in (
+                "cd", "pushd", "popd", "export", "local", "source", ".", "eval", "exec"):
+            raise Unported("assignment before " + cmd)
+        return [f"(b:run {argv([cmd] + args, scope)}{scope_cwd(scope, env)})"]
     if stdout is not None:
         if stdout == "/dev/null":
             return _command(cmd, args, scope, stdin)
@@ -1120,6 +1142,15 @@ def _command(cmd, args, scope, stdin):
         return [f"(b:log {concat([word(a, scope) if a not in ('\" \"',) else fstr(' ') for a in _join_words(args)])})"]
     if cmd == "attach":
         return []
+    env_helper = {"set_runtime_env": "b:runtime_env", "push_runtime_env": "b:runtime_env_push",
+                  "set_buildtime_env": "b:buildtime_env", "push_buildtime_env": "b:buildtime_env_push"}
+    if cmd in env_helper:
+        rest = [a for a in args if a != "-f"]
+        if len(rest) != 2:
+            raise Unported(cmd + " arity")
+        return [f"({env_helper[cmd]} {word(rest[0], scope)} {word(rest[1], scope)})"]
+    if cmd in BUILDER_HELPERS:
+        raise Unported("the source project's builder function " + cmd)
     if cmd.startswith("do_default_") and not args:
         phase = cmd[len("do_default_"):]
         if phase not in ORDER:

@@ -15,7 +15,7 @@
  :include_dirs ["include"]
  :prepare (fn [b]
           ;; From do_setup_environment.
-          (b:run ["set_buildtime_env" "BUILD_DIR" "build"])
+          (b:buildtime_env "BUILD_DIR" "build")
           (b:mkdir (or (b:getenv "BUILD_DIR") "")))
  :build (fn [b]
           (b:run ["cmake" (.. "-DCMAKE_INSTALL_PREFIX=" b.prefix) (.. "-DCMAKE_INSTALL_LIBDIR=" b.prefix "/lib/") (.. "-DCMAKE_PREFIX_PATH=" (b:path_for "zlib")) (.. "-DZLIB_INCLUDE_DIR=" (b:path_for "zlib") "/include") (.. "-DOPENSSL_INCLUDE_DIR=" (b:path_for "openssl") "/include") (.. "-DOPENSSL_ROOT_DIR=" (b:path_for "openssl")) ".."] {:cwd (or (b:getenv "BUILD_DIR") "")})

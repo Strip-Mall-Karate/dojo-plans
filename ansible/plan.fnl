@@ -13,10 +13,10 @@
  :bin_dirs ["bin"]
  :prepare (fn [b]
           ;; From do_setup_environment.
-          (b:run ["push_runtime_env" "PYTHONPATH" (.. (b:path_for "python2") "/lib/python2.7/site-packages")])
-          (b:run ["push_runtime_env" "PYTHONPATH" (.. b.prefix "/lib/python2.7/site-packages")])
-          (b:run ["push_runtime_env" "ANSIBLE_CONFIG" (.. b.prefix "/etc/ansible.cfg")])
-          (b:run ["push_buildtime_env" "LD_LIBRARY_PATH" (.. (b:path_for "libffi") "/lib")])
+          (b:runtime_env_push "PYTHONPATH" (.. (b:path_for "python2") "/lib/python2.7/site-packages"))
+          (b:runtime_env_push "PYTHONPATH" (.. b.prefix "/lib/python2.7/site-packages"))
+          (b:runtime_env_push "ANSIBLE_CONFIG" (.. b.prefix "/etc/ansible.cfg"))
+          (b:buildtime_env_push "LD_LIBRARY_PATH" (.. (b:path_for "libffi") "/lib"))
           (b:mkdir (.. b.prefix "/lib/python2.7/site-packages"))
           (b:mkdir (.. b.prefix "/share"))
           (b:mkdir (.. b.prefix "/etc")))

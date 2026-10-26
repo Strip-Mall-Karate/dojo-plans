@@ -12,5 +12,5 @@
  :pconfig_dirs ["lib/pkgconfig"]
  :prepare (fn [b]
           ;; From do_setup_environment.
-          (b:run ["push_runtime_env" "PYTHONPATH" (.. b.prefix "/lib/python2.7/site-packages")])
+          (b:runtime_env_push "PYTHONPATH" (.. b.prefix "/lib/python2.7/site-packages"))
           (b.default.prepare b))}

@@ -14,7 +14,7 @@
  :include_dirs ["include"]
  :prepare (fn [b]
           ;; From do_setup_environment.
-          (b:run ["set_runtime_env" "JAVA_HOME" b.prefix])
+          (b:runtime_env "JAVA_HOME" b.prefix)
           (b.default.prepare b))
  :build (fn [b]
           nil)
