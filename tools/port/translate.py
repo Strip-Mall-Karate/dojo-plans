@@ -268,6 +268,14 @@ def substitution(command, scope):
         return f"(b:path_for {_dep(words[1], scope)})"
     if words[0] == "pkg_interpreter_for" and len(words) == 3:
         return f"(b:path_for {_dep(words[1], scope)} {word(words[2], scope)})"
+    cut = re.fullmatch(r'echo\s+("?\$\{?(\w+)\}?"?)\s*\|\s*cut\s+-d\s*["\']?(.)["\']?\s+-f\s*(\d+)(?:-(\d+))?', command)
+    if cut:
+        value = word(cut.group(1), scope)
+        if not (value.startswith('"') and value.endswith('"')):
+            raise Unported(f"$({command})")
+        fields = value[1:-1].split(cut.group(3))
+        lo, hi = int(cut.group(4)), int(cut.group(5) or cut.group(4))
+        return fstr(cut.group(3).join(fields[lo - 1:hi]))
     if words[:3] == ["hab", "pkg", "path"] and len(words) == 4:
         return f"(b:path_for {_dep(words[3], scope)})"
     if words[0] == "nproc" and len(words) == 1:
@@ -499,12 +507,16 @@ def cmd_chmod(words, scope):
 
 def cmd_install(words, scope):
     mode = None
+    target_dir = None
     directory = False
     create_parents = False
     rest = []
     it = iter(words)
     for w in it:
-        if w in ("-v", "--verbose", "-c", "-s", "--strip"):
+        if w in ("-v", "--verbose", "-c", "-s", "--strip", "-p", "--preserve-timestamps", "-C", "--compare"):
+            continue
+        if w in ("-t", "--target-directory"):
+            target_dir = next(it)
             continue
         if w in ("-d", "--directory"):
             directory = True
@@ -524,8 +536,9 @@ def cmd_install(words, scope):
             mode = next(it)
             if not re.fullmatch(r"[0-7]{3,4}", mode):
                 raise Unported("install -m " + mode)
-        elif re.fullmatch(r"-[Dvc]+", w):
+        elif re.fullmatch(r"-[Dvcdp]+", w):
             create_parents = create_parents or "D" in w
+            directory = directory or "d" in w
         elif w.startswith("-"):
             raise Unported("install " + w)
         else:
@@ -541,6 +554,8 @@ def cmd_install(words, scope):
             if mode:
                 out.append(f"(b:chmod {path(w, scope)} {fstr(mode)})")
         return out
+    if target_dir is not None:
+        rest = rest + [target_dir.rstrip("/") + "/" if not target_dir.endswith('"') else target_dir[:-1] + '/"']
     if len(rest) < 2:
         raise Unported("install arity")
     *sources, dest = rest
@@ -1322,7 +1337,12 @@ def translate_function(name, body, plan, scope_name, shared=(), params=0):
         scope.declared.add(var)
         forms.append(f'(var {_local(var)} "")')
     unported = []
-    for kind, _, stmt in bashplan.statements(body):
+    statements = bashplan.statements(body)
+    if statements and statements[-1][0] == "simple" and re.fullmatch(r"return(\s+(\$\?|\$\w+|\d+))?", statements[-1][2].strip()):
+        last = statements[-1][2].strip()
+        if last in ("return", "return 0", "return $?") or re.fullmatch(r"return \$\w+", last):
+            statements = statements[:-1]
+    for kind, _, stmt in statements:
         try:
             if scope.lost_cwd:
                 raise Unported("after a cd or pushd that is not ported")
