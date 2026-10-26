@@ -167,3 +167,19 @@ cp -r tree "$pkg_prefix/newname"
 cp -r tree "$pkg_prefix/lib"
 cp one "$pkg_prefix/lib"
 cp one "$pkg_prefix/renamed"
+
+== sed-with-variables
+-- setup
+printf '#!/usr/bin/perl -w\nrun /usr/bin/perl here\nkeep 100%% of it\n' > script
+-- body
+local perl_bin="/opt/perl.5/bin/perl"
+sed -i "s,/usr/bin/perl,$perl_bin,g" script
+sed -i -e "s|keep \(.*\)|pct=$pkg_name 100%|" script
+
+== sed-groups-and-backrefs
+-- setup
+printf 'ln -s -f $(PREFIX)/bin/tool\nCFLAGS = -O2 -g\nx-y-z\n' > Makefile
+-- body
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed -i -r 's/^(CFLAGS) = (.*)$/\1 := \2 -fPIC/' Makefile
+sed -i 's/\([a-z]\)-\([a-z]\)/\2+\1/g' Makefile

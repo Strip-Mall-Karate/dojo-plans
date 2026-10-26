@@ -148,6 +148,53 @@ def word(text, scope):
     return concat(parts)
 
 
+def word_parts(text, scope):
+    """A bash word as [("lit", text) | ("expr", fennel)], literal text kept raw."""
+    parts = []
+
+    def lit(t):
+        if parts and parts[-1][0] == "lit":
+            parts[-1] = ("lit", parts[-1][1] + t)
+        else:
+            parts.append(("lit", t))
+
+    i = 0
+    n = len(text)
+    while i < n:
+        c = text[i]
+        if c == "'":
+            j = text.index("'", i + 1)
+            lit(text[i + 1:j])
+            i = j + 1
+        elif c == '"':
+            j = bashplan._skip_quoted(text, i)
+            body = text[i + 1:j - 1]
+            k = 0
+            while k < len(body):
+                ch = body[k]
+                if ch == "\\" and k + 1 < len(body):
+                    nxt = body[k + 1]
+                    lit(nxt if nxt in '$`"\\' else ch + nxt)
+                    k += 2
+                elif ch == "$":
+                    expr, k = _param(body, k, scope)
+                    parts.append(("expr", expr))
+                else:
+                    lit(ch)
+                    k += 1
+            i = j
+        elif c == "\\" and i + 1 < n:
+            lit(text[i + 1])
+            i += 2
+        elif c == "$":
+            expr, i = _param(text, i, scope)
+            parts.append(("expr", expr))
+        else:
+            lit(c)
+            i += 1
+    return parts
+
+
 def _dquoted(body, scope):
     parts = []
     i = 0
@@ -310,8 +357,8 @@ def each_path(text, scope, body):
     """Fennel applying `body` (a format with {p}) to each path `text` names."""
     kind, expr = paths(text, scope)
     if kind == "*":
-        return f"(each [_ p (ipairs {expr})] {body.format(p='p')})"
-    return body.format(p=expr)
+        return f"(each [_ p (ipairs {expr})] {body.replace('{p}', 'p')})"
+    return body.replace("{p}", expr)
 
 
 def basename(expr):
@@ -499,9 +546,15 @@ def sed_to_lua(pattern, extended):
         c = pattern[i]
         if c == "\\" and i + 1 < n:
             nxt = pattern[i + 1]
-            if nxt in "().|+?{}" and not extended:
-                if nxt in "(){}|+?":
-                    raise Unported("sed group or alternation")
+            if nxt in "()" and not extended:
+                # A BRE group is a Lua capture; Lua cannot repeat one.
+                out.append(nxt)
+                if nxt == ")" and pattern[i + 2:i + 3] in ("*", "+", "?", "\\"):
+                    raise Unported("sed repeated group")
+                i += 2
+                continue
+            if nxt in "|+?{}" and not extended:
+                raise Unported("sed alternation or interval")
             if nxt in "[].*^$/\\-+?()":
                 out.append("%" + nxt if nxt not in "/" else nxt)
             elif nxt == "n":
@@ -513,8 +566,13 @@ def sed_to_lua(pattern, extended):
             else:
                 raise Unported("sed escape \\" + nxt)
             i += 2
-        elif c in "()|{}" and extended:
-            raise Unported("sed group or alternation")
+        elif c in "()" and extended:
+            out.append(c)
+            if c == ")" and pattern[i + 1:i + 2] in ("*", "+", "?"):
+                raise Unported("sed repeated group")
+            i += 1
+        elif c in "|{}" and extended:
+            raise Unported("sed alternation or interval")
         elif c == "+" and extended:
             out.append("+")
             i += 1
@@ -522,6 +580,10 @@ def sed_to_lua(pattern, extended):
             out.append("?")
             i += 1
         elif c in "-%":
+            out.append("%" + c)
+            i += 1
+        elif c in "()+?" and not extended:
+            # Plain characters in a basic regex; special in a Lua pattern.
             out.append("%" + c)
             i += 1
         elif c == "[":
@@ -548,8 +610,9 @@ def sed_replacement(text):
         if c == "\\" and i + 1 < len(text):
             nxt = text[i + 1]
             if nxt.isdigit():
-                raise Unported("sed backreference")
-            out.append({"n": "\n", "t": "\t"}.get(nxt, nxt))
+                out.append("%" + nxt)
+            else:
+                out.append({"n": "\n", "t": "\t", "%": "%%"}.get(nxt, nxt))
             i += 2
         elif c == "&":
             out.append("%0")
@@ -590,23 +653,10 @@ def cmd_sed(words, scope):
         if not rest:
             raise Unported("sed arity")
         exprs.append(rest.pop(0))
-    subs = []
-    for e in exprs:
-        expr_text = bashplan.expand(e, {}) if "$" not in e else None
-        if expr_text is None:
-            raise Unported("sed expression with a variable")
-        m = SED_EXPR.match(expr_text)
-        if not m or "I" in m.group(4) or any(ch.isdigit() for ch in m.group(4)):
-            raise Unported("sed " + expr_text)
-        pat = sed_to_lua(m.group(2), extended)
-        rep = sed_replacement(m.group(3))
-        count = "" if "g" in m.group(4) else " 1"
-        if "\n" in pat:
-            raise Unported("sed multiline")
-        subs.append((pat, rep, count))
+    subs = [sed_substitution(word_parts(e, scope), extended) for e in exprs]
     # sed edits a line at a time: each substitution runs on each line, so `.*`
     # stops at the line's end and ^ and $ anchor the line.
-    edits = " ".join(f"(set line (pick-values 1 (string.gsub line {fstr(pat)} {fstr(rep)}{count})))"
+    edits = " ".join(f"(set line (pick-values 1 (string.gsub line {pat} {rep}{count})))"
                      for pat, rep, count in subs)
     out = []
     for f in rest:
@@ -614,6 +664,65 @@ def cmd_sed(words, scope):
                 f"(fn [l] (var line l) {edits} line)))))")
         out.append(each_path(f, scope, body))
     return out
+
+
+# A variable's value inside a sed pattern or replacement: Lua's magic
+# characters escaped, as the shell's value is meant literally there.
+LUA_MAGIC = '"[%^%$%(%)%%%.%[%]%*%+%-%?]"'
+
+
+def sed_substitution(parts, extended):
+    """`s<d>pattern<d>replacement<d>flags` from word parts, as Fennel (pattern, replacement, count)."""
+    if not parts or parts[0][0] != "lit" or len(parts[0][1]) < 2 or parts[0][1][0] != "s":
+        raise Unported("sed " + "".join(t if k == "lit" else "$" for k, t in parts)[:40])
+    delim = parts[0][1][1]
+    parts = [("lit", parts[0][1][2:])] + parts[1:]
+    sections = [[]]
+    for kind, text in parts:
+        if kind == "expr":
+            sections[-1].append((kind, text))
+            continue
+        piece = ""
+        i = 0
+        while i < len(text):
+            if text[i] == "\\" and i + 1 < len(text):
+                piece += text[i:i + 2]
+                i += 2
+            elif text[i] == delim:
+                sections[-1].append(("lit", piece))
+                sections.append([])
+                piece = ""
+                i += 1
+            else:
+                piece += text[i]
+                i += 1
+        sections[-1].append(("lit", piece))
+    if len(sections) != 3:
+        raise Unported("sed expression")
+    pattern, replacement, flag_parts = sections
+    if any(k == "expr" for k, _ in flag_parts):
+        raise Unported("sed flags")
+    flags = "".join(t for _, t in flag_parts)
+    if re.search(r"[^g]", flags):
+        raise Unported("sed flag " + flags)
+    pat = []
+    for kind, text in pattern:
+        if kind == "expr":
+            pat.append(f"(pick-values 1 (: {text} :gsub {LUA_MAGIC} \"%%%0\"))")
+        elif text:
+            lua = sed_to_lua(text, extended)
+            if "\n" in lua:
+                raise Unported("sed multiline")
+            pat.append(fstr(lua))
+    repl = []
+    for kind, text in replacement:
+        if kind == "expr":
+            repl.append(f"(pick-values 1 (: {text} :gsub \"%%\" \"%%%%\"))")
+        elif text:
+            repl.append(fstr(sed_replacement(text)))
+    if not pat:
+        raise Unported("sed empty pattern")
+    return concat(pat), concat(repl or ['""']), "" if "g" in flags else " 1"
 
 
 def _line_anchor(pat):

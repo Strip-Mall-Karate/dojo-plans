@@ -225,7 +225,10 @@ def port(package_dir):
 def main(argv):
     status = 0
     for package_dir in argv:
-        problems = port(package_dir)
+        try:
+            problems = port(package_dir)
+        except Exception as e:  # noqa: BLE001 - one plan's failure must not stop the others.
+            problems = [f"the port tool failed: {type(e).__name__}: {e}"]
         name = os.path.basename(os.path.normpath(package_dir))
         if problems:
             status = 1
