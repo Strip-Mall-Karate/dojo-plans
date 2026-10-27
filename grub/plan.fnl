@@ -4,7 +4,11 @@
 ;; x86_64-efi for UEFI, each configured in its own directory and installed into the same
 ;; prefix, where grub-install --target picks one. Device mapper, fonts, themes, FUSE and
 ;; NLS are left out: a Dojo disk is a plain partition table and a serial console.
-(local platforms [["pc" "i386"] ["efi" "x86_64"]])
+;; GNU ld 2.41 and later accept --image-base, which grub's configure then prefers to -Ttext,
+;; but GNU ld's image base counts the ELF headers: i386-pc's kernel.img starts 0x74 bytes
+;; late and grub-install refuses it. The cached answer sends configure back to -Ttext.
+(local platforms [["pc" "i386" ["ax_cv_check_ldflags___Wl___image_base_0x400000=no"]]
+                  ["efi" "x86_64" []]])
 
 (fn build-dir [b platform]
   (b:join b.src (.. "build-" platform)))
@@ -22,14 +26,16 @@
  :build_deps ["karate/binutils" "karate/bison" "karate/flex" "karate/gcc" "karate/make" "karate/python" "karate/pkg-config"]
  :bin_dirs ["bin" "sbin"]
  :build (fn [b]
-          (each [_ [platform target] (ipairs platforms)]
-            (let [dir (build-dir b platform)]
+          (each [_ [platform target extra] (ipairs platforms)]
+            (let [dir (build-dir b platform)
+                  args ["../configure" (.. "--prefix=" b.prefix) (.. "--with-platform=" platform) (.. "--target=" target)
+                        "--disable-nls" "--disable-werror" "--disable-efiemu" "--disable-device-mapper"
+                        "--disable-grub-mkfont" "--disable-grub-themes" "--disable-grub-mount" "--disable-libzfs"
+                        "--disable-liblzma"]]
+              (each [_ arg (ipairs extra)]
+                (table.insert args arg))
               (b:mkdir dir)
-              (b:run ["../configure" (.. "--prefix=" b.prefix) (.. "--with-platform=" platform) (.. "--target=" target)
-                      "--disable-nls" "--disable-werror" "--disable-efiemu" "--disable-device-mapper"
-                      "--disable-grub-mkfont" "--disable-grub-themes" "--disable-grub-mount" "--disable-libzfs"
-                      "--disable-liblzma"]
-                     {:cwd dir})
+              (b:run args {:cwd dir})
               (b:run ["make" "-j" (tostring b.jobs)] {:cwd dir}))))
  :install (fn [b]
             (each [_ [platform] (ipairs platforms)]
