@@ -25,4 +25,19 @@ swamp data query 'modelName == "dojo" && specName == "build" && attributes.statu
 swamp data query 'modelName == "dojo" && name == "log-zlib"' --select content
 ```
 
+## Bootstrapping the base set
+
+`bootstrap` is one pass of the base set's bootstrap. It rebuilds the `backline` plan, the base tools
+every build may run without declaring them, from the packages installed now. Then it rebuilds every
+base plan with `isolate`, `refuseHostPaths` and that backline: each build sees only its own
+dependencies and the backline, and a package that names the build machine's files fails. The
+backline pins the releases it was built against, so a pass builds with the previous pass's tools,
+and running `bootstrap` again is the next pass.
+
+```sh
+plans=$(sed -n 's|^dojo-plans/\([^ ]*\).*|\1|p' ../base-plans.txt | grep -vx backline \
+  | awk '!seen[$0]++ { printf "%s\"%s\"", (n++ ? "," : ""), $0 }')
+swamp workflow run bootstrap --input "{\"plans\": [${plans}]}"
+```
+
 The extension's tests run with swamp's Deno: `~/.swamp/deno/deno test --allow-all extensions/behaviors`.
