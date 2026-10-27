@@ -115,6 +115,7 @@ libcap
 libmpc
 libsodium-musl
 libtool
+linux
 linux-headers
 linux-headers-musl
 m4
