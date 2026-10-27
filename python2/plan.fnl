@@ -1,5 +1,7 @@
 ;; python2, ported from its plan.sh.
 ;; Built from the python plan, with its own changes.
+;; _ssl is not built in from Modules/Setup: Python 2.7 does not build against OpenSSL 3 or
+;; later, and setup.py goes on without it.
 ;; Python 2.7.18, the final 2.x release, compiled as C17: gcc 16 defaults to C23, where bool is a keyword.
 {:name "python2"
  :origin "karate"
@@ -22,14 +24,6 @@
             (each [n l (ipairs lines)]
               (var line l) (var deleted false) (local after [])
               (when (not deleted) (set line (pick-values 1 (string.gsub line "#zlib" "zlib" 1))))
-              (when (not deleted) (table.insert out line))
-              (each [_ x (ipairs after)] (table.insert out x)))
-            (b:write (b:join b.src "Modules/Setup.dist") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          (let [text (b:read (b:join b.src "Modules/Setup.dist")) ends (= (text:sub -1) "\n") lines [] out []]
-            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l) (var deleted false) (local after [])
-              (when (not deleted) (when (or (string.find line "SSL=") (string.find line "_ssl") (string.find line "%-DUSE_SSL") (string.find line "%-lssl")) (set line (pick-values 1 (string.gsub line "^#" "" 1)))))
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
             (b:write (b:join b.src "Modules/Setup.dist") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))

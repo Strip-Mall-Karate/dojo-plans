@@ -153,6 +153,9 @@
           (b:copy (b:join b.src "LICENSE") (.. b.prefix "/share/licenses/LICENSE"))
           (b:chmod (.. b.prefix "/share/licenses/LICENSE") "644")
           (b:remove (.. b.prefix "/src/*.bat"))
+          ;; The source tree is source: its test and generator scripts name /usr/bin/perl and
+          ;; /bin/rc, and none of them is a command of this package.
+          (b:run ["find" (.. b.prefix "/src") "-type" "f" "-perm" "/111" "-exec" "chmod" "a-x" "{}" "+"])
           (if (b:exists (.. b.prefix "/pkg/include"))
             (b:copy (.. b.prefix "/src/runtime") (b:join (.. b.prefix "/pkg/include") (: (.. b.prefix "/src/runtime") :match "[^/]+$")))
             (b:copy (.. b.prefix "/src/runtime") (.. b.prefix "/pkg/include"))))

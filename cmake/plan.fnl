@@ -21,7 +21,7 @@
           (var v-curl (b:path_for "karate/curl"))
           (var v-curl-lib (.. v-curl "/lib"))
           (var v-curl-include (.. v-curl "/include"))
-          (b:run ["./bootstrap" (.. "--prefix=" b.prefix) (.. "--parallel=" (tostring b.jobs)) "--system-curl" "--" (.. "-DZLIB_LIBRARY:FILEPATH=" v-zlib-lib "/libz.so") (.. "-DZLIB_INCLUDE_DIR:PATH=" v-zlib-include) (.. "-DCURL_LIBRARY:FILEPATH=" v-curl-lib "/libcurl.so") (.. "-DCURL_INCLUDE_DIR:PATH=" v-curl-include)])
+          (b:run ["./bootstrap" (.. "--prefix=" b.prefix) (.. "--parallel=" (tostring b.jobs)) "--system-curl" "--" "-DHAVE_EFTYPE:INTERNAL=0" (.. "-DZLIB_LIBRARY:FILEPATH=" v-zlib-lib "/libz.so") (.. "-DZLIB_INCLUDE_DIR:PATH=" v-zlib-include) (.. "-DCURL_LIBRARY:FILEPATH=" v-curl-lib "/libcurl.so") (.. "-DCURL_INCLUDE_DIR:PATH=" v-curl-include)])
           (b:run ["make" "-j" (tostring b.jobs)]))
  :check (fn [b]
           (b:run ["make" "test"]))}

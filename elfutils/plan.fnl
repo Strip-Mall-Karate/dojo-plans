@@ -10,7 +10,7 @@
  :upstream_url "https://sourceware.org/elfutils/"
  :source {:url "https://sourceware.org/elfutils/ftp/0.197/elfutils-0.197.tar.bz2" :sha256 "1fdf525f22dcf796d99a99ba3ea00a1f7b1ae5421bc62e8443a708920b99b904"}
  :deps ["karate/glibc" "karate/zlib" "karate/gcc-libs"]
- :build_deps ["karate/gcc" "karate/glibc" "karate/m4" "karate/make" "karate/zlib"]
+ :build_deps ["karate/gcc" "karate/glibc" "karate/m4" "karate/make" "karate/zlib" "karate/pkg-config"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :include_dirs ["include"]
