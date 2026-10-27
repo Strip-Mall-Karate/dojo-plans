@@ -42,7 +42,7 @@
  :upstream_url "https://www.gnu.org/software/libc"
  :source {:url "https://ftp.gnu.org/gnu/glibc/glibc-2.44.tar.xz" :sha256 "37f600f2bef3c5e8300147059568b2a2e40a7ad6ccc65ce942556d49429cc667"}
  :deps ["karate/linux-headers"]
- :build_deps ["karate/coreutils" "karate/bison" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/perl"]
+ :build_deps ["karate/coreutils" "karate/bison" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/perl" "karate/python"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :include_dirs ["include"]
