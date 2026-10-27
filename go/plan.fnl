@@ -94,9 +94,9 @@
           (b:copy (b:join b.src "LICENSE") (.. b.prefix "/share/licenses/LICENSE"))
           (b:chmod (.. b.prefix "/share/licenses/LICENSE") "644")
           (b:remove (.. b.prefix "/src/*.bat"))
-          ;; The source tree is source: its test and generator scripts name /usr/bin/perl and
-          ;; /bin/rc, and none of them is a command of this package.
-          (b:run ["find" (.. b.prefix "/src") "-type" "f" "-perm" "/111" "-exec" "chmod" "a-x" "{}" "+"])
+          ;; The source tree and misc are source: their scripts name /usr/bin/perl, /bin/rc and
+          ;; /bin/bash, and none of them is a command of this package.
+          (b:run ["find" (.. b.prefix "/src") (.. b.prefix "/misc") "-type" "f" "-perm" "/111" "-exec" "chmod" "a-x" "{}" "+"])
           ;; Test data includes programs linked for the build machine's /lib64.
           (b:run ["find" (.. b.prefix "/src") "-type" "d" "-name" "testdata" "-prune" "-exec" "rm" "-rf" "{}" "+"])
           (if (b:exists (.. b.prefix "/pkg/include"))
