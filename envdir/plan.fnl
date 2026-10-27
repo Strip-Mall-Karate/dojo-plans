@@ -16,7 +16,7 @@
  :unpack (fn [b]
           nil)
  :prepare (fn [b]
-          (b:run ["pyvenv" b.prefix])
+          (b:run ["python3" "-m" "venv" b.prefix])
           (b:env "VIRTUAL_ENV" (: (.. b.prefix "/bin/activate") :gsub "/bin/activate$" ""))
           (b:env "PATH" (.. (: (.. b.prefix "/bin/activate") :gsub "/bin/activate$" "") "/bin:" (or (b:getenv "PATH") ""))))
  :build (fn [b]
