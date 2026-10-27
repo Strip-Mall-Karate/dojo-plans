@@ -1,0 +1,51 @@
+Name = "dojo-plans"
+Description = "Dojo Plans: Fennel package plans that doj-plan-build loads, and the tools that port and check them"
+Languages = ["Shell"]
+MasterBranch = "main"
+BaseDir = "."
+Domain = ""
+UnityProject = ""
+Namespace = ""
+Owner = "smk"
+TfStateStorageAccount = ""
+SsmPrefix = ""
+BaseDomain = ""
+Features = ["nixshell"]
+BootstrapComplete = true
+BootstrapOnly = ["src/.*", "public/.*"]
+# Patch-note labels are for games' release notes; plans have none.
+Exclusions = ["/patch-labels\\.json$"]
+# smk's text plus a rule smk's lacks: a *.patch file keeps its trailing whitespace.
+ProtectedFiles = [".editorconfig"]
+[Ci]
+Provider = ""
+[Ci.Settings]
+[Issue]
+Provider = "workq"
+# One project for every repository's work items, as the other smk repositories declare it.
+Project = "SMK"
+Label = "dojo-plans"
+Workspace = "smk"
+[Format]
+# swamp/ keeps its own Deno toolchain and formatter. A plan directory holds a package's plan, which
+# tools/port generates from the inherited bash, and that package's inherited hooks, configuration
+# templates, tests, patches and documentation: data the plan carries, not this repository's code, and
+# much of it Handlebars templates no formatter can parse. smk formats and lints the code under tools/
+# and the repository's root.
+Exclude = [
+  "swamp/**",
+  "*/plan.fnl", "*/README.md", "*/README.MD", "*/default.toml", "*/*.patch",
+  "*/tests/**", "*/test/**", "*/hooks/**", "*/config/**", "*/patches/**", "*/lib/**", "*/doc/**",
+  "*/static/**", "*/libexec/**", "*/x86_64-linux-kernel2/**",
+  "*/*.sh", "*/*.bat", "*/*.h", "*/*.properties", "*/.gitignore", "*/.studiorc", "*/config",
+  "*/project.json", "*/docker-compose.yml", "*/TODO.txt", "*/CHANGELOG.md", "*/Gemfile", "*/zprofile",
+  # The inherited licence, plan template and Xorg notes, and the Xorg build order's data.
+  "LICENSE-APACHE", "README_TEMPLATE_FOR_PLANS.md", "XORG_README.md", "xorg_build_order",
+  # The port tools leave with the last plan.sh (tools/port/README.md); written untyped, they would need
+  # 615 annotations for mypy --strict, and smk cannot lint a path without type-checking it.
+  "tools/port/**",
+]
+[License]
+Kind = "MIT"
+Holder = "Strip Mall Karate Company"
+Year = 2026

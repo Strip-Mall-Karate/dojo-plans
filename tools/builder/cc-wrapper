@@ -13,17 +13,17 @@ real="/usr/bin/${name}"
 linking=yes
 for arg in "$@"; do
   case "${arg}" in
-    -c | -S | -E | -M | -MM) linking=no ;;
-    # musl-gcc links against musl, with its own dynamic linker.
-    *musl-gcc.specs) linking=no ;;
+  -c | -S | -E | -M | -MM) linking=no ;;
+  # musl-gcc links against musl, with its own dynamic linker.
+  *musl-gcc.specs) linking=no ;;
   esac
 done
 
 linker=""
 if [[ "${linking}" == yes ]]; then
   # The glibc's lib directory: from LD_RUN_PATH, else a -L in the arguments or LDFLAGS.
-  IFS=: read -ra dirs <<< "${LD_RUN_PATH:-}"
-  read -ra ldflags <<< "${LDFLAGS:-}"
+  IFS=: read -ra dirs <<<"${LD_RUN_PATH:-}"
+  read -ra ldflags <<<"${LDFLAGS:-}"
   for arg in "$@" "${ldflags[@]}"; do
     if [[ "${arg}" == -L* ]]; then dirs+=("${arg#-L}"); fi
   done

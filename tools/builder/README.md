@@ -9,17 +9,17 @@ buildq, so the container is capped at 16 CPUs and 32 GB and every build runs und
 Run `tools/builder/builder` from a dojo-plans checkout on the Mac. `DOJO_BUILD_HOST` names another
 box.
 
-| Command | What it does |
-| --- | --- |
-| `image` | Builds the `dojo-builder` image on the host from `Containerfile` and `doj` |
-| `start` | Starts the container, with `/doj` in the `dojo-root` volume and `~/dojo-builder` at `/work` |
-| `sync` | Unpacks this checkout's committed `HEAD` into `/work/plans`, keeping swamp's data and results |
-| `tools <dojo-checkout>` | Builds `doj-plan-build` from that checkout's committed `components/plan` |
-| `dojo <dojo-checkout>` | Unpacks that checkout's committed `HEAD` into `/work/dojo`, for building Dojo's own component plans |
-| `standins` | Gives every base plan an empty `0.0.0` package, so a first build resolves its dependencies |
-| `run <command>...` | Runs a command in the container, from `/work/plans/swamp`, under `nice` |
-| `shell` | A shell in the container |
-| `stop`, `remove` | Stops the container; removes it and the `/doj` volume |
+| Command                 | What it does                                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| `image`                 | Builds the `dojo-builder` image on the host from `Containerfile` and `doj`                          |
+| `start`                 | Starts the container, with `/doj` in the `dojo-root` volume and `~/dojo-builder` at `/work`         |
+| `sync`                  | Unpacks this checkout's committed `HEAD` into `/work/plans`, keeping swamp's data and results       |
+| `tools <dojo-checkout>` | Builds `doj-plan-build` from that checkout's committed `components/plan`                            |
+| `dojo <dojo-checkout>`  | Unpacks that checkout's committed `HEAD` into `/work/dojo`, for building Dojo's own component plans |
+| `standins`              | Gives every base plan an empty `0.0.0` package, so a first build resolves its dependencies          |
+| `run <command>...`      | Runs a command in the container, from `/work/plans/swamp`, under `nice`                             |
+| `shell`                 | A shell in the container                                                                            |
+| `stop`, `remove`        | Stops the container; removes it and the `/doj` volume                                               |
 
 From nothing: `image`, `start`, `sync`, `tools <dojo-checkout>`, `standins`. After a commit: `sync`.
 
@@ -37,4 +37,4 @@ From nothing: `image`, `start`, `sync`, `tools <dojo-checkout>`, `standins`. Aft
   writes the file it is asked to sign with a header line, not a signature, until Dojo's own `doj`
   builds with the current toolchain. The origin key in `/doj/cache/keys` is an empty placeholder.
 - **swamp needs a swamp-club.com account.** Sign in once with `builder shell` and `swamp auth
-  login`. The credential is kept in `~/dojo-builder/home` on the host.
+login`. The credential is kept in `~/dojo-builder/home` on the host.

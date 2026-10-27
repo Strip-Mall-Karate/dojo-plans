@@ -46,9 +46,7 @@ plan_path = "bash"
 plan_path = "bash-completion"
 [bash-static]
 plan_path = "bash-static"
-paths = [
-  "bash/*",
-]
+paths = ["bash/*"]
 [bats]
 plan_path = "bats"
 [bazel]
@@ -59,14 +57,10 @@ plan_path = "bc"
 plan_path = "bdwgc"
 [bdwgc7]
 plan_path = "bdwgc7"
-paths = [
-  "bdwgc/*",
-]
+paths = ["bdwgc/*"]
 [bdwgc8]
 plan_path = "bdwgc8"
-paths = [
-  "bdwgc/*",
-]
+paths = ["bdwgc/*"]
 [benchmark]
 plan_path = "benchmark"
 [bind]
@@ -93,16 +87,12 @@ plan_path = "bundler"
 plan_path = "busybox"
 [busybox-static]
 plan_path = "busybox-static"
-paths = [
-  "busybox/*",
-]
+paths = ["busybox/*"]
 [bzip2]
 plan_path = "bzip2"
 [bzip2-musl]
 plan_path = "bzip2-musl"
-paths = [
-  "bzip2/*",
-]
+paths = ["bzip2/*"]
 [c-ares]
 plan_path = "c-ares"
 [cabal-install]
@@ -149,16 +139,12 @@ plan_path = "consul"
 plan_path = "coreutils"
 [coreutils-static]
 plan_path = "coreutils-static"
-paths = [
-  "coreutils/*",
-]
+paths = ["coreutils/*"]
 [corretto]
 plan_path = "corretto"
 [corretto8]
 plan_path = "corretto8"
-paths = [
-  "corretto/*",
-]
+paths = ["corretto/*"]
 [cpanminus]
 plan_path = "cpanminus"
 [cpio]
@@ -173,18 +159,14 @@ plan_path = "cpputest"
 plan_path = "cuda"
 [cuda-libs]
 plan_path = "cuda-libs"
-paths = [
-  "cuda/*"
-]
+paths = ["cuda/*"]
 [curator]
 plan_path = "curator"
 [curl]
 plan_path = "curl"
 [curl-static-musl]
 plan_path = "curl-static-musl"
-paths = [
-  "curl/*",
-]
+paths = ["curl/*"]
 [cyrus-sasl]
 plan_path = "cyrus-sasl"
 [damageproto]
@@ -307,9 +289,7 @@ plan_path = "gawk"
 plan_path = "gcc"
 [gcc-libs]
 plan_path = "gcc-libs"
-paths = [
-  "gcc/*",
-]
+paths = ["gcc/*"]
 [gdal]
 plan_path = "gdal"
 [gdb]
@@ -330,14 +310,10 @@ plan_path = "ghc"
 plan_path = "ghc82-bootstrap"
 [ghc82]
 plan_path = "ghc82"
-paths = [
-  "ghc/*",
-]
+paths = ["ghc/*"]
 [ghc84]
 plan_path = "ghc84"
-paths = [
-  "ghc/*",
-]
+paths = ["ghc/*"]
 [giflib]
 plan_path = "giflib"
 [gifsicle]
@@ -350,9 +326,7 @@ plan_path = "github_changelog_generator"
 plan_path = "glib"
 [glibc]
 plan_path = "glibc"
-paths = [
-  "tzdata/*",
-]
+paths = ["tzdata/*"]
 [glproto]
 plan_path = "glproto"
 [gmp]
@@ -363,9 +337,7 @@ plan_path = "gnatsd"
 plan_path = "gnupg"
 [gnupg-static]
 plan_path = "gnupg-static"
-paths = [
-  "gnupg/*",
-]
+paths = ["gnupg/*"]
 [gnuplot]
 plan_path = "gnuplot"
 [gnutls]
@@ -500,29 +472,19 @@ plan_path = "kubectl"
 plan_path = "kubernetes"
 [kubernetes-apiserver]
 plan_path = "kubernetes-apiserver"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [kubernetes-controller-manager]
 plan_path = "kubernetes-controller-manager"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [kubernetes-kubelet]
 plan_path = "kubernetes-kubelet"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [kubernetes-proxy]
 plan_path = "kubernetes-proxy"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [kubernetes-scheduler]
 plan_path = "kubernetes-scheduler"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [lcms2]
 plan_path = "lcms2"
 [leiningen]
@@ -539,9 +501,7 @@ plan_path = "libaio"
 plan_path = "libarchive"
 [libarchive-musl]
 plan_path = "libarchive-musl"
-paths = [
-  "libarchive/*",
-]
+paths = ["libarchive/*"]
 [libassuan]
 plan_path = "libassuan"
 [libatomic_ops]
@@ -620,9 +580,7 @@ plan_path = "libpthread-stubs"
 plan_path = "libressl"
 [libressl-musl]
 plan_path = "libressl-musl"
-paths = [
-  "libressl/*",
-]
+paths = ["libressl/*"]
 [libscrypt]
 plan_path = "libscrypt"
 [libseccomp]
@@ -633,9 +591,7 @@ plan_path = "libsm"
 plan_path = "libsodium"
 [libsodium-musl]
 plan_path = "libsodium-musl"
-paths = [
-  "libsodium/*",
-]
+paths = ["libsodium/*"]
 [libssh2]
 plan_path = "libssh2"
 [libtalloc]
@@ -774,9 +730,7 @@ plan_path = "minio"
 plan_path = "mksh"
 [monit]
 plan_path = "monit"
-paths = [
-  "monit/*",
-]
+paths = ["monit/*"]
 [mongo-tools]
 plan_path = "mongo-tools"
 [mongodb]
@@ -815,9 +769,7 @@ plan_path = "ncdu"
 plan_path = "ncurses"
 [ncurses5]
 plan_path = "ncurses5"
-paths = [
-  "ncurses/*",
-]
+paths = ["ncurses/*"]
 [net-tools]
 plan_path = "net-tools"
 [netcat]
@@ -842,9 +794,7 @@ plan_path = "nmap"
 plan_path = "node"
 [node6]
 plan_path = "node6"
-paths = [
-  "node/*",
-]
+paths = ["node/*"]
 [node_exporter]
 plan_path = "node_exporter"
 [npth]
@@ -879,9 +829,7 @@ plan_path = "openssh"
 plan_path = "openssl"
 [openssl-musl]
 plan_path = "openssl-musl"
-paths = [
-  "openssl/*",
-]
+paths = ["openssl/*"]
 [openvpn]
 plan_path = "openvpn"
 [optipng]
@@ -932,9 +880,7 @@ plan_path = "postfix"
 plan_path = "postgresql"
 [postgresql-client]
 plan_path = "postgresql-client"
-paths = [
-  "postgresql/*",
-]
+paths = ["postgresql/*"]
 [procps-ng]
 plan_path = "procps-ng"
 [proj]
@@ -961,9 +907,7 @@ plan_path = "pv"
 plan_path = "python"
 [python2]
 plan_path = "python2"
-paths = [
-  "python/*"
-]
+paths = ["python/*"]
 [qemu]
 plan_path = "qemu"
 [R]
@@ -988,14 +932,10 @@ plan_path = "recordproto"
 plan_path = "redis"
 [redis3]
 plan_path = "redis3"
-paths = [
-  "redis/*",
-]
+paths = ["redis/*"]
 [redis4]
 plan_path = "redis4"
-paths = [
-  "redis/*",
-]
+paths = ["redis/*"]
 [relx]
 plan_path = "relx"
 [renderproto]
@@ -1018,9 +958,7 @@ plan_path = "rngd"
 plan_path = "rpm"
 [rpm2cpio]
 plan_path = "rpm2cpio"
-paths = [
-  "rpm2cpio/*"
-]
+paths = ["rpm2cpio/*"]
 [rq]
 plan_path = "rq"
 [rsync]
@@ -1171,9 +1109,7 @@ plan_path = "wal-e"
 plan_path = "wget"
 [wget-static]
 plan_path = "wget-static"
-paths = [
-  "wget/*",
-]
+paths = ["wget/*"]
 [which]
 plan_path = "which"
 [wordpress]
@@ -1198,9 +1134,7 @@ plan_path = "xtrans"
 plan_path = "xz"
 [xz-musl]
 plan_path = "xz-musl"
-paths = [
-  "xz/*",
-]
+paths = ["xz/*"]
 [yaml-cpp]
 plan_path = "yaml-cpp"
 [yarn]
@@ -1215,9 +1149,7 @@ plan_path = "zip"
 plan_path = "zlib"
 [zlib-musl]
 plan_path = "zlib-musl"
-paths = [
-  "zlib/*",
-]
+paths = ["zlib/*"]
 [zookeeper]
 plan_path = "zookeeper"
 [zsh]

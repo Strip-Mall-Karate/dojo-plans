@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# smk { overwrite: false }
+#########################################################################
+#
+#                 -- Generated with smk --
+#      (do not edit unless you know what you're doing)
+#
+#########################################################################
+#
+# Run the unittest suite from the repo root. With no arguments unittest discovers every test*.py
+# in a package (a directory with __init__.py) under the root; arguments go to `python3 -m unittest`,
+# e.g. `bin/test tests.test_parse`.
+#
+# Exit: unittest's own. Python 3.12 and later exit 5 when no test ran, so an empty suite fails.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+
+# shellcheck source-path=SCRIPTDIR source=lib/root.sh
+source "$SCRIPT_DIR/lib/root.sh"
+
+cd "$WORKSPACE"
+exec python3 -m unittest "$@"
