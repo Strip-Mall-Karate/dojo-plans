@@ -1,26 +1,27 @@
 ;; handlebars-cmd, ported from its plan.sh.
-{:name "handlebars-cmd"
- :origin "karate"
- :version "0.1.4"
- :targets ["x86_64-linux"]
+{:name :handlebars-cmd
+ :origin :karate
+ :version :0.1.4
+ :targets [:x86_64-linux]
  :maintainer "Strip Mall Karate Company"
- :license ["MIT"]
+ :license [:MIT]
  :description "handlebars command-line tool."
  :upstream_url "https://github.com/DavidBabel/handlebars-cmd"
- :deps ["karate/coreutils" "karate/node"]
- :build_deps ["karate/git"]
- :bin_dirs ["bin"]
+ :deps [:karate/coreutils :karate/node]
+ :build_deps [:karate/git]
+ :bin_dirs [:bin]
  :download (fn [b]
-          nil)
+             nil)
  :verify (fn [b]
-          nil)
+           nil)
  :unpack (fn [b]
-          nil)
+           nil)
  :prepare (fn [b]
-          (b:run ["npm" "config" "set" "progress" "false"])
-          (b:run ["npm" "config" "set" "prefix" b.prefix]))
+            (b:run [:npm :config :set :progress :false])
+            (b:run [:npm :config :set :prefix b.prefix]))
  :build (fn [b]
           nil)
  :install (fn [b]
-          (b:run ["npm" "install" "-g" (.. "DavidBabel/" b.name "#bc510fc")])
-          (b:fix_interpreter [(.. b.prefix "/bin/handlebars")] "karate/coreutils" "bin/env"))}
+            (b:run [:npm :install :-g (.. :DavidBabel/ b.name "#bc510fc")])
+            (b:fix_interpreter [(.. b.prefix :/bin/handlebars)]
+                               :karate/coreutils :bin/env))}
