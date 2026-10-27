@@ -92,6 +92,7 @@ coreutils
 db
 dejagnu
 diffutils
+e2fsprogs
 expat
 expect
 file

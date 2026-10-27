@@ -1,7 +1,14 @@
 ;; grub, ported from its plan.sh.
-;; grub 2.14, the latest release on 2026-10-26: 2.02's source no longer downloads.
-;; The plan's do_setup and the do_after cleanup it armed are not ported: the source
-;; project's builder never called do_setup, so neither ever ran.
+;; grub 2.14, the latest release on 2026-10-26: 2.02's source no longer downloads. Written by hand.
+;; One package with both of an x86_64 machine's boot paths: i386-pc for BIOS and
+;; x86_64-efi for UEFI, each configured in its own directory and installed into the same
+;; prefix, where grub-install --target picks one. Device mapper, fonts, themes, FUSE and
+;; NLS are left out: a Dojo disk is a plain partition table and a serial console.
+(local platforms [["pc" "i386"] ["efi" "x86_64"]])
+
+(fn build-dir [b platform]
+  (b:join b.src (.. "build-" platform)))
+
 {:name "grub"
  :origin "karate"
  :version "2.14"
@@ -11,24 +18,22 @@
  :description "GNU GRUB is a Multiboot boot loader."
  :upstream_url "https://www.gnu.org/software/grub/"
  :source {:url "https://ftp.gnu.org/gnu/grub/grub-2.14.tar.xz" :sha256 "bc8d3c73535b8838d8c8e2654d73edc4e6ae8c8acdb45d5df5dc9a1547446d43"}
- :deps ["karate/glibc" "karate/xz" "karate/gettext" "karate/pcre" "karate/gcc-libs" "karate/devicemapper" "karate/elfutils" "karate/bzip2" "karate/libcap"]
- :build_deps ["karate/autoconf" "karate/automake" "karate/binutils" "karate/bison" "karate/cacerts" "karate/diffutils" "karate/dosfstools" "karate/flex" "karate/freetype" "karate/gcc" "karate/gettext" "karate/git" "karate/m4" "karate/make" "karate/python" "karate/qemu" "karate/rsync" "karate/texinfo" "karate/patch"]
+ :deps ["karate/glibc" "karate/gcc-libs"]
+ :build_deps ["karate/binutils" "karate/bison" "karate/flex" "karate/gcc" "karate/make" "karate/python" "karate/pkg-config"]
  :bin_dirs ["bin" "sbin"]
- :prepare (fn [b]
-          (b:run ["patch" "-Np1" "-i" (.. b.plan_dir "/patches/001-fix-packed-not-aligned-error-on-GCC-8.patch")]))
  :build (fn [b]
-          (let [text (b:read (b:join b.src "autogen.sh")) ends (= (text:sub -1) "\n") lines [] out []]
-            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l) (var deleted false) (local after [])
-              (when (not deleted) (set line (pick-values 1 (string.gsub line "#! /usr/bin/env bash" "#!/bin/bash" 1))))
-              (when (not deleted) (table.insert out line))
-              (each [_ x (ipairs after)] (table.insert out x)))
-            (b:write (b:join b.src "autogen.sh") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          (b:run ["./linguas.sh"])
-          (b:run ["./autogen.sh"])
-          (b:run ["./configure" (.. "--prefix=" b.prefix) "--with-bootdir=/boot" "--target=x86_64" "--enable-efiemu" "--enable-mm-debug" "--enable-nls" "--enable-device-mapper" "--enable-cache-stats" "--enable-boot-time" "--enable-grub-mkfont" "--with-grubdir=grub" "--disable-silent-rules" "--disable-werror"])
-          (b:run ["make" "-j" (tostring b.jobs)]))
- :check (fn [b]
-          (b:run ["make" "-j" (tostring b.jobs) "check"]))
-}
+          (each [_ [platform target] (ipairs platforms)]
+            (let [dir (build-dir b platform)]
+              (b:mkdir dir)
+              (b:run ["../configure" (.. "--prefix=" b.prefix) (.. "--with-platform=" platform) (.. "--target=" target)
+                      "--disable-nls" "--disable-werror" "--disable-efiemu" "--disable-device-mapper"
+                      "--disable-grub-mkfont" "--disable-grub-themes" "--disable-grub-mount" "--disable-libzfs"
+                      "--disable-liblzma"]
+                     {:cwd dir})
+              (b:run ["make" "-j" (tostring b.jobs)] {:cwd dir}))))
+ :install (fn [b]
+            (each [_ [platform] (ipairs platforms)]
+              (b:run ["make" "install"] {:cwd (build-dir b platform)})))
+ ;; grub-install strips the modules it needs as it installs them; a strip here would
+ ;; take the symbols the boot images link by.
+ :strip (fn [b] nil)}
