@@ -15,7 +15,9 @@
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :build (fn [b]
-          (b:run ["meson" "setup" "_build" (.. "--prefix=" b.prefix) "--libdir=lib" "--buildtype=release" "-Ddocs=disabled"])
+          (b:run ["meson" "setup" "_build" (.. "--prefix=" b.prefix) "--libdir=lib" "--buildtype=release" "-Ddocs=disabled"
+                  ;; Its default vendor directory is /usr/share/pam.
+                  (.. "-Dvendordir=" b.prefix "/share/pam")])
           (b:run ["ninja" "-C" "_build"]))
  :install (fn [b]
           (b:run ["ninja" "-C" "_build" "install"]))}

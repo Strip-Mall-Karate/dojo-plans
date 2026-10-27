@@ -9,7 +9,7 @@
  :description "inotify-tools is a C library and a set of command-line programs for Linux providing a simple interface to inotify. These programs can be used to monitor and act upon filesystem events."
  :upstream_url "https://github.com/inotify-tools/inotify-tools"
  :source {:url "https://github.com/inotify-tools/inotify-tools/archive/refs/tags/4.25.9.0.tar.gz" :sha256 "d33a4fd24c72c2d08893f129d724adf725b93dae96c359e4f4e9f32573cc853b" :filename "inotify-tools-4.25.9.0.tar.gz"}
- :deps ["karate/glibc"]
+ :deps ["karate/glibc" "karate/gcc-libs"]
  :build_deps ["karate/autoconf" "karate/automake" "karate/gcc" "karate/libtool" "karate/make"]
  :bin_dirs ["bin"]
  :build (fn [b]
