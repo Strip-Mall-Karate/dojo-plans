@@ -1,8 +1,8 @@
 ;; python2, ported from its plan.sh.
+;; Python 2.7.18, the final 2.x release, compiled as C17: gcc 16 defaults to C23, where bool is a keyword.
 ;; Built from the python plan, with its own changes.
 ;; _ssl is not built in from Modules/Setup: Python 2.7 does not build against OpenSSL 3 or
 ;; later, and setup.py goes on without it.
-;; Python 2.7.18, the final 2.x release, compiled as C17: gcc 16 defaults to C23, where bool is a keyword.
 {:name "python2"
  :origin "karate"
  :version "2.7.18"
