@@ -16,6 +16,8 @@
  :include_dirs ["include"]
  :prepare (fn [b]
           (b.default.prepare b)
+          ;; Plans that build with it find its m4 macros: aclocal reads ACLOCAL_PATH.
+          (b:buildtime_env_push "ACLOCAL_PATH" (.. b.prefix "/share/aclocal"))
           ;; The plan named $(libtoolize_1), which no plan defines, so the shell put nothing
           ;; there: the man page is dropped, and help2man with it.
           (let [text (b:read (b:join b.src "Makefile.in"))]

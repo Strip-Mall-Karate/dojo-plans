@@ -12,6 +12,10 @@
  :deps ["karate/glibc"]
  :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
  :bin_dirs ["bin"]
+ :prepare (fn [b]
+          (b.default.prepare b)
+          ;; Plans that build with it find its m4 macros: aclocal reads ACLOCAL_PATH.
+          (b:buildtime_env_push "ACLOCAL_PATH" (.. b.prefix "/share/aclocal")))
  :build (fn [b]
           ;; The glib 0.29.2 bundles names a struct member bool, a keyword in C23, gcc 15's and
           ;; 16's default.

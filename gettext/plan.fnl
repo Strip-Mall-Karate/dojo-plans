@@ -16,6 +16,8 @@
  :include_dirs ["include"]
  :prepare (fn [b]
           (b.default.prepare b)
+          ;; Plans that build with it find its m4 macros: aclocal reads ACLOCAL_PATH.
+          (b:buildtime_env_push "ACLOCAL_PATH" (.. b.prefix "/share/aclocal"))
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/disable-test.patch")]))
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix)])
