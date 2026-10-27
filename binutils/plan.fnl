@@ -58,7 +58,7 @@
           (b:log (.. "Updating CXXFLAGS=" (or (b:getenv "CXXFLAGS") "")))
           (b:env "CPPFLAGS" (or (b:getenv "CFLAGS") ""))
           (b:log (.. "Updating CPPFLAGS=" (or (b:getenv "CPPFLAGS") "")))
-          (set v-bash "/bin/bash")
+          (set v-bash "/bin/sh")
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/dt-needed-true.patch")])
           (b:run ["patch" "-p1" "-i" (.. b.plan_dir "/more-deterministic-output.patch")])
           (b:write (b:join b.src "ld/configure.tgt") (.. (if (b:exists (b:join b.src "ld/configure.tgt")) (b:read (b:join b.src "ld/configure.tgt")) "") "NATIVE_LIB_DIRS=\n"))

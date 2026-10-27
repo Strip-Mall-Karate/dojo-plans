@@ -56,7 +56,8 @@ swamp behavior run dojo build --input plan=zlib
     package is still installed.
   - A plan is blocked, not built, when a plan it depends on failed or was blocked. With a `runId`
     only failures from the same run block it, so one run's failure does not hold back the next.
-  - `force` builds regardless. `check` runs the plan's check phase.
+  - `force` builds regardless. `check` runs the plan's check phase. `refuseHostPaths` fails a
+    package that names the build machine's files (`doj-plan-build --refuse-host-paths`).
 
 A failed build writes its log and its record and then fails the method, with the end of the log in
 the error.

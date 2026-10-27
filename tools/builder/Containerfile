@@ -6,6 +6,9 @@ ARG BUILDER_UID=1000
 ARG BUILDER_GID=1000
 
 ENV DEBIAN_FRONTEND=noninteractive
+# configure writes the shell it runs under into the scripts it generates; /bin/sh is on every
+# system, the container's bash is not.
+ENV CONFIG_SHELL=/bin/sh
 # The host tools a base plan's first build uses (its karate build dependencies are empty
 # stand-ins then, so the tools they name come from here), Rust for doj-plan-build, and what
 # the swamp installer and the packager need.
