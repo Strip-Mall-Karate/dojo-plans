@@ -10,7 +10,7 @@
  :upstream_url "https://gitlab.com/procps-ng/procps"
  :source {:url "https://downloads.sourceforge.net/project/procps-ng/Production/procps-ng-4.0.7.tar.xz" :sha256 "9d2021f47a4501c667862c9942a92d1953694b21d11bcd1702e83eb594e3d67d"}
  :deps ["karate/glibc" "karate/ncurses"]
- :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc"]
+ :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/pkg-config"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :include_dirs ["include"]
