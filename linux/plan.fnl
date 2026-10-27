@@ -1,81 +1,51 @@
-;; linux, ported from its plan.sh.
-(var v--pwd-binlink "")
-(fn v-set-ld-library-path [b]
-  (var v-data "")
-  (var v-dep-path "")
-  (var v-ld-library-path-part "")
-  (var v-trimmed "")
-  (set v-ld-library-path-part [])
-  ;; Each build dependency's LD_RUN_PATH, trimmed.
-  (each [_ dep (ipairs ["karate/bc" "karate/bison" "karate/diffutils" "karate/elfutils" "karate/findutils" "karate/gcc"
-                        "karate/inetutils" "karate/make" "karate/perl" "karate/openssl"])]
-    (let [file (.. (b:path_for dep) "/LD_RUN_PATH")]
-      (when (b:exists file)
-        (table.insert v-ld-library-path-part ((b:read file):match "^%s*(.-)%s*$")))))
-  (b:env "LD_LIBRARY_PATH" (table.concat v-ld-library-path-part ":")))
+;; linux, the kernel for a Dojo machine booted from an initramfs.
+;; linux 7.3, the latest release on 2026-10-27, matching linux-headers. Written by hand.
+
+;; Built in, since the kernel loads no modules: what a QEMU or KVM guest needs to reach its
+;; initramfs, console, disk and network.
+(local builtin
+  ["BLK_DEV_INITRD" "RD_GZIP" "DEVTMPFS" "DEVTMPFS_MOUNT"
+   "SERIAL_8250" "SERIAL_8250_CONSOLE"
+   "VIRTIO_MENU" "VIRTIO" "VIRTIO_PCI" "VIRTIO_BLK" "VIRTIO_NET" "VIRTIO_CONSOLE" "HW_RANDOM_VIRTIO"
+   "NET_CORE" "ETHERNET" "NET_VENDOR_INTEL" "E1000" "PACKET" "UNIX" "INET"])
+
 {:name "linux"
  :origin "karate"
- :version "4.16.7"
+ :version "7.3"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["gplv2"]
  :description "The Linux kernel"
  :upstream_url "https://www.kernel.org/"
- :source {:url "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.16.7.tar.xz" :sha256 "d87abef6c5666329194a0005fa8331c0cc03b65383f195442dee8f5558af0139"}
- :deps ["karate/glibc"]
- :build_deps ["karate/bc" "karate/bison" "karate/diffutils" "karate/elfutils" "karate/findutils" "karate/gcc" "karate/inetutils" "karate/make" "karate/perl" "karate/openssl"]
- :download (fn [b]
-          ;; From do_begin.
-          ;; The plan linked coreutils' pwd to /bin/pwd for the build. Linux 4.16.7 names
-          ;; /bin/pwd only in its documentation, so nothing takes its place.
-          (b.default.download b))
- :prepare (fn [b]
-          (b:run ["make" "mrproper"])
-          (if (b:exists (.. b.cache "/" (.. b.name "-" b.version) "/.config"))
-            (b:copy (.. b.plan_dir "/config/config.x86_64") (b:join (.. b.cache "/" (.. b.name "-" b.version) "/.config") (: (.. b.plan_dir "/config/config.x86_64") :match "[^/]+$")))
-            (b:copy (.. b.plan_dir "/config/config.x86_64") (.. b.cache "/" (.. b.name "-" b.version) "/.config"))))
+ :source {:url "https://www.kernel.org/pub/linux/kernel/v7.x/linux-7.3.tar.xz" :sha256 "87363c24f10e06321eb362765521094e94471f6bff8bce2d6b3e40f39f004953" :dirname "linux-7.3"}
+ :build_deps ["karate/bc" "karate/bison" "karate/flex" "karate/diffutils" "karate/elfutils" "karate/zlib"
+              "karate/findutils" "karate/gcc" "karate/gcc-libs" "karate/make" "karate/perl" "karate/openssl" "karate/gzip"
+              "karate/pkg-config"]
  :build (fn [b]
-          (v-set-ld-library-path b)
-          (let [text (b:read (b:join b.src "Makefile")) ends (= (text:sub -1) "\n") lines [] out []]
-            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l) (var deleted false) (local after [])
-              (when (not deleted) (when (= n 969) (set line (pick-values 1 (string.gsub line "%-xc" (.. (pick-values 1 (: (or (b:getenv "LDFLAGS") "") :gsub "%%" "%%%%")) " -xc") 1)))))
-              (when (not deleted) (table.insert out line))
-              (each [_ x (ipairs after)] (table.insert out x)))
-            (b:write (b:join b.src "Makefile") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          (let [text (b:read (b:join b.src "Makefile")) ends (= (text:sub -1) "\n") lines [] out []]
-            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l) (var deleted false) (local after [])
-              (when (not deleted) (when (= n 367) (set line (pick-values 1 (string.gsub line "$" (.. " " (pick-values 1 (: (or (b:getenv "LDFLAGS") "") :gsub "%%" "%%%%"))) 1)))))
-              (when (not deleted) (table.insert out line))
-              (each [_ x (ipairs after)] (table.insert out x)))
-            (b:write (b:join b.src "Makefile") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          (let [text (b:read (b:join b.src "scripts/Makefile.host")) ends (= (text:sub -1) "\n") lines [] out []]
-            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l) (var deleted false) (local after [])
-              (when (not deleted) (when (= n 87) (set line (pick-values 1 (string.gsub line "$%(hostc_flags%)" "$(hostc_flags) $(HOSTLDFLAGS)" 1)))))
-              (when (not deleted) (table.insert out line))
-              (each [_ x (ipairs after)] (table.insert out x)))
-            (b:write (b:join b.src "scripts/Makefile.host") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          (let [text (b:read (b:join b.src "tools/objtool/Makefile")) ends (= (text:sub -1) "\n") lines [] out []]
-            (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")] (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l) (var deleted false) (local after [])
-              (when (not deleted) (when (= n 50) (set line (pick-values 1 (string.gsub line "$%(LDFLAGS%)" "$(LDFLAGS) $(HOSTLDFLAGS)" 1)))))
-              (when (not deleted) (table.insert out line))
-              (each [_ x (ipairs after)] (table.insert out x)))
-            (b:write (b:join b.src "tools/objtool/Makefile") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" ""))))
-          (b:run ["make" "-j" (tostring b.jobs) "bzImage" "modules"] {:env {"HOST_EXTRACFLAGS" (or (b:getenv "CFLAGS") "")}})
-          (b:unsetenv "LD_LIBRARY_PATH"))
+          ;; Host programs (objtool, extract-cert) link the build dependencies' libraries and
+          ;; run during the build, so they carry those libraries' directories. sorttable's threads
+          ;; make glibc open libgcc_s itself, which only an old-style RPATH reaches.
+          (b:env "HOSTCFLAGS" (or (b:getenv "CFLAGS") ""))
+          (b:env "HOSTLDFLAGS"
+                 (.. (or (b:getenv "LDFLAGS") "") " -Wl,--disable-new-dtags,-rpath,"
+                     (table.concat (icollect [_ dep (ipairs ["elfutils" "openssl" "zlib" "gcc-libs"])]
+                                     (.. (b:path_for dep) "/lib"))
+                                   ":")))
+          ;; The same kernel from the same source, whoever builds it.
+          (b:env "KBUILD_BUILD_USER" "dojo")
+          (b:env "KBUILD_BUILD_HOST" "dojo")
+          (b:env "KBUILD_BUILD_TIMESTAMP" "1970-01-01")
+          (b:run ["make" "mrproper"])
+          (b:run ["make" "x86_64_defconfig"])
+          (let [args ["scripts/config" "--disable" "MODULES" "--disable" "DEBUG_INFO"
+                      "--enable" "DEBUG_INFO_NONE"]]
+            (each [_ opt (ipairs builtin)]
+              (table.insert args "--enable")
+              (table.insert args opt))
+            (b:run args))
+          (b:run ["make" "olddefconfig"])
+          (b:run ["make" "-j" (tostring b.jobs) "bzImage"]))
  :install (fn [b]
-          (b:run ["make" (.. "INSTALL_MOD_PATH=" b.prefix) "modules_install"])
-          (b:mkdir (.. b.prefix "/boot"))
-          (b:copy (b:join b.src "arch/x86/boot/bzImage") (b:join (.. b.prefix "/boot/") (: (b:join b.src "arch/x86/boot/bzImage") :match "[^/]+$")))
-          (b:run ["find" b.prefix "-type" "l" "-delete"]))
- :strip (fn [b]
-          (b.default.strip b)
-          ;; From do_end.
-          )}
+          (b:mkdir (b:join b.prefix "boot"))
+          (b:copy (b:join b.src "arch/x86/boot/bzImage") (b:join b.prefix "boot/bzImage"))
+          (b:copy (b:join b.src ".config") (b:join b.prefix "boot/config")))}
