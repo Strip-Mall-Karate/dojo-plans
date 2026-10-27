@@ -1,5 +1,15 @@
 ;; procps-ng, ported from its plan.sh.
 ;; procps-ng 4.0.7, the latest release on 2026-10-26.
+;; local/capnames.h is made from the kernel's capability.h, which the Makefile looks for at
+;; /usr/include, with echo -e, which only bash understands: point it at both.
+(fn make-argv [b targets]
+  (let [argv ["make"
+              (.. "LNX_CAP_HEADER=" (b:path_for "linux-headers") "/include/linux/capability.h")
+              (.. "SHELL=" (b:path_for "bash") "/bin/bash")]]
+    (each [_ target (ipairs targets)]
+      (table.insert argv target))
+    argv))
+
 {:name "procps-ng"
  :origin "karate"
  :version "4.0.7"
@@ -10,13 +20,15 @@
  :upstream_url "https://gitlab.com/procps-ng/procps"
  :source {:url "https://downloads.sourceforge.net/project/procps-ng/Production/procps-ng-4.0.7.tar.xz" :sha256 "9d2021f47a4501c667862c9942a92d1953694b21d11bcd1702e83eb594e3d67d"}
  :deps ["karate/glibc" "karate/ncurses"]
- :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/pkg-config"]
+ :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/pkg-config" "karate/bash" "karate/linux-headers"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :include_dirs ["include"]
  :pconfig_dirs ["lib/pkgconfig"]
  :build (fn [b]
           (b:run ["./configure" (.. "--prefix=" b.prefix) (.. "--sbindir=" b.prefix "/bin") "--disable-kill"])
-          (b:run ["make"]))
+          (b:run (make-argv b [])))
+ :install (fn [b]
+            (b:run (make-argv b ["install"])))
  :check (fn [b]
           (b:run ["make" "check"]))}
