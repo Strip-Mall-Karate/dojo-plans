@@ -14,7 +14,7 @@ readonly ROOT_VOLUME=dojo-root
 readonly HOST_DIR=dojo-builder
 
 usage() {
-  echo >&2 "usage: $(basename "$0") image | start | sync | tools <dojo-checkout> | standins | run <command>... | shell | stop | remove"
+  echo >&2 "usage: $(basename "$0") image | start | sync | tools <dojo-checkout> | dojo <dojo-checkout> | standins | run <command>... | shell | stop | remove"
   exit 2
 }
 
@@ -65,6 +65,11 @@ case "${command}" in
       cargo build --release --manifest-path /work/dojo-plan/Cargo.toml --target-dir /work/dojo-plan/target &&
       ln -sf /work/dojo-plan/target/release/doj-plan-build /work/bin/doj-plan-build &&
       doj-plan-build show /work/plans/zlib --target x86_64-linux >/dev/null && echo doj-plan-build ready'"
+    ;;
+  dojo)
+    # The whole checkout, for building Dojo's own component plans at /work/dojo/components/<name>.
+    (( $# == 1 )) || usage
+    send_tree "$1" . dojo target/
     ;;
   standins)
     # An empty karate/<name>/0.0.0 package for every base plan, so a first build resolves its

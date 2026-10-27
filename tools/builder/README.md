@@ -15,6 +15,7 @@ box.
 | `start` | Starts the container, with `/doj` in the `dojo-root` volume and `~/dojo-builder` at `/work` |
 | `sync` | Unpacks this checkout's committed `HEAD` into `/work/plans`, keeping swamp's data and results |
 | `tools <dojo-checkout>` | Builds `doj-plan-build` from that checkout's committed `components/plan` |
+| `dojo <dojo-checkout>` | Unpacks that checkout's committed `HEAD` into `/work/dojo`, for building Dojo's own component plans |
 | `standins` | Gives every base plan an empty `0.0.0` package, so a first build resolves its dependencies |
 | `run <command>...` | Runs a command in the container, from `/work/plans/swamp`, under `nice` |
 | `shell` | A shell in the container |

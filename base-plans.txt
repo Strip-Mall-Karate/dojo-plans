@@ -79,7 +79,7 @@ dojo-plans/libarchive-musl
 dojo-plans/rust
 dojo/components/doj
 dojo-plans/bats
-dojo/components/plan-build
+dojo/components/plan
 dojo-plans/vim
 dojo-plans/clens
 dojo-plans/mg
