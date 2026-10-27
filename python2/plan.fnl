@@ -37,5 +37,8 @@
           (var v-platlib "")
           (b.default.install b)
           (b:remove (.. b.prefix "/bin/idle"))
+          ;; cgi.py is executable and names /usr/local/bin/python.
+          (let [cgi (.. b.prefix "/lib/python2.7/cgi.py")]
+            (b:write cgi (pick-values 1 (: (b:read cgi) :gsub "^#![^\n]*" (.. "#!" b.prefix "/bin/python2.7")))))
           (set v-platlib (b:capture ["python" "-c" "import sysconfig;print(sysconfig.get_path('platlib'))"]))
           (b:write (.. v-platlib "/_manylinux.py") "# Disable binary manylinux1(CentOS 5) wheel support\nmanylinux1_compatible = False\n"))}

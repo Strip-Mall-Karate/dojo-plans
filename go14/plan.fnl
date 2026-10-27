@@ -156,6 +156,8 @@
           ;; The source tree is source: its test and generator scripts name /usr/bin/perl and
           ;; /bin/rc, and none of them is a command of this package.
           (b:run ["find" (.. b.prefix "/src") "-type" "f" "-perm" "/111" "-exec" "chmod" "a-x" "{}" "+"])
+          ;; Test data includes programs linked for the build machine's /lib64.
+          (b:run ["find" (.. b.prefix "/src") "-type" "d" "-name" "testdata" "-prune" "-exec" "rm" "-rf" "{}" "+"])
           (if (b:exists (.. b.prefix "/pkg/include"))
             (b:copy (.. b.prefix "/src/runtime") (b:join (.. b.prefix "/pkg/include") (: (.. b.prefix "/src/runtime") :match "[^/]+$")))
             (b:copy (.. b.prefix "/src/runtime") (.. b.prefix "/pkg/include"))))
