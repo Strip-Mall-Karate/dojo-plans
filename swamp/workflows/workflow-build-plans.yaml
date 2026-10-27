@@ -14,6 +14,14 @@ inputs:
       type: boolean
       default: false
       description: Rebuild plans whose package is already installed
+    isolate:
+      type: boolean
+      default: false
+      description: Build with only each plan's dependencies on PATH (doj-plan-build --isolate)
+    refuseHostPaths:
+      type: boolean
+      default: false
+      description: Fail a package that names the build machine's files (doj-plan-build --refuse-host-paths)
 jobs:
   - name: order
     description: Read the plans and order them into waves
@@ -44,6 +52,8 @@ jobs:
           inputs:
             plans: ${{ self.wave }}
             force: ${{ inputs.force }}
+            isolate: ${{ inputs.isolate }}
+            refuseHostPaths: ${{ inputs.refuseHostPaths }}
             runId: ${{ run.id }}
         dependsOn: []
         weight: 0

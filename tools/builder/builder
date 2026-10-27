@@ -21,14 +21,15 @@ usage() {
 on_host() { ssh "${BUILD_HOST}" "$@"; }
 
 # The committed tree of a checkout, unpacked on the build host into ~/dojo-builder/<name> over
-# what was there, keeping the paths named in the remaining arguments.
+# what was there, keeping the paths named in the remaining arguments. Files get the time they were
+# unpacked, not the commit's, so cargo rebuilds what changed after its last build.
 send_tree() {
   local checkout=$1 path=$2 name=$3
   shift 3
   local keep=()
   for k in "$@"; do keep+=("--exclude=${k}"); done
   git -C "${checkout}" archive --format=tar HEAD -- "${path}" \
-    | on_host "set -e; s=\$(mktemp -d); trap 'rm -rf \"\$s\"' EXIT; tar -xf - -C \"\$s\";
+    | on_host "set -e; s=\$(mktemp -d); trap 'rm -rf \"\$s\"' EXIT; tar -xmf - -C \"\$s\";
                mkdir -p ${HOST_DIR}/${name};
                rsync -a --delete ${keep[*]} \"\$s/${path%/}/\" ${HOST_DIR}/${name}/"
 }

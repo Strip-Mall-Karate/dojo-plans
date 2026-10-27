@@ -12,6 +12,12 @@ inputs:
     force:
       type: boolean
       default: false
+    isolate:
+      type: boolean
+      default: false
+    refuseHostPaths:
+      type: boolean
+      default: false
     runId:
       type: string
       description: The build-plans run, so only its own failures block a plan
@@ -33,6 +39,8 @@ jobs:
           inputs:
             plan: ${{ self.plan }}
             force: ${{ inputs.force }}
+            isolate: ${{ inputs.isolate }}
+            refuseHostPaths: ${{ inputs.refuseHostPaths }}
             runId: ${{ inputs.runId }}
         dependsOn: []
         weight: 0
