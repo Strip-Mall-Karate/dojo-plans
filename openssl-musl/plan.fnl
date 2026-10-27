@@ -40,7 +40,7 @@
  :upstream_url "https://www.openssl.org"
  :source {:url "https://github.com/openssl/openssl/releases/download/openssl-4.1.0/openssl-4.1.0.tar.gz" :sha256 "50c17baf54cb008f6ce42d50deb4b28050a1aad711636cabd4b241c7e90cc2fd" :dirname "openssl-4.1.0"}
  :deps ["karate/musl" "karate/zlib-musl" "karate/cacerts"]
- :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/grep" "karate/perl"]
+ :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed" "karate/grep" "karate/perl" "karate/linux-headers-musl"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :include_dirs ["include"]

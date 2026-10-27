@@ -1,0 +1,54 @@
+id: 185bb2be-7857-438a-92ea-227b541fe820
+name: bootstrap
+description: One pass of the base set's bootstrap; rebuild the backline from what is installed, then every base plan isolated with it
+tags: {}
+inputs:
+  type: object
+  properties:
+    plans:
+      type: array
+      items: { type: string }
+      minItems: 1
+      description: The base set, as base-plans.txt lists it, without the backline itself
+  required: ["plans"]
+jobs:
+  - name: backline
+    description: The backline from the packages installed now, so this pass builds with the last pass's tools
+    steps:
+      - name: build-backline
+        task:
+          type: behavior
+          behavior: dojo
+          methodName: build
+          inputs:
+            plan: backline
+            force: true
+            isolate: true
+            refuseHostPaths: true
+            runId: ${{ run.id }}
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+    dependsOn: []
+    weight: 0
+  - name: base
+    description: Every base plan, isolated with that backline and refusing host paths
+    steps:
+      - name: build-plans
+        task:
+          type: workflow
+          workflowIdOrName: build-plans
+          inputs:
+            plans: ${{ inputs.plans }}
+            force: true
+            isolate: true
+            refuseHostPaths: true
+            backline: karate/backline
+        dependsOn: []
+        weight: 0
+        allowFailure: false
+    dependsOn:
+      - job: backline
+        condition: { type: succeeded }
+    weight: 0
+version: 1

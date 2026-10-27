@@ -60,8 +60,12 @@ dojo-plans/dejagnu
 dojo-plans/check
 dojo-plans/cacerts
 dojo-plans/openssl
+dojo-plans/libffi
+dojo-plans/sqlite
+dojo-plans/python
 dojo-plans/wget
 dojo-plans/unzip
+dojo-plans/backline
 dojo-plans/rq
 dojo-plans/linux-headers-musl
 dojo-plans/musl
@@ -75,7 +79,7 @@ dojo-plans/libarchive-musl
 dojo-plans/rust
 dojo/components/doj
 dojo-plans/bats
-dojo/components/plan-build
+dojo/components/plan
 dojo-plans/vim
 dojo-plans/clens
 dojo-plans/mg

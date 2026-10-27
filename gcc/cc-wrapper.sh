@@ -3,7 +3,9 @@
 # Takes the place of @program@ so that it finds this package's glibc and
 # binutils: their headers, start files and assembler and linker, and, when
 # linking, glibc's dynamic linker. A link with musl-gcc's specs is left to
-# them. POSIX sh, so it runs before any karate shell exists.
+# them. When linking, LD_RUN_PATH's entries become -rpath options, so the
+# RUNPATH is set whichever linker the driver runs: rustc's bundled lld does
+# not read LD_RUN_PATH. POSIX sh, so it runs before any karate shell exists.
 set -e
 
 link=yes
@@ -46,6 +48,16 @@ case "$(basename "@program@")" in
     ;;
 esac
 if [ "$link" = yes ]; then
+  saved_ifs=$IFS
+  IFS=:
+  for path in ${LD_RUN_PATH:-}; do
+    if [ -n "$path" ]; then
+      set -- "$@" -Wl,-rpath -Wl,"$path"
+    fi
+  done
+  IFS=$saved_ifs
+  # Given once here: binutils' ld would otherwise add the same entries again.
+  unset LD_RUN_PATH
   set -- -Wl,-dynamic-linker -Wl,@dynamic_linker@ "$@"
 fi
 

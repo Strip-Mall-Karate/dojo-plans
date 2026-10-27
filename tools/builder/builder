@@ -14,21 +14,22 @@ readonly ROOT_VOLUME=dojo-root
 readonly HOST_DIR=dojo-builder
 
 usage() {
-  echo >&2 "usage: $(basename "$0") image | start | sync | tools <dojo-checkout> | standins | run <command>... | shell | stop | remove"
+  echo >&2 "usage: $(basename "$0") image | start | sync | tools <dojo-checkout> | dojo <dojo-checkout> | standins | run <command>... | shell | stop | remove"
   exit 2
 }
 
 on_host() { ssh "${BUILD_HOST}" "$@"; }
 
 # The committed tree of a checkout, unpacked on the build host into ~/dojo-builder/<name> over
-# what was there, keeping the paths named in the remaining arguments.
+# what was there, keeping the paths named in the remaining arguments. Files get the time they were
+# unpacked, not the commit's, so cargo rebuilds what changed after its last build.
 send_tree() {
   local checkout=$1 path=$2 name=$3
   shift 3
   local keep=()
   for k in "$@"; do keep+=("--exclude=${k}"); done
   git -C "${checkout}" archive --format=tar HEAD -- "${path}" \
-    | on_host "set -e; s=\$(mktemp -d); trap 'rm -rf \"\$s\"' EXIT; tar -xf - -C \"\$s\";
+    | on_host "set -e; s=\$(mktemp -d); trap 'rm -rf \"\$s\"' EXIT; tar -xmf - -C \"\$s\";
                mkdir -p ${HOST_DIR}/${name};
                rsync -a --delete ${keep[*]} \"\$s/${path%/}/\" ${HOST_DIR}/${name}/"
 }
@@ -64,6 +65,11 @@ case "${command}" in
       cargo build --release --manifest-path /work/dojo-plan/Cargo.toml --target-dir /work/dojo-plan/target &&
       ln -sf /work/dojo-plan/target/release/doj-plan-build /work/bin/doj-plan-build &&
       doj-plan-build show /work/plans/zlib --target x86_64-linux >/dev/null && echo doj-plan-build ready'"
+    ;;
+  dojo)
+    # The whole checkout, for building Dojo's own component plans at /work/dojo/components/<name>.
+    (( $# == 1 )) || usage
+    send_tree "$1" . dojo target/
     ;;
   standins)
     # An empty karate/<name>/0.0.0 package for every base plan, so a first build resolves its
