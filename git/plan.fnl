@@ -1,5 +1,6 @@
 ;; git, ported from its plan.sh.
-;; git 2.56.0, the latest release on 2026-10-27: 2.21.0 does not build against curl 8.
+;; git 2.56.0, the latest release on 2026-10-27: 2.21.0 does not build against curl 8. Its build
+;; compiles some of git in Rust with cargo.
 {:name "git"
  :origin "karate"
  :version "2.56.0"
@@ -10,7 +11,7 @@
  :upstream_url "https://git-scm.com/"
  :source {:url "https://www.kernel.org/pub/software/scm/git/git-2.56.0.tar.xz" :sha256 "26c56c296b38c0695b26fa95f475f1d01704d2d38e73465ca30b0b2f5dc789d3"}
  :deps ["karate/cacerts" "karate/curl" "karate/expat" "karate/gettext" "karate/gcc-libs" "karate/glibc" "karate/openssh" "karate/perl" "karate/sed" "karate/zlib"]
- :build_deps ["karate/make" "karate/gcc"]
+ :build_deps ["karate/make" "karate/gcc" "karate/rust"]
  :bin_dirs ["bin"]
  :lib_dirs ["lib"]
  :prepare (fn [b]
