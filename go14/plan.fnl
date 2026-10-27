@@ -34,6 +34,8 @@
           (b:env "GOARCH" "amd64")
           (b:log (.. "Setting GOARCH=" (or (b:getenv "GOARCH") "")))
           (b:env "CGO_ENABLED" "0")
+          ;; Go 1.4's C is C17: gcc 16 defaults to C23, where bool is a keyword.
+          (b:env "CC" "gcc -std=gnu17")
           (b:log (.. "Setting CGO_ENABLED=" (or (b:getenv "CGO_ENABLED") "")))
           (b:env "GOROOT" (b:capture ["pwd"]))
           (b:log (.. "Setting GOROOT=" (or (b:getenv "GOROOT") "")))
@@ -151,6 +153,12 @@
           (b:copy (b:join b.src "LICENSE") (.. b.prefix "/share/licenses/LICENSE"))
           (b:chmod (.. b.prefix "/share/licenses/LICENSE") "644")
           (b:remove (.. b.prefix "/src/*.bat"))
+          ;; Only bin and pkg hold commands: the scripts elsewhere (src, misc, lib) name
+          ;; /usr/bin/perl, /bin/rc and /bin/bash, and are source.
+          (b:run ["find" b.prefix "(" "-path" (.. b.prefix "/bin") "-o" "-path" (.. b.prefix "/pkg") ")" "-prune"
+                  "-o" "-type" "f" "-perm" "/111" "-exec" "chmod" "a-x" "{}" "+"])
+          ;; Test data includes programs linked for the build machine's /lib64.
+          (b:run ["find" (.. b.prefix "/src") "-type" "d" "-name" "testdata" "-prune" "-exec" "rm" "-rf" "{}" "+"])
           (if (b:exists (.. b.prefix "/pkg/include"))
             (b:copy (.. b.prefix "/src/runtime") (b:join (.. b.prefix "/pkg/include") (: (.. b.prefix "/src/runtime") :match "[^/]+$")))
             (b:copy (.. b.prefix "/src/runtime") (.. b.prefix "/pkg/include"))))
