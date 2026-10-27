@@ -59,6 +59,8 @@ swamp behavior run dojo build --input plan=zlib
   - `force` builds regardless. `check` runs the plan's check phase. `refuseHostPaths` fails a
     package that names the build machine's files (`doj-plan-build --refuse-host-paths`). `isolate`
     runs the build's programs with only its dependencies on PATH (`doj-plan-build --isolate`).
+    `backline` names a package every build takes as its last build dependency, the base tools
+    plans use without declaring them (`doj-plan-build --backline`); the workflows pass it on.
 
 A failed build writes its log and its record and then fails the method, with the end of the log in
 the error.

@@ -22,6 +22,10 @@ inputs:
       type: boolean
       default: false
       description: Fail a package that names the build machine's files (doj-plan-build --refuse-host-paths)
+    backline:
+      type: string
+      default: ""
+      description: A package every build takes as its last build dependency (doj-plan-build --backline)
 jobs:
   - name: order
     description: Read the plans and order them into waves
@@ -54,6 +58,7 @@ jobs:
             force: ${{ inputs.force }}
             isolate: ${{ inputs.isolate }}
             refuseHostPaths: ${{ inputs.refuseHostPaths }}
+            backline: ${{ inputs.backline }}
             runId: ${{ run.id }}
         dependsOn: []
         weight: 0

@@ -53,6 +53,9 @@ const BuildArgsSchema = PlanArgsSchema.extend({
   isolate: z.boolean().default(false).describe(
     "Run the build's programs with only its dependencies on PATH and only a few of the builder's environment variables",
   ),
+  backline: z.string().optional().describe(
+    "A package every build takes as its last build dependency, the base tools plans use without declaring them",
+  ),
   runId: z.string().optional().describe(
     "The workflow run building this plan: only failures in the same run block it; without one, any last failure does",
   ),
@@ -633,6 +636,7 @@ export const behavior = {
           ...(args.check ? ["--check"] : []),
           ...(args.refuseHostPaths ? ["--refuse-host-paths"] : []),
           ...(args.isolate ? ["--isolate"] : []),
+          ...(args.backline ? ["--backline", args.backline] : []),
         ];
         const trace: Record<string, string> = {};
         if (context.traceHeaders?.traceparent) {

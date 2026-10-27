@@ -62,6 +62,7 @@ dojo-plans/cacerts
 dojo-plans/openssl
 dojo-plans/wget
 dojo-plans/unzip
+dojo-plans/backline
 dojo-plans/rq
 dojo-plans/linux-headers-musl
 dojo-plans/musl

@@ -368,3 +368,28 @@ Deno.test("build passes isolate to doj-plan-build", async () => {
     : new TextDecoder().decode(log.content);
   assert(text.split("\n")[0].endsWith(" --isolate"), text.split("\n")[0]);
 });
+
+Deno.test("build passes the backline to doj-plan-build", async () => {
+  const f = await fixture({ lib: {} });
+  const { context, getWrittenFiles } = contextFor(f);
+  await behavior.methods.build.execute(
+    {
+      plan: "lib",
+      force: false,
+      check: false,
+      refuseHostPaths: false,
+      isolate: true,
+      backline: "karate/backline",
+    },
+    context,
+  );
+  const log = getWrittenFiles().find((file) => file.name === "log-lib");
+  assert(log, "the build wrote its log");
+  const text = typeof log.content === "string"
+    ? log.content
+    : new TextDecoder().decode(log.content);
+  assert(
+    text.split("\n")[0].endsWith(" --isolate --backline karate/backline"),
+    text.split("\n")[0],
+  );
+});
