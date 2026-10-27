@@ -16,3 +16,8 @@ plan is written; `tools/port/README.md` how the bash plans were ported.
 - Every plan passes `tools/port/check.py` before it is committed. A claim that a translation is
   right needs a `tools/port/difftest` case that fails when the translation is broken. That a plan
   loads does not show it builds: builds need the `karate` base packages.
+- The repository is an smk project (`smkproj.toml`). `direnv allow` loads its dev shell, and `make checks`
+  (`smk format --check`, `smk lint`, `smk typecheck`) passes before a pull request opens; `smk format`
+  fixes formatting. The checks cover `tools/builder` and the root's own files: plan directories and
+  `tools/port` are excluded, and `smkproj.toml` says why. Open pull requests with `smk pr create`; work
+  items live in workq (`smk issue`, project SMK, label `dojo-plans`).
