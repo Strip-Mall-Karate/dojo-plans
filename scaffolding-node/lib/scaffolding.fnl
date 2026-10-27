@@ -19,9 +19,6 @@
 ;; The Node packages this repository builds, by version, oldest first: an
 ;; engines.node constraint picks the newest that meets it.
 (local node-versions [["6.14.4" "karate/node6"]
-                      ["8.15.0" "karate/node8"]
-                      ["9.0.0" "karate/node9"]
-                      ["10.15.2" "karate/node10"]
                       ["11.13.0" "karate/node"]])
 
 (fn trim [s]

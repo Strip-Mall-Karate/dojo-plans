@@ -91,9 +91,6 @@ The Node packages this repository builds are:
 | Package | Version |
 | ------- | ------- |
 | `karate/node6` | 6.14.4 |
-| `karate/node8` | 8.15.0 |
-| `karate/node9` | 9.0.0 |
-| `karate/node10` | 10.15.2 |
 | `karate/node` | 11.13.0 |
 
 `engines.node` is a version, optionally after one operator: `=`, `>=`, `<=`, `>` or `<`. A version with
@@ -104,13 +101,13 @@ constraint, and fails when none does.
 {
   "name": "my_app",
   "version": "0.1.0",
-  "engines": { "node": "<=10.15.2" }
+  "engines": { "node": "<11" }
 }
 ```
 
-This picks `karate/node10`. Missing parts of a version count as 0, so `"8"` means exactly 8.0.0, which
-no package meets. Write `"8.15.0"` or `"<9"` for `karate/node8`. Other forms, such as `^8`, `~8.1`,
-`8.x` or a range with two bounds, are an error.
+This picks `karate/node6`. Missing parts of a version count as 0, so `"6"` means exactly 6.0.0, which
+no package meets. Write `"6.14.4"` or `"<7"` for `karate/node6`. Other forms, such as `^6`, `~6.1`,
+`6.x` or a range with two bounds, are an error.
 
 ### .nvmrc
 
@@ -126,7 +123,7 @@ This gives `karate/node/11.13.0`. The version must be one that `karate/node` is 
 ### The node_pkg setting
 
 ```fennel
- :scaffolding {:package "karate/scaffolding-node" :settings {:node_pkg "karate/node8"}}
+ :scaffolding {:package "karate/scaffolding-node" :settings {:node_pkg "karate/node6"}}
 ```
 
 ## Package manager
