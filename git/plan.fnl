@@ -24,4 +24,12 @@
               (when (not deleted) (set line (pick-values 1 (string.gsub line "/usr/bin/perl" (pick-values 1 (: v-perl-path :gsub "%%" "%%%%"))))))
               (when (not deleted) (table.insert out line))
               (each [_ x (ipairs after)] (table.insert out x)))
-            (b:write (b:join b.src "Makefile") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))}
+            (b:write (b:join b.src "Makefile") (.. (table.concat out "\n") (if (and ends (> (length out) 0)) "\n" "")))))
+ ;; Without Python, git-p4, which names /usr/bin/python, is not installed.
+ :build (fn [b]
+          (b:run ["./configure" (.. "--prefix=" b.prefix) (.. "--with-perl=" (b:path_for "perl") "/bin/perl") "--without-python"])
+          (b:run ["make" (.. "-j" (tostring b.jobs))]))
+ :install (fn [b]
+            (b.default.install b)
+            ;; A sample hook names /usr/bin/perl.
+            (b:fix_interpreter (b:glob (.. b.prefix "/share/git-core/templates/hooks") "*.sample") "karate/perl" "bin/perl"))}
