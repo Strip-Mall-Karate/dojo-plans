@@ -60,6 +60,9 @@ dojo-plans/dejagnu
 dojo-plans/check
 dojo-plans/cacerts
 dojo-plans/openssl
+dojo-plans/libffi
+dojo-plans/sqlite
+dojo-plans/python
 dojo-plans/wget
 dojo-plans/unzip
 dojo-plans/backline
