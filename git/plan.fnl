@@ -1,13 +1,14 @@
 ;; git, ported from its plan.sh.
+;; git 2.56.0, the latest release on 2026-10-27: 2.21.0 does not build against curl 8.
 {:name "git"
  :origin "karate"
- :version "2.21.0"
+ :version "2.56.0"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL-2.0"]
  :description "Git is a free and open source distributed version control\nsystem designed to handle everything from small to very large projects with\nspeed and efficiency."
  :upstream_url "https://git-scm.com/"
- :source {:url "https://www.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz" :sha256 "85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee" :filename "git-2.21.0.tar.gz"}
+ :source {:url "https://www.kernel.org/pub/software/scm/git/git-2.56.0.tar.xz" :sha256 "26c56c296b38c0695b26fa95f475f1d01704d2d38e73465ca30b0b2f5dc789d3"}
  :deps ["karate/cacerts" "karate/curl" "karate/expat" "karate/gettext" "karate/gcc-libs" "karate/glibc" "karate/openssh" "karate/perl" "karate/sed" "karate/zlib"]
  :build_deps ["karate/make" "karate/gcc"]
  :bin_dirs ["bin"]
