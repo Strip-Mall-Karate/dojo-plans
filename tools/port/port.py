@@ -3,7 +3,7 @@
     python3 tools/port/port.py <package-dir>...
 
 Reads each plan statically (bashplan.py: nothing in it runs), writes
-plan.fnl beside it, and prints one line per package: `ok`, or what is left
+plan.fnl beside it formatted as smk format leaves it, and prints one line per package: `ok`, or what is left
 to port by hand. A callback this tool cannot translate is written as a
 `;; UNPORTED` block holding the bash, which check.py refuses, so a plan is
 never taken for ported while any of it is still shell.
@@ -11,6 +11,7 @@ never taken for ported while any of it is still shell.
 
 import os
 import re
+import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -278,9 +279,18 @@ def port(package_dir):
     # person has resolved it, whether or not a statement was kept as bash.
     notes = [f";; UNPORTED: {p}" for p in emitter.problems]
     out[1:1] = notes
-    with open(os.path.join(package_dir, "plan.fnl"), "w", encoding="utf-8") as f:
+    plan = os.path.join(package_dir, "plan.fnl")
+    with open(plan, "w", encoding="utf-8") as f:
         f.write(renamed("\n".join(out)) + "\n")
+    formatted(plan)
     return emitter.problems
+
+
+def formatted(plan):
+    """Formats a written plan as smk format does, so regenerating a plan reproduces the committed one:
+    fnlfmt from the dev shell, twice, since one pass leaves some plans unsettled."""
+    for _ in range(2):
+        subprocess.run(["fnlfmt", "--fix", plan], check=True, capture_output=True)
 
 
 def main(argv):

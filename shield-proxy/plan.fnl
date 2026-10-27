@@ -1,16 +1,16 @@
 ;; shield-proxy, ported from its plan.sh.
-{:name "shield-proxy"
- :origin "karate"
- :version "0.10.8"
- :targets ["x86_64-linux"]
+{:name :shield-proxy
+ :origin :karate
+ :version :0.10.8
+ :targets [:x86_64-linux]
  :maintainer "Strip Mall Karate Company"
- :license ["Apache-2.0"]
+ :license [:Apache-2.0]
  :description "Proxy package for the Shield backup and restore tool"
- :deps ["karate/nginx" "karate/openssl" "karate/bash"]
- :svc {:user "root" :group "root"}
+ :deps [:karate/nginx :karate/openssl :karate/bash]
+ :svc {:user :root :group :root}
  :download (fn [b]
-          nil)
+             nil)
  :build (fn [b]
           nil)
  :install (fn [b]
-          nil)}
+            nil)}

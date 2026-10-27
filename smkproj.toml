@@ -24,17 +24,17 @@ Provider = ""
 Provider = "workq"
 # One project for every repository's work items, as the other smk repositories declare it.
 Project = "SMK"
-Label = "dojo-plans"
+# Dojo and its plans share one label: workq has no dojo-plans label, and smk issue adds this one to every item.
+Label = "dojo"
 Workspace = "smk"
 [Format]
-# swamp/ keeps its own Deno toolchain and formatter. A plan directory holds a package's plan, which
-# tools/port generates from the inherited bash, and that package's inherited hooks, configuration
-# templates, tests, patches and documentation: data the plan carries, not this repository's code, and
-# much of it Handlebars templates no formatter can parse. smk formats and lints the code under tools/
-# and the repository's root.
+# swamp/ keeps its own Deno toolchain and formatter. A plan directory holds a package's plan.fnl, which
+# smk formats and lints like the code under tools/ and the root, and that package's inherited hooks,
+# configuration templates, tests, patches and documentation: data the plan carries, not this repository's
+# code, and much of it Handlebars templates no formatter can parse.
 Exclude = [
   "swamp/**",
-  "*/plan.fnl", "*/README.md", "*/README.MD", "*/default.toml", "*/*.patch",
+  "*/README.md", "*/README.MD", "*/default.toml", "*/*.patch",
   "*/tests/**", "*/test/**", "*/hooks/**", "*/config/**", "*/patches/**", "*/lib/**", "*/doc/**",
   "*/static/**", "*/libexec/**", "*/x86_64-linux-kernel2/**",
   "*/*.sh", "*/*.bat", "*/*.h", "*/*.properties", "*/.gitignore", "*/.studiorc", "*/config",

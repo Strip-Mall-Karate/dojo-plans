@@ -1,30 +1,38 @@
 ;; tar, ported from its plan.sh.
 ;; tar 1.35, the latest release on 2026-10-26.
-{:name "tar"
- :origin "karate"
- :version "1.35"
- :targets ["x86_64-linux"]
+{:name :tar
+ :origin :karate
+ :version :1.35
+ :targets [:x86_64-linux]
  :maintainer "Strip Mall Karate Company"
- :license ["GPL-3.0"]
+ :license [:GPL-3.0]
  :description "GNU Tar provides the ability to create tar archives, as well as various other kinds of manipulation."
  :upstream_url "https://www.gnu.org/software/tar/"
- :source {:url "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz" :sha256 "4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16"}
- :deps ["karate/glibc" "karate/acl" "karate/attr"]
- :build_deps ["karate/coreutils" "karate/diffutils" "karate/patch" "karate/make" "karate/gcc" "karate/sed"]
- :bin_dirs ["bin"]
+ :source {:url "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz"
+          :sha256 :4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16}
+ :deps [:karate/glibc :karate/acl :karate/attr]
+ :build_deps [:karate/coreutils
+              :karate/diffutils
+              :karate/patch
+              :karate/make
+              :karate/gcc
+              :karate/sed]
+ :bin_dirs [:bin]
  :prepare (fn [b]
-          (b.default.prepare b)
-          ;; tar 1.35 defines its own acl_get_file_at, acl_set_file_at and
-          ;; acl_delete_def_file_at, which acl 2.4 now declares with other signatures.
-          (let [path (b:join b.src "src/xattrs.c")
-                text (b:read path)
-                renamed (-> text
-                            (: :gsub "acl_get_file_at" "tar_acl_get_file_at")
-                            (: :gsub "acl_set_file_at" "tar_acl_set_file_at")
-                            (: :gsub "acl_delete_def_file_at" "tar_acl_delete_def_file_at"))]
-            (b:write path renamed)))
+            (b.default.prepare b)
+            ;; tar 1.35 defines its own acl_get_file_at, acl_set_file_at and
+            ;; acl_delete_def_file_at, which acl 2.4 now declares with other signatures.
+            (let [path (b:join b.src :src/xattrs.c)
+                  text (b:read path)
+                  renamed (-> text
+                              (: :gsub :acl_get_file_at :tar_acl_get_file_at)
+                              (: :gsub :acl_set_file_at :tar_acl_set_file_at)
+                              (: :gsub :acl_delete_def_file_at
+                                 :tar_acl_delete_def_file_at))]
+              (b:write path renamed)))
  :build (fn [b]
-          (b:run ["./configure" (.. "--prefix=" b.prefix)] {:env {"FORCE_UNSAFE_CONFIGURE" "1"}})
-          (b:run ["make"]))
+          (b:run [:./configure (.. :--prefix= b.prefix)]
+                 {:env {:FORCE_UNSAFE_CONFIGURE :1}})
+          (b:run [:make]))
  :check (fn [b]
-          (b:run ["make" "check"]))}
+          (b:run [:make :check]))}

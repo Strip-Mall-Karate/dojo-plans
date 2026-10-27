@@ -1,20 +1,26 @@
 ;; dgraph, ported from its plan.sh.
-{:name "dgraph"
- :origin "karate"
- :version "1.0.12"
- :targets ["x86_64-linux"]
+{:name :dgraph
+ :origin :karate
+ :version :1.0.12
+ :targets [:x86_64-linux]
  :maintainer "Strip Mall Karate Company"
- :license ["Apache-2.0"]
+ :license [:Apache-2.0]
  :description "Distributed transactional graph database written in go"
  :upstream_url "https://dgraph.io"
- :source {:url "https://github.com/dgraph-io/dgraph/releases/download/v1.0.12/dgraph-linux-amd64.tar.gz" :sha256 "e76412204e45c447084f97d439c2f619955bd2a6643cdb7e9185a020884a1cd8"}
- :deps ["karate/glibc"]
- :build_deps ["karate/patchelf"]
- :bin_dirs ["bin"]
+ :source {:url "https://github.com/dgraph-io/dgraph/releases/download/v1.0.12/dgraph-linux-amd64.tar.gz"
+          :sha256 :e76412204e45c447084f97d439c2f619955bd2a6643cdb7e9185a020884a1cd8}
+ :deps [:karate/glibc]
+ :build_deps [:karate/patchelf]
+ :bin_dirs [:bin]
  :build (fn [b]
           nil)
  :install (fn [b]
-          (if (b:exists (.. b.prefix "/bin/" b.name))
-            (b:copy (.. b.cache "/" b.name) (b:join (.. b.prefix "/bin/" b.name) (: (.. b.cache "/" b.name) :match "[^/]+$")))
-            (b:copy (.. b.cache "/" b.name) (.. b.prefix "/bin/" b.name)))
-          (b:run ["patchelf" "--interpreter" (.. (b:path_for "glibc") "/lib/ld-linux-x86-64.so.2") (.. b.prefix "/bin/" b.name)]))}
+            (if (b:exists (.. b.prefix :/bin/ b.name))
+                (b:copy (.. b.cache "/" b.name)
+                        (b:join (.. b.prefix :/bin/ b.name)
+                                (: (.. b.cache "/" b.name) :match "[^/]+$")))
+                (b:copy (.. b.cache "/" b.name) (.. b.prefix :/bin/ b.name)))
+            (b:run [:patchelf
+                    :--interpreter
+                    (.. (b:path_for :glibc) :/lib/ld-linux-x86-64.so.2)
+                    (.. b.prefix :/bin/ b.name)]))}
