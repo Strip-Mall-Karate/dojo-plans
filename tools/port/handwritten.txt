@@ -92,6 +92,8 @@ coreutils
 db
 dejagnu
 diffutils
+doj-console
+doj-sshd
 e2fsprogs
 expat
 expect

@@ -1,0 +1,8 @@
+#!{{pkgPathFor "karate/busybox-static"}}/bin/sh
+exec 2>&1
+key="{{pkg.svc_data_path}}/ssh_host_ed25519_key"
+if [ ! -f "${key}" ]; then
+  "{{pkgPathFor "karate/openssh"}}/bin/ssh-keygen" -q -t ed25519 -N "" -f "${key}"
+fi
+# sshd re-executes itself, so it runs by its full path.
+exec "{{pkgPathFor "karate/openssh"}}/sbin/sshd" -D -e -f "{{pkg.svc_config_path}}/sshd_config"

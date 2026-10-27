@@ -1,0 +1,7 @@
+HostKey {{pkg.svc_data_path}}/ssh_host_ed25519_key
+PidFile {{pkg.svc_var_path}}/sshd.pid
+PermitRootLogin prohibit-password
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+AuthorizedKeysFile /root/.ssh/authorized_keys
+Subsystem sftp {{pkgPathFor "karate/openssh"}}/libexec/sftp-server
