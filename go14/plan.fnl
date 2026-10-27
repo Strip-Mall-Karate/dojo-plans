@@ -34,6 +34,8 @@
           (b:env "GOARCH" "amd64")
           (b:log (.. "Setting GOARCH=" (or (b:getenv "GOARCH") "")))
           (b:env "CGO_ENABLED" "0")
+          ;; Go 1.4's C is C17: gcc 16 defaults to C23, where bool is a keyword.
+          (b:env "CC" "gcc -std=gnu17")
           (b:log (.. "Setting CGO_ENABLED=" (or (b:getenv "CGO_ENABLED") "")))
           (b:env "GOROOT" (b:capture ["pwd"]))
           (b:log (.. "Setting GOROOT=" (or (b:getenv "GOROOT") "")))
