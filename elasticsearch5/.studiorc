@@ -1,2 +1,0 @@
-## This makes it work in a studio.
-mount --bind / /

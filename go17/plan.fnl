@@ -96,6 +96,12 @@
           (b:copy (b:join b.src "LICENSE") (.. b.prefix "/share/licenses/LICENSE"))
           (b:chmod (.. b.prefix "/share/licenses/LICENSE") "644")
           (b:remove (.. b.prefix "/src/*.bat"))
+          ;; Only bin and pkg hold commands: the scripts elsewhere (src, misc, lib) name
+          ;; /usr/bin/perl, /bin/rc and /bin/bash, and are source.
+          (b:run ["find" b.prefix "(" "-path" (.. b.prefix "/bin") "-o" "-path" (.. b.prefix "/pkg") ")" "-prune"
+                  "-o" "-type" "f" "-perm" "/111" "-exec" "chmod" "a-x" "{}" "+"])
+          ;; Test data includes programs linked for the build machine's /lib64.
+          (b:run ["find" (.. b.prefix "/src") "-type" "d" "-name" "testdata" "-prune" "-exec" "rm" "-rf" "{}" "+"])
           (if (b:exists (.. b.prefix "/pkg/include"))
             (b:copy (.. b.prefix "/src/runtime") (b:join (.. b.prefix "/pkg/include") (: (.. b.prefix "/src/runtime") :match "[^/]+$")))
             (b:copy (.. b.prefix "/src/runtime") (.. b.prefix "/pkg/include"))))

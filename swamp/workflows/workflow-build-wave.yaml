@@ -1,6 +1,6 @@
 id: 0cf4b112-5a95-4698-9f42-e0162d9bd3fa
 name: build-wave
-description: Build one wave of plans, which depend only on earlier waves, two at a time
+description: Build one wave of plans, which depend only on earlier waves, one at a time
 tags: {}
 inputs:
   type: object
@@ -34,7 +34,9 @@ jobs:
         forEach:
           item: plan
           in: ${{ inputs.plans }}
-        concurrency: 2
+        # One at a time: a build holds the dojo definition's lock until it ends, and a second
+        # build waiting more than a minute for it fails without building.
+        concurrency: 1
         task:
           type: behavior
           behavior: dojo

@@ -46,9 +46,7 @@ plan_path = "bash"
 plan_path = "bash-completion"
 [bash-static]
 plan_path = "bash-static"
-paths = [
-  "bash/*",
-]
+paths = ["bash/*"]
 [bats]
 plan_path = "bats"
 [bazel]
@@ -59,14 +57,10 @@ plan_path = "bc"
 plan_path = "bdwgc"
 [bdwgc7]
 plan_path = "bdwgc7"
-paths = [
-  "bdwgc/*",
-]
+paths = ["bdwgc/*"]
 [bdwgc8]
 plan_path = "bdwgc8"
-paths = [
-  "bdwgc/*",
-]
+paths = ["bdwgc/*"]
 [benchmark]
 plan_path = "benchmark"
 [bind]
@@ -93,16 +87,12 @@ plan_path = "bundler"
 plan_path = "busybox"
 [busybox-static]
 plan_path = "busybox-static"
-paths = [
-  "busybox/*",
-]
+paths = ["busybox/*"]
 [bzip2]
 plan_path = "bzip2"
 [bzip2-musl]
 plan_path = "bzip2-musl"
-paths = [
-  "bzip2/*",
-]
+paths = ["bzip2/*"]
 [c-ares]
 plan_path = "c-ares"
 [cabal-install]
@@ -129,11 +119,6 @@ plan_path = "check"
 plan_path = "chrony"
 [clang]
 plan_path = "clang"
-[clang7]
-plan_path = "clang7"
-paths = [
-  "clang/*"
-]
 [clens]
 plan_path = "clens"
 [clingo]
@@ -154,21 +139,12 @@ plan_path = "consul"
 plan_path = "coreutils"
 [coreutils-static]
 plan_path = "coreutils-static"
-paths = [
-  "coreutils/*",
-]
+paths = ["coreutils/*"]
 [corretto]
 plan_path = "corretto"
 [corretto8]
 plan_path = "corretto8"
-paths = [
-  "corretto/*",
-]
-[corretto11]
-plan_path = "corretto11"
-paths = [
-  "corretto/*",
-]
+paths = ["corretto/*"]
 [cpanminus]
 plan_path = "cpanminus"
 [cpio]
@@ -183,20 +159,14 @@ plan_path = "cpputest"
 plan_path = "cuda"
 [cuda-libs]
 plan_path = "cuda-libs"
-paths = [
-  "cuda/*"
-]
+paths = ["cuda/*"]
 [curator]
 plan_path = "curator"
-[curator4]
-plan_path = "curator4"
 [curl]
 plan_path = "curl"
 [curl-static-musl]
 plan_path = "curl-static-musl"
-paths = [
-  "curl/*",
-]
+paths = ["curl/*"]
 [cyrus-sasl]
 plan_path = "cyrus-sasl"
 [damageproto]
@@ -259,8 +229,6 @@ plan_path = "e2fsprogs"
 plan_path = "ed"
 [elasticsearch]
 plan_path = "elasticsearch"
-[elasticsearch5]
-plan_path = "elasticsearch5"
 [elfutils]
 plan_path = "elfutils"
 [elixir]
@@ -273,16 +241,6 @@ plan_path = "envdir"
 plan_path = "envoy"
 [erlang]
 plan_path = "erlang"
-[erlang16]
-plan_path = "erlang16"
-[erlang18]
-plan_path = "erlang18"
-[erlang19]
-plan_path = "erlang19"
-[erlang20]
-plan_path = "erlang20"
-[erlang21]
-plan_path = "erlang21"
 [etcd]
 plan_path = "etcd"
 [eudev]
@@ -331,15 +289,11 @@ plan_path = "gawk"
 plan_path = "gcc"
 [gcc-libs]
 plan_path = "gcc-libs"
-paths = [
-  "gcc/*",
-]
+paths = ["gcc/*"]
 [gdal]
 plan_path = "gdal"
 [gdb]
 plan_path = "gdb"
-[gdb7]
-plan_path = "gdb7"
 [gdbm]
 plan_path = "gdbm"
 [gdk-pixbuf]
@@ -352,35 +306,14 @@ plan_path = "geos"
 plan_path = "gettext"
 [ghc]
 plan_path = "ghc"
-[ghc710]
-plan_path = "ghc710"
-paths = [
-  "ghc/*",
-]
-[ghc710-bootstrap]
-plan_path = "ghc710-bootstrap"
-[ghc80]
-plan_path = "ghc80"
-paths = [
-  "ghc/*",
-]
 [ghc82-bootstrap]
 plan_path = "ghc82-bootstrap"
 [ghc82]
 plan_path = "ghc82"
-paths = [
-  "ghc/*",
-]
+paths = ["ghc/*"]
 [ghc84]
 plan_path = "ghc84"
-paths = [
-  "ghc/*",
-]
-[ghc86]
-plan_path = "ghc86"
-paths = [
-  "ghc/*",
-]
+paths = ["ghc/*"]
 [giflib]
 plan_path = "giflib"
 [gifsicle]
@@ -393,9 +326,7 @@ plan_path = "github_changelog_generator"
 plan_path = "glib"
 [glibc]
 plan_path = "glibc"
-paths = [
-  "tzdata/*",
-]
+paths = ["tzdata/*"]
 [glproto]
 plan_path = "glproto"
 [gmp]
@@ -406,9 +337,7 @@ plan_path = "gnatsd"
 plan_path = "gnupg"
 [gnupg-static]
 plan_path = "gnupg-static"
-paths = [
-  "gnupg/*",
-]
+paths = ["gnupg/*"]
 [gnuplot]
 plan_path = "gnuplot"
 [gnutls]
@@ -437,16 +366,6 @@ plan_path = "gperftools"
 plan_path = "gpgme"
 [gradle]
 plan_path = "gradle"
-[gradle4]
-plan_path = "gradle4"
-paths = [
-  "gradle/*",
-]
-[gradle5]
-plan_path = "gradle5"
-paths = [
-  "gradle/*",
-]
 [grafana]
 plan_path = "grafana"
 [graphviz]
@@ -463,8 +382,6 @@ plan_path = "grub"
 plan_path = "gsl"
 [gtk]
 plan_path = "gtk"
-[gtk2]
-plan_path = "gtk2"
 [guile]
 plan_path = "guile"
 [gzip]
@@ -475,26 +392,6 @@ plan_path = "handlebars-cmd"
 plan_path = "happy"
 [haproxy]
 plan_path = "haproxy"
-[haproxy16]
-plan_path = "haproxy16"
-paths = [
-  "haproxy/*"
-]
-[haproxy17]
-plan_path = "haproxy17"
-paths = [
-  "haproxy/*"
-]
-[haproxy18]
-plan_path = "haproxy18"
-paths = [
-  "haproxy/*"
-]
-[haproxy19]
-plan_path = "haproxy19"
-paths = [
-  "haproxy/*"
-]
 [harfbuzz]
 plan_path = "harfbuzz"
 [helm]
@@ -515,8 +412,6 @@ plan_path = "iana-etc"
 plan_path = "icu"
 [icu52]
 plan_path = "icu52"
-[icu56]
-plan_path = "icu56"
 [imagemagick]
 plan_path = "imagemagick"
 [img]
@@ -559,8 +454,6 @@ plan_path = "jq-static"
 plan_path = "jre7"
 [jruby]
 plan_path = "jruby"
-[jruby1]
-plan_path = "jruby1"
 [json-glib]
 plan_path = "json-glib"
 [kafka]
@@ -579,29 +472,19 @@ plan_path = "kubectl"
 plan_path = "kubernetes"
 [kubernetes-apiserver]
 plan_path = "kubernetes-apiserver"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [kubernetes-controller-manager]
 plan_path = "kubernetes-controller-manager"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [kubernetes-kubelet]
 plan_path = "kubernetes-kubelet"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [kubernetes-proxy]
 plan_path = "kubernetes-proxy"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [kubernetes-scheduler]
 plan_path = "kubernetes-scheduler"
-paths = [
-  "kubernetes/*",
-]
+paths = ["kubernetes/*"]
 [lcms2]
 plan_path = "lcms2"
 [leiningen]
@@ -618,9 +501,7 @@ plan_path = "libaio"
 plan_path = "libarchive"
 [libarchive-musl]
 plan_path = "libarchive-musl"
-paths = [
-  "libarchive/*",
-]
+paths = ["libarchive/*"]
 [libassuan]
 plan_path = "libassuan"
 [libatomic_ops]
@@ -699,9 +580,7 @@ plan_path = "libpthread-stubs"
 plan_path = "libressl"
 [libressl-musl]
 plan_path = "libressl-musl"
-paths = [
-  "libressl/*",
-]
+paths = ["libressl/*"]
 [libscrypt]
 plan_path = "libscrypt"
 [libseccomp]
@@ -712,9 +591,7 @@ plan_path = "libsm"
 plan_path = "libsodium"
 [libsodium-musl]
 plan_path = "libsodium-musl"
-paths = [
-  "libsodium/*",
-]
+paths = ["libsodium/*"]
 [libssh2]
 plan_path = "libssh2"
 [libtalloc]
@@ -791,19 +668,12 @@ plan_path = "linux-headers-musl"
 plan_path = "linux-pam"
 [llvm]
 plan_path = "llvm"
-[llvm7]
-plan_path = "llvm7"
-paths = [
-  "llvm/*"
-]
 [local-lib]
 plan_path = "local-lib"
 [logback]
 plan_path = "logback"
 [logstash]
 plan_path = "logstash"
-[logstash2]
-plan_path = "logstash2"
 [lsof]
 plan_path = "lsof"
 [lsyncd]
@@ -860,9 +730,7 @@ plan_path = "minio"
 plan_path = "mksh"
 [monit]
 plan_path = "monit"
-paths = [
-  "monit/*",
-]
+paths = ["monit/*"]
 [mongo-tools]
 plan_path = "mongo-tools"
 [mongodb]
@@ -901,9 +769,7 @@ plan_path = "ncdu"
 plan_path = "ncurses"
 [ncurses5]
 plan_path = "ncurses5"
-paths = [
-  "ncurses/*",
-]
+paths = ["ncurses/*"]
 [net-tools]
 plan_path = "net-tools"
 [netcat]
@@ -928,29 +794,7 @@ plan_path = "nmap"
 plan_path = "node"
 [node6]
 plan_path = "node6"
-paths = [
-  "node/*",
-]
-[node8]
-plan_path = "node8"
-paths = [
-  "node/*",
-]
-[node9]
-plan_path = "node9"
-paths = [
-  "node/*",
-]
-[node10]
-plan_path = "node10"
-paths = [
-  "node/*",
-]
-[node11]
-plan_path = "node11"
-paths = [
-  "node/*",
-]
+paths = ["node/*"]
 [node_exporter]
 plan_path = "node_exporter"
 [npth]
@@ -985,9 +829,7 @@ plan_path = "openssh"
 plan_path = "openssl"
 [openssl-musl]
 plan_path = "openssl-musl"
-paths = [
-  "openssl/*",
-]
+paths = ["openssl/*"]
 [openvpn]
 plan_path = "openvpn"
 [optipng]
@@ -1018,8 +860,6 @@ plan_path = "perl"
 plan_path = "phantomjs"
 [php]
 plan_path = "php"
-[php5]
-plan_path = "php5"
 [pixman]
 plan_path = "pixman"
 [pkg-config]
@@ -1040,76 +880,13 @@ plan_path = "postfix"
 plan_path = "postgresql"
 [postgresql-client]
 plan_path = "postgresql-client"
-paths = [
-  "postgresql/*",
-]
-[postgresql93]
-plan_path = "postgresql93"
-paths = [
-  "postgresql/*",
-]
-[postgresql93-client]
-plan_path = "postgresql93-client"
-paths = [
-  "postgresql/*",
-  "postgresql93/*",
-]
-[postgresql94]
-plan_path = "postgresql94"
-paths = [
-  "postgresql/*",
-]
-[postgresql94-client]
-plan_path = "postgresql94-client"
-paths = [
-  "postgresql/*",
-  "postgresql94/*",
-]
-[postgresql95]
-plan_path = "postgresql95"
-paths = [
-  "postgresql/*",
-]
-[postgresql95-client]
-plan_path = "postgresql95-client"
-paths = [
-  "postgresql/*",
-  "postgresql95/*",
-]
-[postgresql96]
-plan_path = "postgresql96"
-paths = [
-  "postgresql/*",
-]
-[postgresql96-client]
-plan_path = "postgresql96-client"
-paths = [
-  "postgresql/*",
-  "postgresql96/*",
-]
-[postgresql11]
-plan_path = "postgresql11"
-[postgresql11-client]
-plan_path = "postgresql11-client"
-paths = [
-  "postgresql11/*",
-]
+paths = ["postgresql/*"]
 [procps-ng]
 plan_path = "procps-ng"
 [proj]
 plan_path = "proj"
 [prometheus]
 plan_path = "prometheus"
-[prometheus1]
-plan_path = "prometheus1"
-paths = [
-  "prometheus/*"
-]
-[prometheus2]
-plan_path = "prometheus2"
-paths = [
-  "prometheus/*"
-]
 [prometheus-cpp]
 plan_path = "prometheus-cpp"
 [protobuf]
@@ -1130,29 +907,7 @@ plan_path = "pv"
 plan_path = "python"
 [python2]
 plan_path = "python2"
-paths = [
-  "python/*"
-]
-[python34]
-plan_path = "python34"
-paths = [
-  "python/*"
-]
-[python35]
-plan_path = "python35"
-paths = [
-  "python/*"
-]
-[python36]
-plan_path = "python36"
-paths = [
-  "python/*"
-]
-[python37]
-plan_path = "python37"
-paths = [
-  "python/*"
-]
+paths = ["python/*"]
 [qemu]
 plan_path = "qemu"
 [R]
@@ -1169,11 +924,6 @@ randrproto = "randrproto"
 plan_path = "re2c"
 [readline]
 plan_path = "readline"
-[readline6]
-plan_path = "readline6"
-paths = [
-  "readline/*",
-]
 [rebar3]
 plan_path = "rebar3"
 [recordproto]
@@ -1182,14 +932,10 @@ plan_path = "recordproto"
 plan_path = "redis"
 [redis3]
 plan_path = "redis3"
-paths = [
-  "redis/*",
-]
+paths = ["redis/*"]
 [redis4]
 plan_path = "redis4"
-paths = [
-  "redis/*",
-]
+paths = ["redis/*"]
 [relx]
 plan_path = "relx"
 [renderproto]
@@ -1212,35 +958,13 @@ plan_path = "rngd"
 plan_path = "rpm"
 [rpm2cpio]
 plan_path = "rpm2cpio"
-paths = [
-  "rpm2cpio/*"
-]
+paths = ["rpm2cpio/*"]
 [rq]
 plan_path = "rq"
 [rsync]
 plan_path = "rsync"
 [ruby]
 plan_path = "ruby"
-[ruby23]
-plan_path = "ruby23"
-paths = [
-  "ruby/*"
-]
-[ruby24]
-plan_path = "ruby24"
-paths = [
-  "ruby/*"
-]
-[ruby25]
-plan_path = "ruby25"
-paths = [
-  "ruby/*"
-]
-[ruby26]
-plan_path = "ruby26"
-paths = [
-  "ruby/*"
-]
 [runc]
 plan_path = "runc"
 [runit]
@@ -1385,9 +1109,7 @@ plan_path = "wal-e"
 plan_path = "wget"
 [wget-static]
 plan_path = "wget-static"
-paths = [
-  "wget/*",
-]
+paths = ["wget/*"]
 [which]
 plan_path = "which"
 [wordpress]
@@ -1412,9 +1134,7 @@ plan_path = "xtrans"
 plan_path = "xz"
 [xz-musl]
 plan_path = "xz-musl"
-paths = [
-  "xz/*",
-]
+paths = ["xz/*"]
 [yaml-cpp]
 plan_path = "yaml-cpp"
 [yarn]
@@ -1429,9 +1149,7 @@ plan_path = "zip"
 plan_path = "zlib"
 [zlib-musl]
 plan_path = "zlib-musl"
-paths = [
-  "zlib/*",
-]
+paths = ["zlib/*"]
 [zookeeper]
 plan_path = "zookeeper"
 [zsh]

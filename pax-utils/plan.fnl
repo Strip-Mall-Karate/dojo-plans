@@ -1,21 +1,22 @@
 ;; pax-utils, ported from its plan.sh.
+;; pax-utils 1.3.11, the latest release on 2026-10-27: 1.2.3's source no longer downloads.
 {:name "pax-utils"
  :origin "karate"
- :version "1.2.3"
+ :version "1.3.11"
  :targets ["x86_64-linux"]
  :maintainer "Strip Mall Karate Company"
  :license ["GPL"]
  :description "ELF related utils for ELF 32/64 binaries that can check files\nfor security relevant properties"
- :upstream_url "http://hardened.gentoo.org/pax-utils.xml"
- :source {:url "http://distfiles.gentoo.org/distfiles/pax-utils-1.2.3.tar.xz" :sha256 "d231b1a34aea2b9205c24fada79a8251d4c3fbcce49367fc055fe43e4c9783b2"}
+ :upstream_url "https://gitweb.gentoo.org/proj/pax-utils.git"
+ :source {:url "https://distfiles.gentoo.org/pub/proj/toolchain/pax-utils/pax-utils-1.3.11.tar.xz" :sha256 "0ca000bca244e22589e38f1db0daaeaf4cc8b2960381fc7cf673cc3296b8d6f5"}
  :deps ["karate/bash" "karate/glibc" "karate/libcap"]
- :build_deps ["karate/diffutils" "karate/gcc" "karate/make" "karate/pkg-config"]
+ :build_deps ["karate/diffutils" "karate/gcc" "karate/meson" "karate/ninja" "karate/pkg-config"]
  :bin_dirs ["bin"]
  :build (fn [b]
-          (b:run ["./configure" (.. "--prefix=" b.prefix) "--with-caps" "--without-python"])
-          (b:run ["make"]))
+          (b:run ["meson" "setup" "_build" (.. "--prefix=" b.prefix) "--buildtype=release" "-Duse_libcap=enabled" "-Dlddtree_implementation=sh" "-Dbuild_manpages=disabled" "-Duse_fuzzing=false"])
+          (b:run ["ninja" "-C" "_build"]))
  :check (fn [b]
-          (b:run ["make" "check" "USE_PYTHON=no"]))
+          (b:run ["meson" "test" "-C" "_build"]))
  :install (fn [b]
-          (b.default.install b)
+          (b:run ["ninja" "-C" "_build" "install"])
           (b:fix_interpreter (b:glob (.. b.prefix "/bin") "*") "karate/bash" "bin/bash"))}

@@ -13,8 +13,9 @@ swamp workflow run build-plans --input '{"plans": ["helm"]}'   # helm and all it
 swamp workflow run build-plans                                 # every plan
 ```
 
-`build-plans` orders the plans, then builds them a wave at a time through `build-wave`, two plans at
-once. The base toolchain in `../base-plans.txt` goes first, in its listed order. A failed plan
+`build-plans` orders the plans, then builds them a wave at a time through `build-wave`, one plan at
+a time: a build holds the `dojo` definition's lock until it ends, so while a workflow runs, other
+`dojo` methods wait for it, and a build run beside it fails after a minute. The base toolchain in `../base-plans.txt` goes first, in its listed order. A failed plan
 blocks only the plans that depend on it, and a plan already built from the same plan contents is
 skipped, so running the workflow again after a fix builds only what is left. Each plan's last build
 is the `build-<plan>` record, and its output is the `log-<plan>` file:

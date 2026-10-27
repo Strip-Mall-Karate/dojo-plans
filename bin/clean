@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# smk { overwrite: false }
+#########################################################################
+#
+#                 -- Generated with smk --
+#      (do not edit unless you know what you're doing)
+#
+#########################################################################
+#
+# Remove what Python and its checks derive: every __pycache__/ outside .git and .venv, the ruff
+# and mypy caches, and out/.
+#
+# Exit: 0 removed or already absent; 2 the call is wrong.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+
+if (($# > 0)); then
+  echo >&2 "usage: $(basename "$0")   (takes no arguments)"
+  exit 2
+fi
+# shellcheck source-path=SCRIPTDIR source=lib/root.sh
+source "$SCRIPT_DIR/lib/root.sh"
+
+find "$WORKSPACE" \( -name .git -o -name .venv \) -prune -o -type d -name __pycache__ -prune -exec rm -rf {} +
+rm -rf "$WORKSPACE/.mypy_cache" "$WORKSPACE/.ruff_cache" "$WORKSPACE/out"

@@ -1,8 +1,0 @@
-{
-  "origin": "karate",
-  "plan_path": "prometheus/plan.sh",
-  "github": {
-    "organization": "StripMallKarateCompany",
-    "repo": "dojo-plans"
-  }
-}
