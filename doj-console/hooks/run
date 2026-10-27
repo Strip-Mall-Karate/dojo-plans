@@ -1,0 +1,13 @@
+#!{{pkgPathFor "karate/busybox-static"}}/bin/sh
+# getty exits when its login session ends, and the Supervisor then runs this hook again.
+# The serial console's getty is the one this hook waits on; tty1's runs beside it,
+# replacing the one an earlier run left. The Launcher starts each service as a process
+# group leader, which may not start a session of its own, so both gettys are children.
+bin={{pkgPathFor "karate/busybox-static"}}/bin
+exec 2>&1
+"${bin}/pkill" -f "getty -l ${bin}/login 115200 tty1"
+"${bin}/getty" -l "${bin}/login" 115200 tty1 linux &
+"${bin}/getty" -l "${bin}/login" 115200 ttyS0 vt100 &
+serial=$!
+trap 'kill "${serial}" 2>/dev/null; exit 0' TERM INT
+wait "${serial}"
