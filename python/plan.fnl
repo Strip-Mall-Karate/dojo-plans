@@ -21,7 +21,9 @@
                   "--enable-loadable-sqlite-extensions"
                   "--with-system-expat"
                   (.. "--with-openssl=" (b:path_for "openssl"))
-                  "--with-ensurepip=install"])
+                  "--with-ensurepip=install"
+                  ;; The test suite stays out of the package; its archive fixtures name /bin/bash.
+                  "--disable-test-modules"])
           (b:run ["make" (.. "-j" (tostring b.jobs))]))
  :check (fn [b]
           (b:run ["make" "test"]))
