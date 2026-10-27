@@ -9,11 +9,15 @@
 set -e
 
 link=yes
+static=no
 inputs=no
 musl=no
 for arg in "$@"; do
   case "$arg" in
     -c | -S | -E | -M | -MM | -x) link=no ;;
+    # A static program has no dynamic linker and no RUNPATH: rustc's musl
+    # programs link this way, with their own C library.
+    -static | -static-pie) static=yes ;;
     *musl-gcc.specs) musl=yes ;;
     -*) ;;
     *) inputs=yes ;;
@@ -47,7 +51,7 @@ case "$(basename "@program@")" in
     esac
     ;;
 esac
-if [ "$link" = yes ]; then
+if [ "$link" = yes ] && [ "$static" = no ]; then
   saved_ifs=$IFS
   IFS=:
   for path in ${LD_RUN_PATH:-}; do
