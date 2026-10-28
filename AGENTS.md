@@ -23,4 +23,4 @@ plan is written; `tools/port/README.md` how the bash plans were ported.
   and `smkproj.toml` says why. `tools/port/port.py` formats each plan it writes as `smk format` does
   and rewrites it to pass fennel-ls's lints (`tools/port/lints.py`), so regenerating plans still
   reproduces the tree. Open pull requests with `smk pr create`; work items live in workq (`smk issue`,
-  project SMK, label `dojo`).
+  project DOJ, label `dojo`).
