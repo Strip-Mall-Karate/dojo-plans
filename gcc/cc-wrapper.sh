@@ -60,9 +60,11 @@ if [ "$link" = yes ] && [ "$static" = no ]; then
     fi
   done
   IFS=$saved_ifs
-  # Given once here: binutils' ld would otherwise add the same entries again.
-  unset LD_RUN_PATH
   set -- -Wl,-dynamic-linker -Wl,@dynamic_linker@ "$@"
 fi
+# The RUNPATH is the -rpath options above or nothing: binutils' ld reads
+# LD_RUN_PATH when a link has no -rpath, so it would give a static program
+# one.
+unset LD_RUN_PATH
 
 exec "@program@" "$@"

@@ -50,7 +50,7 @@ drops the others' changes from the tree.
 gcc and that gcc's glibc and binutils, and links three programs with it in the container. C and Rust
 against glibc must run, name that glibc's dynamic linker, and carry exactly `LD_RUN_PATH`'s entries
 as their RUNPATH: rustc links with its bundled lld, which ignores `LD_RUN_PATH`. A static Rust program
-against musl must run with no dynamic linker. It sends the working tree's wrapper, so a change is
+against musl must run with no dynamic linker and no RUNPATH. It sends the working tree's wrapper, so a change is
 checked before it is committed.
 
 ## What a build there is, and is not

@@ -9,10 +9,9 @@ binutils that gcc depends on, and links three programs with it:
 - C against glibc, and Rust against glibc: each runs, its interpreter is that glibc's dynamic
   linker, and its RUNPATH is exactly LD_RUN_PATH's entries, once. rustc links with its bundled
   lld, which ignores LD_RUN_PATH, so this holds only when the wrapper passes the entries itself.
-- Rust static against musl: it runs and has no interpreter. A static link given glibc's dynamic
-  linker starts that linker and crashes. Its RUNPATH is printed, not checked: the wrapper leaves
-  LD_RUN_PATH set for a static link, and binutils' ld, which rustc's musl target links with,
-  writes it into the program, where nothing reads it.
+- Rust static against musl: it runs and has no interpreter and no RUNPATH. A static link given
+  glibc's dynamic linker starts that linker and crashes, and binutils' ld, which rustc's musl
+  target links with, writes LD_RUN_PATH into a link given no -rpath unless the wrapper unsets it.
 
 Prints one line per program and exits nonzero when any check fails.
 """
@@ -117,11 +116,10 @@ def check(
     name: str,
     program: Path,
     want_interpreter: str | None,
-    want_runpath: list[str] | None,
+    want_runpath: list[str],
 ) -> list[str]:
-    """What is wrong with a linked program, or nothing. A want_runpath of None checks no RUNPATH."""
+    """What is wrong with a linked program, or nothing."""
     problems = []
-    notes = []
     run = subprocess.run([str(program)], capture_output=True, text=True, check=False)
     if run.returncode != 0 or run.stdout.strip() != GREETING:
         problems.append(
@@ -129,15 +127,11 @@ def check(
         )
     if (got := interpreter(program)) != want_interpreter:
         problems.append(f"interpreter {got}, wanted {want_interpreter}")
-    got_runpath = runpath(program)
-    if want_runpath is None:
-        if got_runpath:
-            notes.append(f"RUNPATH {got_runpath}, not checked")
-    elif got_runpath != want_runpath:
+    if (got_runpath := runpath(program)) != want_runpath:
         problems.append(f"RUNPATH {got_runpath}, wanted {want_runpath}")
     print(
         f"{'ok' if not problems else 'FAIL'} {name}"
-        + "".join(f"\n  {p}" for p in problems + notes)
+        + "".join(f"\n  {p}" for p in problems)
     )
     return problems
 
@@ -207,7 +201,7 @@ def main(argv: list[str]) -> int:
                     str(work / "hello.rs"),
                 ],
                 None,
-                None,
+                [],
             ),
         ]
         for name, command, want_interpreter, want_runpath in programs:
