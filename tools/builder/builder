@@ -15,9 +15,16 @@ readonly HOST_DIR=dojo-builder
 # The karate origin's signing key pair, each key file base64-encoded in its own field. Neither the
 # image nor ~/dojo-builder on the host holds it: `key` puts it in the /doj volume.
 readonly KEY_ITEM="op://OMG SecOps/karate origin signing key"
+# state.py's exit status when something builds from /work/plans, and when only runs swamp never
+# finished are left.
+readonly EXIT_RUNNING=3
+readonly EXIT_INTERRUPTED=4
+# wait: how often it asks, and how many ssh failures in a row it rides out (ten minutes).
+readonly WAIT_SECONDS=30
+readonly WAIT_SSH_FAILURES=20
 
 usage() {
-  echo >&2 "usage: $(basename "$0") image | start | sync | tools <dojo-checkout> | key | dojo <dojo-checkout> | standins | run <command>... | shell | stop | remove"
+  echo >&2 "usage: $(basename "$0") image | start | sync [--force] | tools <dojo-checkout> | key | dojo <dojo-checkout> | standins | status | wait | failures | check-wrapper | run <command>... | shell | stop | remove"
   exit 2
 }
 
@@ -38,6 +45,9 @@ send_tree() {
                mkdir -p ${HOST_DIR}/${name};
                rsync -a --delete ${keep[*]} \"\$s/${path%/}/\" ${HOST_DIR}/${name}/"
 }
+
+# state.py in the container, from swamp's repository: it reads swamp's records and the processes.
+state() { on_host "docker exec -i -w /work/plans/swamp ${CONTAINER} python3 -I - $1" <"${SCRIPT_DIR}/state.py"; }
 
 (($# >= 1)) || usage
 command=$1
@@ -60,6 +70,19 @@ start)
              docker exec ${CONTAINER} mkdir -p /doj/cache/keys /work/bin"
   ;;
 sync)
+  (($# == 0)) || [[ $# == 1 && "$1" == --force ]] || usage
+  if [[ $# == 0 ]]; then
+    status=0
+    found=$(state running) || status=$?
+    if ((status == EXIT_RUNNING || status == EXIT_INTERRUPTED)); then
+      printf '%s\n' "${found}" >&2
+      echo >&2 "Not syncing: a workflow re-reads /work/plans at every wave. Wait for it, or sync --force."
+      exit 1
+    elif ((status != 0)); then
+      echo >&2 "Not syncing: could not tell whether anything builds (exit ${status})."
+      exit "${status}"
+    fi
+  fi
   send_tree "$(git rev-parse --show-toplevel)" . plans swamp/.swamp/ swamp/results/ results/
   ;;
 tools)
@@ -100,6 +123,39 @@ standins)
         mkdir -p \$dir && echo karate/\$name/0.0.0/20200101000000 > \$dir/IDENT &&
           printf x86_64-linux > \$dir/TARGET
       done; ls /doj/pkgs/karate | wc -l'"
+  ;;
+status | failures)
+  (($# == 0)) || usage
+  state "${command}"
+  ;;
+wait)
+  (($# == 0)) || usage
+  failures=0
+  while :; do
+    status=0
+    found=$(state running) || status=$?
+    case "${status}" in
+    0 | "${EXIT_INTERRUPTED}") exit "${status}" ;;
+    "${EXIT_RUNNING}")
+      failures=0
+      echo >&2 "$(date +%T) building: ${found//$'\n'/; }"
+      ;;
+    255)
+      ((++failures <= WAIT_SSH_FAILURES)) || exit 255
+      echo >&2 "$(date +%T) ssh to ${BUILD_HOST} failed (${failures} of ${WAIT_SSH_FAILURES}); asking again in ${WAIT_SECONDS}s"
+      ;;
+    *) exit "${status}" ;;
+    esac
+    sleep "${WAIT_SECONDS}"
+  done
+  ;;
+check-wrapper)
+  # tools/builder/check_wrapper.py with this checkout's gcc/cc-wrapper.sh, as the working tree has them.
+  (($# == 0)) || usage
+  top=$(git rev-parse --show-toplevel)
+  tar -C "${top}" -cf - tools/builder/check_wrapper.py gcc/cc-wrapper.sh |
+    on_host "docker exec -i ${CONTAINER} sh -c 's=\$(mktemp -d); trap \"rm -rf \$s\" EXIT; tar -xf - -C \$s &&
+      nice -n 15 python3 -I \$s/tools/builder/check_wrapper.py \$s/gcc/cc-wrapper.sh'"
   ;;
 run)
   (($# >= 1)) || usage

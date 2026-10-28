@@ -1,0 +1,101 @@
+{
+  "predicate": "modelName == \"dojo\" && specName == \"build\"",
+  "results": [
+    {
+      "name": "build-zlib",
+      "specName": "build",
+      "content": {
+        "plan": "zlib",
+        "target": "x86_64-linux",
+        "status": "built",
+        "exitCode": 0,
+        "blockedBy": null,
+        "ident": "karate/zlib/1.3.2/20261027030822"
+      }
+    },
+    {
+      "name": "build-make",
+      "specName": "build",
+      "content": {
+        "plan": "make",
+        "target": "x86_64-linux",
+        "status": "failed",
+        "exitCode": 2,
+        "blockedBy": null,
+        "ident": null
+      }
+    },
+    {
+      "name": "build-openssl-fips",
+      "specName": "build",
+      "content": {
+        "plan": "openssl-fips",
+        "target": "x86_64-linux",
+        "status": "blocked",
+        "exitCode": null,
+        "blockedBy": "make",
+        "ident": null
+      }
+    },
+    {
+      "name": "build-curl",
+      "specName": "build",
+      "content": {
+        "plan": "curl",
+        "target": "x86_64-linux",
+        "status": "blocked",
+        "exitCode": null,
+        "blockedBy": "openssl-fips",
+        "ident": null
+      }
+    },
+    {
+      "name": "build-git",
+      "specName": "build",
+      "content": {
+        "plan": "git",
+        "target": "x86_64-linux",
+        "status": "blocked",
+        "exitCode": null,
+        "blockedBy": "curl",
+        "ident": null
+      }
+    },
+    {
+      "name": "build-python2",
+      "specName": "build",
+      "content": {
+        "plan": "python2",
+        "target": "x86_64-linux",
+        "status": "failed",
+        "exitCode": 2,
+        "blockedBy": null,
+        "ident": null
+      }
+    },
+    {
+      "name": "build-ansible",
+      "specName": "build",
+      "content": {
+        "plan": "ansible",
+        "target": "x86_64-linux",
+        "status": "blocked",
+        "exitCode": null,
+        "blockedBy": "python2",
+        "ident": null
+      }
+    },
+    {
+      "name": "build-m4",
+      "specName": "build",
+      "content": "{\"plan\": \"m4\", \"target\": \"x86_64-linux\", \"status\": \"built\", \"exitCode\": 0, \"blockedBy\": null}"
+    },
+    {
+      "name": "build-broken",
+      "specName": "build",
+      "content": "doj-plan-build: not a record"
+    }
+  ],
+  "total": 9,
+  "limited": false
+}

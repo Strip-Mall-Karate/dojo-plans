@@ -1,0 +1,12 @@
+checking for tar... tar
+checking for po4a >= 0.59... no
+checking for perl >= 5.36.0... (cached) /doj/pkgs/karate/perl/5.44.0/20261027041614/bin/perl
+checking for pod2man... pod2man
+checking whether to build with code coverage... no
+checking for gcc option to support large files... none needed
+checking for library containing clock_gettime... none required
+checking for md5.h... no
+! configure: error: in '/doj/cache/src/dpkg-1.23.11':
+! configure: error: md5 digest functions not found
+! See 'config.log' for more details
+! doj-plan-build: the `build` phase failed: `./configure --prefix=/doj/pkgs/karate/dpkg/1.23.11/20261027104203` exited with code 1

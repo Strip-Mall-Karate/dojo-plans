@@ -1,0 +1,60 @@
+!   330 | void ziperr(c, h)
+!       |      ^~~~~~
+! zip.c: In function 'error':
+! zip.c:440:6: warning: old-style function definition [-Wold-style-definition]
+!   440 | void error(h)
+!       |      ^~~~~
+! zip.c: In function 'handler':
+! zip.c:448:12: warning: old-style function definition [-Wold-style-definition]
+!   448 | local void handler(s)
+!       |            ^~~~~~~
+! zip.c: In function 'zipmessage_nl':
+! zip.c:466:6: warning: old-style function definition [-Wold-style-definition]
+!   466 | void zipmessage_nl(a, nl)
+!       |      ^~~~~~~~~~~~~
+! zip.c: In function 'zipmessage':
+! zip.c:505:6: warning: old-style function definition [-Wold-style-definition]
+!   505 | void zipmessage(a, b)
+!       |      ^~~~~~~~~~
+! zip.c: In function 'zipwarn':
+! zip.c:526:6: warning: old-style function definition [-Wold-style-definition]
+!   526 | void zipwarn(a, b)
+!       |      ^~~~~~~
+! zip.c: In function 'check_unzip_version':
+! zip.c:1282:11: warning: old-style function definition [-Wold-style-definition]
+!  1282 | local int check_unzip_version(unzippath)
+!       |           ^~~~~~~~~~~~~~~~~~~
+! zip.c: In function 'check_zipfile':
+! zip.c:1326:12: warning: old-style function definition [-Wold-style-definition]
+!  1326 | local void check_zipfile(zipname, zippath)
+!       |            ^~~~~~~~~~~~~
+! zip.c: In function 'add_filter':
+! zip.c:1531:11: warning: old-style function definition [-Wold-style-definition]
+!  1531 | local int add_filter(flag, pattern)
+!       |           ^~~~~~~~~~
+! zip.c: In function 'add_name':
+! zip.c:1646:12: warning: old-style function definition [-Wold-style-definition]
+!  1646 | local long add_name(filearg)
+!       |            ^~~~~~~~
+! zip.c: In function 'encr_passwd':
+! zip.c:1786:5: warning: old-style function definition [-Wold-style-definition]
+!  1786 | int encr_passwd(modeflag, pwbuf, size, zfn)
+!       |     ^~~~~~~~~~~
+! zip.c: In function 'rename_split':
+! zip.c:1825:5: warning: old-style function definition [-Wold-style-definition]
+!  1825 | int rename_split(temp_name, out_path)
+!       |     ^~~~~~~~~~~~
+! zip.c: In function 'set_filetype':
+! zip.c:1845:5: warning: old-style function definition [-Wold-style-definition]
+!  1845 | int set_filetype(out_path)
+!       |     ^~~~~~~~~~~~
+! zip.c: In function 'main':
+! zip.c:2119:5: warning: old-style function definition [-Wold-style-definition]
+!  2119 | int main(argc, argv)
+!       |     ^~~~
+! make[2]: *** [unix/Makefile:86: zip.o] Error 1
+make[2]: Leaving directory '/doj/cache/src/zip30'
+! make[1]: *** [unix/Makefile:202: generic] Error 2
+make[1]: Leaving directory '/doj/cache/src/zip30'
+! make: *** [unix/Makefile:205: generic_gcc] Error 2
+! doj-plan-build: the `build` phase failed: `make -f unix/Makefile prefix=/doj/pkgs/karate/zip/3.0/20261027110811 generic_gcc` exited with code 2

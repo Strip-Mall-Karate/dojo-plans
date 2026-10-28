@@ -1,0 +1,14 @@
+   cargo-nightly: Building karate/cargo-nightly/0.36.0/20261027104047 for x86_64-linux
+   cargo-nightly: Found /doj/cache/src/cargo-nightly-x86_64-unknown-linux-gnu.tar.gz, checking it
+   cargo-nightly: Using the cached file
+   cargo-nightly: Checksum verified for cargo-nightly-x86_64-unknown-linux-gnu.tar.gz
+   cargo-nightly: Unpacking cargo-nightly-x86_64-unknown-linux-gnu.tar.gz
+install: creating uninstall script at /doj/pkgs/karate/cargo-nightly/0.36.0/20261027104047/lib/rustlib/uninstall.sh
+install: installing component 'cargo'
+
+    Rust is ready to roll.
+
+   cargo-nightly: Adding wrapper /doj/pkgs/karate/cargo-nightly/0.36.0/20261027104047/bin/cargo to /doj/pkgs/karate/cargo-nightly/0.36.0/20261027104047/bin/cargo.real
+! doj-plan-build: 1 file does name paths outside /doj:
+!   lib/rustlib/uninstall.sh: interpreter /bin/bash
+! Point them at packages: b:fix_interpreter for scripts, patchelf for programs

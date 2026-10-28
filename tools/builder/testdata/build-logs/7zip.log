@@ -1,0 +1,7 @@
+$ doj-plan-build build /work/plans/7zip --target x86_64-linux --refuse-host-paths --isolate --backline karate/backline
+   7zip: Building karate/7zip/16.02/20261027103932 for x86_64-linux
+   7zip: Found /doj/cache/src/p7zip_16.02_src_all.tar.bz2, checking it
+   7zip: Using the cached file
+   7zip: Checksum verified for p7zip_16.02_src_all.tar.bz2
+   7zip: Unpacking p7zip_16.02_src_all.tar.bz2
+! doj-plan-build: the `build` phase failed: b:copy: cannot create /doj/cache/src/p7zip_16.02/makefile.machine: File exists (os error 17)
