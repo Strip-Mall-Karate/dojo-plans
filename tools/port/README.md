@@ -12,6 +12,7 @@ they merge, build #7's branch):
 ```sh
 python3 -I tools/port/port.py <pkg>...            # writes <pkg>/plan.fnl; prints `ok` or what is left
 python3 -I tools/port/check.py "$DPB" <pkg>...     # refuses a plan that is not ported, safe or loading
+python3 -I tools/port/lints.py <plan.fnl>...       # rewrites a hand-written plan to pass fennel-ls
 python3 -I tools/port/difftest/run.py <dojo-checkout> <builder-state> <builder-port>
 python3 -I tools/port/buildtest/run.py <dojo-checkout> <builder-state> <builder-port> <stand-ins> <plan-dir>...
 ```
@@ -36,6 +37,11 @@ Go plans and the test apps in `buildtest/apps` were built this way, and their bi
   keeps as bash in an `;; UNPORTED (...)` block.
 - `port.py` writes the metadata and phases, renames to Dojo's names, and marks every problem in the
   plan's header so `check.py` holds it back.
+- `lints.py` rewrites a plan to pass fennel-ls's lints, from fennel-ls's report: method calls,
+  nested `..`, a `var` never set, and the declarations the translator makes for every variable a bash
+  function assigns. `port.py` runs it on each plan it writes; a definition it cannot remove without
+  changing what the plan does becomes a problem in the header, for a person to read. `difftest` runs
+  each case's Fennel through it, as `port.py` writes it.
 - `check.py` refuses: an UNPORTED block, a shell given code (`sh -c`), the source project's name, a b
   operation on a path outside `/doj`, a builder function or shell builtin run as a program, and a plan
   `doj-plan-build show` does not load.

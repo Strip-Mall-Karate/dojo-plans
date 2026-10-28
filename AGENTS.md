@@ -20,6 +20,7 @@ plan is written; `tools/port/README.md` how the bash plans were ported.
   (`smk format --check`, `smk lint`, `smk typecheck`) passes before a pull request opens; `smk format`
   fixes formatting. The checks cover every `plan.fnl` (fnlfmt and fennel-ls, set in `flsproject.fnl`),
   `tools/builder` and the root's own files; the rest of each plan directory and `tools/port` are excluded,
-  and `smkproj.toml` says why. `tools/port/port.py` formats each plan it writes as `smk format` does, so
-  regenerating plans still reproduces the tree. Open pull requests with `smk pr create`; work items live in
-  workq (`smk issue`, project SMK, label `dojo`).
+  and `smkproj.toml` says why. `tools/port/port.py` formats each plan it writes as `smk format` does
+  and rewrites it to pass fennel-ls's lints (`tools/port/lints.py`), so regenerating plans still
+  reproduces the tree. Open pull requests with `smk pr create`; work items live in workq (`smk issue`,
+  project SMK, label `dojo`).
