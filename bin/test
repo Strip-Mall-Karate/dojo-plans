@@ -7,9 +7,9 @@
 #
 #########################################################################
 #
-# Run the unittest suite from the repo root. With no arguments unittest discovers every test*.py
-# in a package (a directory with __init__.py) under the root; arguments go to `python3 -m unittest`,
-# e.g. `bin/test tests.test_parse`.
+# Run the unittest suite from the repo root. With no arguments it runs the builder's tests in
+# tools/builder, which is a directory of scripts, not a package; arguments go to
+# `python3 -m unittest`, e.g. `bin/test discover -s tools/builder -k blockers`.
 #
 # Exit: unittest's own. Python 3.12 and later exit 5 when no test ran, so an empty suite fails.
 
@@ -22,4 +22,7 @@ readonly SCRIPT_DIR
 source "$SCRIPT_DIR/lib/root.sh"
 
 cd "$WORKSPACE"
+if (($# == 0)); then
+  set -- discover -s tools/builder
+fi
 exec python3 -m unittest "$@"
