@@ -12,9 +12,12 @@ readonly CONTAINER=dojo-builder
 readonly ROOT_VOLUME=dojo-root
 # On the build host: the plans, Dojo's plan crate and the builder's home, mounted at /work.
 readonly HOST_DIR=dojo-builder
+# The karate origin's signing key pair, each key file base64-encoded in its own field. Neither the
+# image nor ~/dojo-builder on the host holds it: `key` puts it in the /doj volume.
+readonly KEY_ITEM="op://OMG SecOps/karate origin signing key"
 
 usage() {
-  echo >&2 "usage: $(basename "$0") image | start | sync | tools <dojo-checkout> | dojo <dojo-checkout> | standins | run <command>... | shell | stop | remove"
+  echo >&2 "usage: $(basename "$0") image | start | sync | tools <dojo-checkout> | key | dojo <dojo-checkout> | standins | run <command>... | shell | stop | remove"
   exit 2
 }
 
@@ -42,7 +45,7 @@ shift
 
 case "${command}" in
 image)
-  tar -C "${SCRIPT_DIR}" -cf - Containerfile doj cc-wrapper |
+  tar -C "${SCRIPT_DIR}" -cf - Containerfile cc-wrapper |
     on_host "set -e; s=\$(mktemp -d); trap 'rm -rf \"\$s\"' EXIT; tar -xf - -C \"\$s\";
                  docker build -f \"\$s/Containerfile\" -t ${IMAGE} \
                    --build-arg BUILDER_UID=\$(id -u) --build-arg BUILDER_GID=\$(id -g) \"\$s\""
@@ -54,19 +57,32 @@ start)
                -v ${ROOT_VOLUME}:/doj -v \$HOME/${HOST_DIR}:/work -e HOME=/work/home \
                -e PATH=/work/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
                ${IMAGE};
-             docker exec ${CONTAINER} sh -c 'mkdir -p /doj/cache/keys /work/bin &&
-               : > /doj/cache/keys/karate-20200101000000.sig.key'"
+             docker exec ${CONTAINER} mkdir -p /doj/cache/keys /work/bin"
   ;;
 sync)
   send_tree "$(git rev-parse --show-toplevel)" . plans swamp/.swamp/ swamp/results/ results/
   ;;
 tools)
+  # doj-plan-build, and the doj it signs packages with, from the checkout's committed tree. Both
+  # build with the image's Rust, so a builder with no karate packages yet has them.
   (($# == 1)) || usage
   send_tree "$1" components/plan/ dojo-plan target/
+  send_tree "$1" . dojo target/
   exec ssh "${BUILD_HOST}" "docker exec ${CONTAINER} nice -n 15 sh -c '
       cargo build --release --manifest-path /work/dojo-plan/Cargo.toml --target-dir /work/dojo-plan/target &&
       ln -sf /work/dojo-plan/target/release/doj-plan-build /work/bin/doj-plan-build &&
-      doj-plan-build show /work/plans/zlib --target x86_64-linux >/dev/null && echo doj-plan-build ready'"
+      doj-plan-build show /work/plans/zlib --target x86_64-linux >/dev/null && echo doj-plan-build ready &&
+      cargo build --release --locked --manifest-path /work/dojo/Cargo.toml --target-dir /work/dojo/target -p doj --bin doj &&
+      ln -sf /work/dojo/target/release/doj /work/bin/doj && doj --version'"
+  ;;
+key)
+  # The origin's public and secret keys from 1Password, through doj, which checks each and writes
+  # it to /doj/cache/keys.
+  (($# == 0)) || usage
+  for field in "public key" "secret key"; do
+    op read "${KEY_ITEM}/${field}" | base64 -d |
+      on_host "docker exec -i -e DOJ_CACHE_KEY_PATH=/doj/cache/keys ${CONTAINER} doj origin key import"
+  done
   ;;
 dojo)
   # The whole checkout, for building Dojo's own component plans at /work/dojo/components/<name>.
@@ -76,11 +92,13 @@ dojo)
 standins)
   # An empty karate/<name>/0.0.0 package for every base plan, so a first build resolves its
   # dependencies; the tools themselves are the container's, on PATH. A real build of the
-  # package is a newer version and replaces the stand-in.
+  # package is a newer version and replaces the stand-in. doj lists only a package whose TARGET
+  # is the one it runs on.
   on_host "docker exec ${CONTAINER} sh -c '
       for name in \$(sed -n \"s|^dojo-plans/\\([^ ]*\\).*|\\1|p\" /work/plans/base-plans.txt | sort -u); do
         dir=/doj/pkgs/karate/\$name/0.0.0/20200101000000
-        mkdir -p \$dir && echo karate/\$name/0.0.0/20200101000000 > \$dir/IDENT
+        mkdir -p \$dir && echo karate/\$name/0.0.0/20200101000000 > \$dir/IDENT &&
+          printf x86_64-linux > \$dir/TARGET
       done; ls /doj/pkgs/karate | wc -l'"
   ;;
 run)
