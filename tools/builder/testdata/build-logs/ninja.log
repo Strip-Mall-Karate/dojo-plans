@@ -1,0 +1,9 @@
+[41/212] Compiling C object src/libfoo.a.p/foo.c.o
+! FAILED: src/libfoo.a.p/foo.c.o
+! cc -Isrc/libfoo.a.p -Isrc -I../src -fdiagnostics-color=never -O2 -c ../src/foo.c
+! ../src/foo.c:3:10: fatal error: bar.h: No such file or directory
+!     3 | #include <bar.h>
+!       |          ^~~~~~~
+! compilation terminated.
+! ninja: build stopped: subcommand failed.
+! doj-plan-build: the `build` phase failed: `ninja -C build` exited with code 1

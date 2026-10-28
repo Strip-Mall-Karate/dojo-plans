@@ -1,0 +1,26 @@
+then mv -f ".deps/modp_b64w_test.Tpo" ".deps/modp_b64w_test.Po"; else rm -f ".deps/modp_b64w_test.Tpo"; exit 1; fi
+/bin/sh ./libtool --tag=CC --mode=link gcc  -Isrc -Wall -Werror -I/doj/pkgs/karate/glibc/2.44/20261027025433/include -I/doj/pkgs/karate/gcc/16.2.0/20261027094922/include -I/doj/pkgs/karate/make/4.4.1/20261027042411/include -I/doj/pkgs/karate/file/5.48/20261027030825/include  -L/doj/pkgs/karate/glibc/2.44/20261027025433/lib -L/doj/pkgs/karate/gcc/16.2.0/20261027094922/lib -L/doj/pkgs/karate/perl/5.44.0/20261027041614/lib -L/doj/pkgs/karate/file/5.48/20261027030825/lib -o modp_b64w_test  modp_b64w_test.o libmodpbase64.la 
+gcc -Isrc -Wall -Werror -I/doj/pkgs/karate/glibc/2.44/20261027025433/include -I/doj/pkgs/karate/gcc/16.2.0/20261027094922/include -I/doj/pkgs/karate/make/4.4.1/20261027042411/include -I/doj/pkgs/karate/file/5.48/20261027030825/include -o .libs/modp_b64w_test modp_b64w_test.o  -L/doj/pkgs/karate/glibc/2.44/20261027025433/lib -L/doj/pkgs/karate/gcc/16.2.0/20261027094922/lib -L/doj/pkgs/karate/perl/5.44.0/20261027041614/lib -L/doj/pkgs/karate/file/5.48/20261027030825/lib ./.libs/libmodpbase64.so  -Wl,--rpath -Wl,/doj/pkgs/karate/stringencoders/3.10.3/20261027110648/lib
+creating modp_b64w_test
+if gcc -DHAVE_CONFIG_H -I. -I. -I.   -I/doj/pkgs/karate/glibc/2.44/20261027025433/include -I/doj/pkgs/karate/gcc/16.2.0/20261027094922/include -I/doj/pkgs/karate/make/4.4.1/20261027042411/include -I/doj/pkgs/karate/file/5.48/20261027030825/include  -Isrc -Wall -Werror -I/doj/pkgs/karate/glibc/2.44/20261027025433/include -I/doj/pkgs/karate/gcc/16.2.0/20261027094922/include -I/doj/pkgs/karate/make/4.4.1/20261027042411/include -I/doj/pkgs/karate/file/5.48/20261027030825/include -MT modp_b85_test.o -MD -MP -MF ".deps/modp_b85_test.Tpo" -c -o modp_b85_test.o `test -f 'test/modp_b85_test.c' || echo './'`test/modp_b85_test.c; \
+then mv -f ".deps/modp_b85_test.Tpo" ".deps/modp_b85_test.Po"; else rm -f ".deps/modp_b85_test.Tpo"; exit 1; fi
+! In file included from test/modp_b85_test.c:8:
+! test/modp_b85_test.c: In function 'testBadInputLength':
+! test/modp_b85_test.c:69:30: error: 'buf' may be used uninitialized [-Werror=maybe-uninitialized]
+!    69 |     mu_assert_int_equals(-1, modp_b85_encode(buf, buf, 5));
+!       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+! test/minunit.h:9:57: note: in definition of macro 'mu_assert_int_equals'
+!     9 | #define mu_assert_int_equals(lhs, rhs)  do { if (lhs != rhs) { snprintf(mu_buf, sizeof(mu_buf), "ASSERTION FAILED: %s:%d", __FILE__, __LINE__); return mu_buf; } } while (0)
+!       |                                                         ^~~
+! In file included from test/modp_b85_test.c:7:
+! src/modp_b85.h:45:5: note: by argument 2 of type 'const char *' to 'modp_b85_encode' declared here
+!    45 | int modp_b85_encode(char* dest, const char* src, int len);
+!       |     ^~~~~~~~~~~~~~~
+! test/modp_b85_test.c:68:10: note: 'buf' declared here
+!    68 |     char buf[100];
+!       |          ^~~
+! cc1: all warnings being treated as errors
+! make[1]: *** [Makefile:785: modp_b85_test.o] Error 1
+make[1]: Leaving directory '/doj/cache/src/stringencoders-e0d6a9b294c9ab619c510c1f6317bb9ec7194d77'
+! make: *** [Makefile:357: all] Error 2
+! doj-plan-build: the `build` phase failed: `make` exited with code 2

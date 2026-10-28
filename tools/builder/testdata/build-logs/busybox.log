@@ -1,0 +1,16 @@
+  CC      libbb/pw_encrypt.o
+  CC      libbb/read.o
+  CC      libbb/read_key.o
+! libbb/pw_encrypt.c:9:10: fatal error: crypt.h: No such file or directory
+!     9 | #include <crypt.h>
+!       |          ^~~~~~~~~
+! compilation terminated.
+! make[1]: *** [scripts/Makefile.build:197: libbb/pw_encrypt.o] Error 1
+  CC      libbb/read_printf.o
+! make[1]: *** Waiting for unfinished jobs....
+! libbb/lineedit.c: In function 'input_tab':
+! libbb/lineedit.c:1278:25: warning: 'sprintf' argument 4 may overlap destination object 'match_buf' [-Wrestrict]
+!  1278 |                         sprintf(&command[cursor_mb], "%s%s", chosen_match + match_pfx_len, match_buf);
+!       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+! make: *** [Makefile:743: libbb] Error 2
+! doj-plan-build: the `build` phase failed: `make -j16` exited with code 2

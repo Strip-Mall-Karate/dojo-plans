@@ -1,0 +1,2 @@
+$ doj-plan-build build /work/plans/ruby22 --target x86_64-linux --refuse-host-paths --isolate --backline karate/backline
+! doj-plan-build: no installed package matches `karate/gcc/5.2.0`; should it be built first?

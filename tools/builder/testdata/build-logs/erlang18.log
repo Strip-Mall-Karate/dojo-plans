@@ -1,0 +1,14 @@
+!       |                ^~~~~~~
+! sys/unix/sys.c: In function 'sys_get_key':
+! sys/unix/sys.c:2873:5: warning: old-style function definition [-Wold-style-definition]
+!  2873 | int sys_get_key(fd)
+!       |     ^~~~~~~~~~~
+! cc1: some warnings being treated as errors
+! make[3]: *** [x86_64-unknown-linux-gnu/Makefile:685: obj/x86_64-unknown-linux-gnu/opt/smp/sys.o] Error 1
+make[3]: Leaving directory '/doj/cache/src/otp_src_18.3/erts/emulator'
+! make[2]: *** [/doj/cache/src/otp_src_18.3/make/run_make.mk:35: opt] Error 2
+make[2]: Leaving directory '/doj/cache/src/otp_src_18.3/erts/emulator'
+! make[1]: *** [Makefile:61: smp] Error 2
+make[1]: Leaving directory '/doj/cache/src/otp_src_18.3/erts'
+! make: *** [Makefile:444: emulator] Error 2
+! doj-plan-build: the `build` phase failed: `make` exited with code 2

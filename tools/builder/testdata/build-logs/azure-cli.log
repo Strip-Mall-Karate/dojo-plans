@@ -1,0 +1,8 @@
+
+Successfully installed packaging-26.3 wheel-0.48.0
+   azure-cli: Building src/azure-cli
+! Traceback (most recent call last):
+!   File "/doj/cache/src/azure-cli-azure-cli-2.0.57/src/azure-cli/setup.py", line 10, in <module>
+!     from setuptools import setup
+! ModuleNotFoundError: No module named 'setuptools'
+! doj-plan-build: the `build` phase failed: `python setup.py bdist_wheel -d /doj/cache/src/azure-cli-azure-cli-2.0.57/_build` exited with code 1

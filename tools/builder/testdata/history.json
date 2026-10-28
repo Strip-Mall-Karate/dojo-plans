@@ -1,0 +1,35 @@
+{
+  "query": "",
+  "results": [
+    {
+      "runId": "489a4b64-93e5-49d2-ac44-2da209aeb669",
+      "workflowName": "build-wave",
+      "status": "failed",
+      "startedAt": "2026-10-27T11:53:43.132Z"
+    },
+    {
+      "runId": "6920c040-f698-4068-9a39-d80312341249",
+      "workflowName": "build-wave",
+      "status": "succeeded",
+      "startedAt": "2026-10-27T11:53:42.820Z"
+    },
+    {
+      "runId": "2c26a018-9d62-4096-a101-df70e578229c",
+      "workflowName": "build-wave",
+      "status": "cancelled",
+      "startedAt": "2026-10-27T00:57:05.219Z"
+    },
+    {
+      "runId": "908ffd6f-5190-4ee9-82f7-491421905210",
+      "workflowName": "bootstrap",
+      "status": "running",
+      "startedAt": "2026-10-27T10:02:11.004Z"
+    },
+    {
+      "runId": "1d3f0e5a-7c51-4b0e-9f6f-3a1b2c4d5e6f",
+      "workflowName": "build-plans",
+      "status": "suspended",
+      "startedAt": "2026-10-27T09:00:00.000Z"
+    }
+  ]
+}
