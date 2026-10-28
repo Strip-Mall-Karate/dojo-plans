@@ -29,9 +29,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -60,9 +60,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -90,7 +90,7 @@
  :install (fn [b]
             (b.default.install b)
             (each [_ p (ipairs (b:glob (.. b.prefix :/sbin) "*"))]
-              (b:move p (b:join (.. b.prefix :/bin/) (: p :match "[^/]+$"))))
+              (b:move p (b:join (.. b.prefix :/bin/) (p:match "[^/]+$"))))
             (b:remove (.. b.prefix :/sbin))
             (b:copy (b:join b.src :COPYING)
                     (.. b.prefix :/share/licenses/COPYING))

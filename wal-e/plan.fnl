@@ -11,11 +11,11 @@
           :sha256 :d3478e6eb4bfe00ac696af3e7ded4a91a0a2db6f9aa1a51ce780e43e4c12d6c7}
  :deps [:karate/envdir :karate/lzop :karate/pv :karate/python]
  :bin_dirs [:bin]
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
  :prepare (fn [b]
             (b:run [:python3 :-m :venv b.prefix])
@@ -24,7 +24,7 @@
             (b:env :PATH
                    (.. (: (.. b.prefix :/bin/activate) :gsub :/bin/activate$ "")
                        "/bin:" (or (b:getenv :PATH) ""))))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:pip :install (.. "wal-e[aws]==" b.version)])

@@ -16,7 +16,7 @@
  :bin_dirs [:bin]
  :lib_dirs [:lib/p7zip :lib/p7zip/Codecs]
  :build (fn [b]
-          (var v-jobs (b:capture [:getconf :_NPROCESSORS_ONLN]))
+          (local v-jobs (b:capture [:getconf :_NPROCESSORS_ONLN]))
           (if (b:exists (.. b.cache :/p7zip_16.02/makefile.machine))
               (b:copy (.. b.cache :/p7zip_16.02/makefile.linux_amd64)
                       (b:join (.. b.cache :/p7zip_16.02/makefile.machine)

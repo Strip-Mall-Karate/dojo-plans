@@ -40,8 +40,8 @@
             (b:run [:make :install]
                    {:cwd (.. :build/ (or (b:getenv :GTEST_TARGET) ""))})
             (b:copy (b:join (b:join b.src
-                                    (.. (.. :build/
-                                            (or (b:getenv :GTEST_TARGET) ""))
+                                    (.. :build/
+                                        (or (b:getenv :GTEST_TARGET) "")
                                         "/../.."))
                             :googlemock/LICENSE)
                     (.. b.prefix :/share/licenses/license.txt))

@@ -5,20 +5,21 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 {:name :sudo
@@ -37,9 +38,9 @@
  :include_dirs [:include]
  :prepare (fn [b]
             (use-dependency-path b :/usr/bin/file (b:path_for :file :bin/file))
-            (var v-mvprog (.. (b:path_for :coreutils) :/bin/mv))
+            (local v-mvprog (.. (b:path_for :coreutils) :/bin/mv))
             (b:env :MVPROG v-mvprog)
-            (var v-viprog (.. (b:path_for :vim) :/bin/vi))
+            (local v-viprog (.. (b:path_for :vim) :/bin/vi))
             (b:env :VIPROG v-viprog))
  :build (fn [b]
           (b:run [:./configure

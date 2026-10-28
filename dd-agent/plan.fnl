@@ -62,7 +62,7 @@
                                  :datadog.conf)
                          (.. (or (b:getenv :DD_HOME) "") :/agent/datadog.conf))]
             (b:symlink :/doj/svc/dd-agent/config/datadog.conf link)))
- :install (fn [b]
+ :install (fn [_b]
             nil)
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

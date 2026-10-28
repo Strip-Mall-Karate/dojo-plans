@@ -15,9 +15,9 @@
  :bin_dirs [:bin]
  :svc {:run "sensu-agent start -c /doj/svc/sensu-agent/config/agent.yml"}
  :binds_optional {:backend [:port]}
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:log "Installing sensu-agent binary")

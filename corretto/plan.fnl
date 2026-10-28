@@ -28,12 +28,12 @@
             ;; From do_setup_environment.
             (b:runtime_env :JAVA_HOME b.prefix)
             (b.default.prepare b))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:rsync
                     :-avz
-                    (.. (.. b.cache :/amazon-corretto-11.0.2.9.3-linux-x64) "/")
+                    (.. b.cache :/amazon-corretto-11.0.2.9.3-linux-x64 "/")
                     "."] {:cwd b.prefix})
             (b:env :LD_RUN_PATH
                    (.. (or (b:getenv :LD_RUN_PATH) "") ":" b.prefix "/lib/jli:"
@@ -74,5 +74,5 @@
                     (or (b:getenv :LD_RUN_PATH) "")
                     "{}"
                     ";"] {:cwd b.prefix}))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

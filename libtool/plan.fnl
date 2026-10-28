@@ -32,15 +32,12 @@
             ;; there: the man page is dropped, and help2man with it.
             (let [text (b:read (b:join b.src :Makefile.in))]
               (b:write (b:join b.src :Makefile.in) (pick-values 1
-                                                                (: text :gsub
-                                                                   "
+                                                                (text:gsub "
 dist_man1_MANS =[^
 ]*"
-                                                                   "
+                                                                           "
 dist_man1_MANS = ")))))
  :build (fn [b]
-          (var v-lt-cv-sys-lib-dlsearch-path-spec "")
-          (var v-lt-cv-sys-lib-search-path-spec "")
           (b:run [:./configure
                   (.. :--prefix= b.prefix)
                   :lt_cv_sys_lib_dlsearch_path_spec=

@@ -28,7 +28,7 @@
  :build (fn [b]
           (b:env :DESTDIR (or (b:getenv :PREFIX) ""))
           (b:env :LSOF_CFLAGS_OVERRIDE :1)
-          (var v-lsof-include (.. (b:path_for :glibc) :/include/))
+          (local v-lsof-include (.. (b:path_for :glibc) :/include/))
           (b:env :LSOF_INCLUDE v-lsof-include)
           (b:chmod (b:join b.src :Configure) :+x)
           (b:run [:./Configure :linux :-n] {:cwd b.src})

@@ -15,7 +15,7 @@
              ;; From do_before.
              (b:env :GOPATH (.. b.cache :/govc- b.version))
              (set v-go-pkg :github.com/vmware/govmomi))
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
  :unpack (fn [b]
            (b:run [:git

@@ -27,9 +27,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -49,7 +49,7 @@
  :install (fn [b]
             (var v-sources "")
             (b.default.install b)
-            (set v-sources (.. b.cache "/" (.. b.name "-" b.version)))
+            (set v-sources (.. b.cache "/" b.name "-" b.version))
             (b:copy (.. v-sources :/edl-v10)
                     (b:join b.prefix
                             (: (.. v-sources :/edl-v10) :match "[^/]+$")))

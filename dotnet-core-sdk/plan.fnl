@@ -26,12 +26,12 @@ Linux and Mac."
  :build_deps [:karate/patchelf]
  :bin_dirs [:bin]
  :unpack (fn [b]
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version)))
+           (b:mkdir (.. b.cache "/" b.name "-" b.version))
            (b:run [:tar
                    :xf
                    (.. b.cache :/dotnet-dev-debian-x64.2.2.202.tar.gz)
                    :-C
-                   (.. b.cache "/" (.. b.name "-" b.version))
+                   (.. b.cache "/" b.name "-" b.version)
                    :--no-same-owner]))
  :prepare (fn [b]
             (b:run [:find
@@ -60,10 +60,10 @@ Linux and Mac."
                     (or (b:getenv :LD_RUN_PATH) "")
                     "{}"
                     ";"])
-            (b:fix_interpreter [(.. b.cache "/" (.. b.name "-" b.version)
-                                    :/sdk/ b.version :/Roslyn/RunCsc.sh)]
+            (b:fix_interpreter [(.. b.cache "/" b.name "-" b.version :/sdk/
+                                    b.version :/Roslyn/RunCsc.sh)]
                                :karate/coreutils :bin/env))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :check (fn [b]
           (b:mkdir (b:join b.src :dotnet-new))
@@ -72,9 +72,9 @@ Linux and Mac."
  :install (fn [b]
             (if (b:exists (.. b.prefix :/bin))
                 (b:copy b.src
-                        (b:join (.. b.prefix :/bin) (: b.src :match "[^/]+$")))
+                        (b:join (.. b.prefix :/bin) (b.src:match "[^/]+$")))
                 (b:copy b.src (.. b.prefix :/bin)))
             (b:chmod (b:join b.src :-R) :o+r)
             (b:chmod (.. b.prefix :/bin) :o+r))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

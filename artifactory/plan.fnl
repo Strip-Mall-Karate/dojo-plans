@@ -24,4 +24,4 @@ Repository managers serve two purposes: they act as highly configurable proxies 
             (each [_ p (ipairs (b:glob (.. b.cache "/" b.name :-oss- b.version)
                                        "*"))]
               (b:copy p (b:join (.. (or (b:getenv :PREFIX) "") "/")
-                                (: p :match "[^/]+$")))))}
+                                (p:match "[^/]+$")))))}

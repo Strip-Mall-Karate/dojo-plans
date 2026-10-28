@@ -16,9 +16,9 @@
         :karate/grep]
  :bin_dirs [:bin]
  :prepare (fn [b]
-            (var v-java-home (b:path_for :karate/corretto8))
+            (local v-java-home (b:path_for :karate/corretto8))
             (b:env :JAVA_HOME v-java-home))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (.. b.prefix :/share))

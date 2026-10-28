@@ -16,12 +16,12 @@
  :lib_dirs [:lib]
  :include_dirs [:include]
  :build (fn [b]
-          (var v-zlib (b:path_for :karate/zlib))
-          (var v-zlib-lib (.. v-zlib :/lib))
-          (var v-zlib-include (.. v-zlib :/include))
-          (var v-curl (b:path_for :karate/curl))
-          (var v-curl-lib (.. v-curl :/lib))
-          (var v-curl-include (.. v-curl :/include))
+          (local v-zlib (b:path_for :karate/zlib))
+          (local v-zlib-lib (.. v-zlib :/lib))
+          (local v-zlib-include (.. v-zlib :/include))
+          (local v-curl (b:path_for :karate/curl))
+          (local v-curl-lib (.. v-curl :/lib))
+          (local v-curl-include (.. v-curl :/include))
           (b:run [:./bootstrap
                   (.. :--prefix= b.prefix)
                   (.. :--parallel= (tostring b.jobs))

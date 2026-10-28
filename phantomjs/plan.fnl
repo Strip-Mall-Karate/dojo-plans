@@ -22,11 +22,11 @@
              ;; The plan downloaded with curl because bitbucket refused its wget; b's
              ;; download is curl's, checked against the source's SHA-256.
              (b.default.download b))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join b.prefix (: p :match "[^/]+$"))))
+              (b:copy p (b:join b.prefix (p:match "[^/]+$"))))
             (b:log (.. "Setting interpreter for '" b.prefix "/bin/phantomjs' '"
                        (b:path_for :glibc) "/lib/ld-linux-x86-64.so.2'"))
             (b:log (.. "Setting rpath for '" b.prefix "/bin/phantomjs' to '"
@@ -37,5 +37,5 @@
                     :--set-rpath
                     (or (b:getenv :LD_RUN_PATH) "")
                     (.. b.prefix :/bin/phantomjs)]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

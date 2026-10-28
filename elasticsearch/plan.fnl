@@ -21,7 +21,7 @@
  :exports {:http-port :network.port :transport-port :transport.port}
  :exposes [:http-port :transport-port]
  :binds_optional {:elasticsearch [:http-port :transport-port]}
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (var v--es-ml-bins "")
@@ -34,7 +34,7 @@
             (b:chmod (.. b.prefix :/NOTICE.txt) :644)
             (b:mkdir (.. b.prefix :/es))
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join (.. b.prefix :/es) (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/es) (p:match "[^/]+$"))))
             (each [_ p (ipairs (b:glob (.. b.prefix :/es/bin) :*.bat))]
               (b:remove p))
             (each [_ p (ipairs (b:glob (.. b.prefix :/es/bin) :*.exe))]
@@ -71,5 +71,5 @@
                       (or (b:getenv :LD_RUN_PATH) "")
                       "{}"
                       ";"])))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

@@ -36,7 +36,7 @@
                     :--optimize=1
                     :--skip-build])
             (each [_ p (ipairs (b:glob (b:join b.src :examples) "*"))]
-              (b:copy p (b:join (.. b.prefix :/share/) (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/share/) (p:match "[^/]+$"))))
             (b:copy (b:join b.src :examples/ansible.cfg)
                     (.. b.prefix :/etc/ansible.cfg))
             (b:chmod (.. b.prefix :/etc/ansible.cfg) :644))}

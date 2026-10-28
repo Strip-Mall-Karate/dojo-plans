@@ -22,9 +22,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -50,9 +50,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -61,9 +61,8 @@
                                                  "VERSION=$%(cd \"${DIR}\" && git describe %-%-dirty%)"
                                                  (.. :VERSION=
                                                      (pick-values 1
-                                                                  (: b.version
-                                                                     :gsub "%%"
-                                                                     "%%%%")))
+                                                                  (b.version:gsub "%%"
+                                                                                  "%%%%")))
                                                  1))))
                 (when (not deleted) (table.insert out line))
                 (each [_ x (ipairs after)] (table.insert out x)))

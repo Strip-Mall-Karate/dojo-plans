@@ -9,7 +9,7 @@
  :upstream_url "https://github.com/kubernetes/kubernetes"
  :deps [:karate/kubernetes/1.11.2]
  :svc {:user :root :group :root}
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :static)

@@ -24,30 +24,30 @@
  :bin_dirs [:bin :sbin]
  :svc {:user :root}
  :build (fn [b]
-          (var v-postfix-ccargs
-               [:-DHAS_DB
-                (.. :-I (b:path_for :db) :/include)
-                :-DHAS_NIS
-                (.. :-I (b:path_for :karate/libnsl) :/include)
-                :-DUSE_TLS
-                (.. :-I (b:path_for :karate/openssl) :/include)
-                :-DUSE_SASL_AUTH
-                :-DUSE_CYRUS_SASL
-                (.. :-I (b:path_for :karate/cyrus-sasl) :/include/sasl)])
+          (local v-postfix-ccargs
+                 [:-DHAS_DB
+                  (.. :-I (b:path_for :db) :/include)
+                  :-DHAS_NIS
+                  (.. :-I (b:path_for :karate/libnsl) :/include)
+                  :-DUSE_TLS
+                  (.. :-I (b:path_for :karate/openssl) :/include)
+                  :-DUSE_SASL_AUTH
+                  :-DUSE_CYRUS_SASL
+                  (.. :-I (b:path_for :karate/cyrus-sasl) :/include/sasl)])
           (b:log (.. "Setting POSTFIX_CCARGS="
                      (table.concat v-postfix-ccargs " ")))
-          (var v-postfix-auxlibs
-               [:-ldb
-                (.. :-L (b:path_for :karate/db) :/lib)
-                :-lnsl
-                (.. :-L (b:path_for :karate/libnsl) :/lib)
-                :-lresolv
-                (.. :-L (b:path_for :karate/glibc) :/lib)
-                :-lssl
-                :-lcrypto
-                (.. :-L (b:path_for :karate/openssl) :/lib)
-                :-lsasl2
-                (.. :-L (b:path_for :karate/cyrus-sasl) :/lib)])
+          (local v-postfix-auxlibs
+                 [:-ldb
+                  (.. :-L (b:path_for :karate/db) :/lib)
+                  :-lnsl
+                  (.. :-L (b:path_for :karate/libnsl) :/lib)
+                  :-lresolv
+                  (.. :-L (b:path_for :karate/glibc) :/lib)
+                  :-lssl
+                  :-lcrypto
+                  (.. :-L (b:path_for :karate/openssl) :/lib)
+                  :-lsasl2
+                  (.. :-L (b:path_for :karate/cyrus-sasl) :/lib)])
           (b:log (.. "Setting POSTFIX_AUXLIBS="
                      (table.concat v-postfix-auxlibs " ")))
           (b:run [:make
@@ -56,27 +56,14 @@
                   (.. :AUXLIBS= (table.concat v-postfix-auxlibs " "))])
           (b:run [:make]))
  :install (fn [b]
-            (var v-command-directory "")
-            (var v-config-directory "")
-            (var v-daemon-directory "")
-            (var v-data-directory "")
-            (var v-install-root "")
-            (var v-mail-spool-directory "")
-            (var v-mailq-path "")
-            (var v-manpage-directory "")
-            (var v-meta-directory "")
-            (var v-newaliases-path "")
-            (var v-queue-directory "")
-            (var v-sendmail-path "")
-            (var v-shlib-directory "")
             (let [text (b:read (b:join b.src :postfix-install))
                   ends (= (text:sub -1) "\n")
                   lines []
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
-                (var line l)
+              (each [_n l (ipairs lines)]
+                (local line l)
                 (var deleted false)
                 (local after [])
                 (when (not deleted)

@@ -27,7 +27,7 @@
         :karate/unzip
         :karate/wget
         :karate/xz]
- :build (fn [b]
+ :build (fn [_b]
           nil)
- :install (fn [b]
+ :install (fn [_b]
             nil)}

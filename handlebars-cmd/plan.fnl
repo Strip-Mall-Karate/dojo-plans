@@ -10,16 +10,16 @@
  :deps [:karate/coreutils :karate/node]
  :build_deps [:karate/git]
  :bin_dirs [:bin]
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
  :prepare (fn [b]
             (b:run [:npm :config :set :progress :false])
             (b:run [:npm :config :set :prefix b.prefix]))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:npm :install :-g (.. :DavidBabel/ b.name "#bc510fc")])

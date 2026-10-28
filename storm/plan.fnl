@@ -15,7 +15,7 @@
  :bin_dirs [:bin]
  :lib_dirs [:lib]
  :binds {:zookeeper [] :storm []}
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :README.markdown) (.. b.prefix :/README.md))

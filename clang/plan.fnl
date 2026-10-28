@@ -77,17 +77,11 @@
             (b:runtime_env_push :CMAKE_FIND_ROOT_PATH
                                 (.. b.prefix :/lib/cmake/clang))
             (b:mkdir (or (b:getenv :BUILD_DIR) ""))
-            (v--fix-interpreter-in-path b
-                                        (.. b.cache "/"
-                                            (.. b.name "-" b.version))
+            (v--fix-interpreter-in-path b (.. b.cache "/" b.name "-" b.version)
                                         :*.py :karate/python :bin/python)
-            (v--fix-interpreter-in-path b
-                                        (.. b.cache "/"
-                                            (.. b.name "-" b.version))
+            (v--fix-interpreter-in-path b (.. b.cache "/" b.name "-" b.version)
                                         :*.py :karate/coreutils :bin/env)
-            (v--fix-interpreter-in-path b
-                                        (.. b.cache "/"
-                                            (.. b.name "-" b.version))
+            (v--fix-interpreter-in-path b (.. b.cache "/" b.name "-" b.version)
                                         :*.sh :karate/coreutils :bin/env))
  :build (fn [b]
           (b:run [:cmake

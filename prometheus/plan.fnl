@@ -15,7 +15,7 @@
  :exposes [:prom_ds_http]
  :binds_optional {:targets [:metric-http-port]}
  :unpack (fn [b]
-           (b:mkdir (.. (.. b.cache :/prometheus-2.7.1)
+           (b:mkdir (.. b.cache :/prometheus-2.7.1
                         :/src/github.com/prometheus/prometheus))
            (b:run [:tar
                    :xf
@@ -23,20 +23,20 @@
                    :--strip
                    :1
                    :--no-same-owner]
-                  {:cwd (.. (.. b.cache :/prometheus-2.7.1)
+                  {:cwd (.. b.cache :/prometheus-2.7.1
                             :/src/github.com/prometheus/prometheus)}))
  :prepare (fn [b]
             ;; From do_setup_environment.
-            (b:env :GOPATH (.. b.cache "/" (.. b.name "-" b.version)))
+            (b:env :GOPATH (.. b.cache "/" b.name "-" b.version))
             (b.default.prepare b))
  :build (fn [b]
           (b:run [:make :build]
-                 {:cwd (.. (.. b.cache :/prometheus-2.7.1)
+                 {:cwd (.. b.cache :/prometheus-2.7.1
                            :/src/github.com/prometheus/prometheus)
                   :env {:USER :root :PREFIX (.. b.prefix :/bin)}}))
  :check (fn [b]
           (b:run [:make :test]
-                 {:cwd (.. (.. b.cache :/prometheus-2.7.1)
+                 {:cwd (.. b.cache :/prometheus-2.7.1
                            :/src/github.com/prometheus/prometheus)}))
- :install (fn [b]
+ :install (fn [_b]
             nil)}

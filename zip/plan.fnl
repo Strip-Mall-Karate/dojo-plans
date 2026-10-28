@@ -14,7 +14,6 @@
  :build (fn [b]
           (b:run [:make :-f :unix/Makefile (.. :prefix= b.prefix) :generic_gcc]))
  :install (fn [b]
-            (var v-prefix "")
             (b:run [:make
                     :-f
                     :unix/Makefile

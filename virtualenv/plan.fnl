@@ -11,7 +11,7 @@
           :sha256 :6d9c760d3fc5fa0894b0f99b9de82a4647e1164f0b700a7f99055034bf548b1d}
  :deps [:karate/python2]
  :bin_dirs [:bin]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:env :PYTHONPATH (.. b.prefix :/lib/python2.7/site-packages/))
@@ -24,8 +24,8 @@
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
               (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (= n 2)

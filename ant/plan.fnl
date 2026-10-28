@@ -16,5 +16,5 @@
           (b:env :JAVA_HOME (b:path_for :karate/corretto8))
           (b:run [:sh :./build.sh (.. :-Ddist.dir= b.prefix) :dist]
                  {:cwd (.. b.cache "/" b.name :-rel- b.version)}))
- :install (fn [b]
+ :install (fn [_b]
             nil)}

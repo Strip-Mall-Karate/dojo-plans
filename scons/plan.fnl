@@ -12,7 +12,7 @@
  :deps [:karate/coreutils :karate/python2]
  :bin_dirs [:bin]
  :lib_dirs [:lib]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:python

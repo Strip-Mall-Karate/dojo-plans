@@ -20,7 +20,7 @@
                                 (.. b.prefix
                                     :/lib/perl5/x86_64-linux-thread-multi))
             (b.default.prepare b))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (each [setting (string.gmatch (b:capture [:perl

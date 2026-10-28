@@ -17,7 +17,7 @@
  :exports {:grafana_port :listening_port}
  :exposes [:grafana_port]
  :binds_optional {:prom [:prom_ds_http]}
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir :/doj/svc/grafana/var/plugins)
@@ -45,7 +45,7 @@
                                                    b.version)
                                                :bin)
                                        "*"))]
-              (b:copy p (b:join (.. b.prefix :/bin/) (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/bin/) (p:match "[^/]+$"))))
             (b:run [:patchelf
                     :--interpreter
                     (.. (b:path_for :glibc) :/lib/ld-linux-x86-64.so.2)

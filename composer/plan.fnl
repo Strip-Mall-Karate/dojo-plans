@@ -12,9 +12,9 @@
           :filename :composer.phar}
  :deps [:karate/php :karate/git]
  :bin_dirs [:bin]
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :check (fn [b]
           (when (not (string.find (b:capture [(.. (b:path_for :karate/php)
@@ -23,9 +23,8 @@
                                               :--version
                                               :2>&1])
                                   (pick-values 1
-                                               (: b.version :gsub
-                                                  "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                  "%%%0"))))
+                                               (b.version:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                               "%%%0"))))
             (error "grep -q ${pkg_version} found nothing")))
  :install (fn [b]
             (b:copy (b:join b.src :../composer.phar)

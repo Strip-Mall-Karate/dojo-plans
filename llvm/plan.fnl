@@ -98,9 +98,9 @@
               (each [_ f (ipairs (b:find (b:join b.prefix folder) "*"))]
                 (when (not (b:exists (b:join f ".")))
                   (let [kind (b:capture [:file :-bi f])]
-                    (if (: kind :find :application/x-executable 1 true)
+                    (if (kind:find :application/x-executable 1 true)
                         (b:run [:strip :--strip-all f])
-                        (: kind :find :application/x-sharedlib 1 true)
+                        (kind:find :application/x-sharedlib 1 true)
                         (b:run [:strip :--strip-unneeded f])
-                        (: kind :find :application/x-archive 1 true)
+                        (kind:find :application/x-archive 1 true)
                         (b:run [:strip :--strip-debug f]))))))))}

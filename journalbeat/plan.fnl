@@ -12,10 +12,9 @@
  :bin_dirs [:bin]
  :svc {:user :root :group :root}
  :build (fn [b]
-          (var v-systemd-include-path
-               (.. (b:path_for :karate/systemd) :/include))
-          (b:env :GOPATH (or (: (: b.cache :gsub "/+$" "") :match
-                                "^(.*)/[^/]*$")
+          (local v-systemd-include-path
+                 (.. (b:path_for :karate/systemd) :/include))
+          (b:env :GOPATH (or (: (b.cache:gsub "/+$" "") :match "^(.*)/[^/]*$")
                              "."))
           (b:run [:go :get :github.com/elastic/beats/journalbeat]
                  {:env {:CGO_CFLAGS (.. :-I v-systemd-include-path)}})

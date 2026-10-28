@@ -30,7 +30,7 @@
             ;; From do_setup_environment.
             (b:runtime_env :JAVA_HOME b.prefix)
             (b.default.prepare b))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:rsync
@@ -77,5 +77,5 @@
                     (or (b:getenv :LD_RUN_PATH) "")
                     "{}"
                     ";"] {:cwd b.prefix}))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

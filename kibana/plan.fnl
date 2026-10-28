@@ -4,20 +4,21 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 {:name :kibana
@@ -56,8 +57,8 @@
           (b:run [:npm :install]))
  :install (fn [b]
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix "/") (p:match "[^/]+$"))))
             (b:remove (.. b.prefix :/config/)))
- :strip (fn [b]
+ :strip (fn [_b]
           ;; From do_end.
           )}

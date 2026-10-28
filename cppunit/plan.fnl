@@ -24,7 +24,7 @@
  :pconfig_dirs [:lib/pkgconfig]
  :prepare (fn [b]
             (b:log "Fixing 'bin/env' interpreter for autogen.sh")
-            (b:fix_interpreter [(.. b.cache "/" (.. b.name "-" b.version)
+            (b:fix_interpreter [(.. b.cache "/" b.name "-" b.version
                                     :/autogen.sh)]
                                :karate/bash :bin/sh))
  :build (fn [b]

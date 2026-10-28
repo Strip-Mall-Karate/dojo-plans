@@ -30,8 +30,8 @@
            (b:run [:dpkg
                    :-x
                    (.. b.cache :/mssql-server_14.0.3025.34-3_amd64.deb)
-                   (.. b.cache "/" (.. b.name "-" b.version))]))
- :build (fn [b]
+                   (.. b.cache "/" b.name "-" b.version)]))
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (var v-elfs-to-patch "")
@@ -47,25 +47,24 @@
                                 (: (b:join b.src :opt/mssql/lib) :match
                                    "[^/]+$")))
                 (b:copy (b:join b.src :opt/mssql/lib) b.prefix))
-            (var v-pythonpath (b:path_for :karate/python2))
+            (local v-pythonpath (b:path_for :karate/python2))
             (let [text (b:read (.. b.prefix :/lib/mssql-conf/mssql-conf.py))
                   ends (= (text:sub -1) "\n")
                   lines []
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
                        (pick-values 1
                                     (string.gsub line :/usr/bin/python
                                                  (.. (pick-values 1
-                                                                  (: v-pythonpath
-                                                                     :gsub "%%"
-                                                                     "%%%%"))
+                                                                  (v-pythonpath:gsub "%%"
+                                                                                     "%%%%"))
                                                      :/bin/python)
                                                  1))))
                 (when (not deleted) (table.insert out line))
@@ -96,5 +95,5 @@
                     (or (b:getenv :LD_RUN_PATH) "")
                     "{}"
                     ";"]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

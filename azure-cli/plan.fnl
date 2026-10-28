@@ -60,5 +60,5 @@
                      (.. (b:capture [:pip :freeze]) "\n"))
             (b:fix_interpreter (b:glob (.. b.prefix :/bin) "*")
                                :karate/coreutils :bin/env))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

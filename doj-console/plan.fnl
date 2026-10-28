@@ -12,5 +12,5 @@
  :deps [:karate/busybox-static]
  ;; getty opens the terminals and login switches users, so the service runs as root.
  :svc {:user :root :group :root}
- :build (fn [b] nil)
- :install (fn [b] nil)}
+ :build (fn [_b] nil)
+ :install (fn [_b] nil)}

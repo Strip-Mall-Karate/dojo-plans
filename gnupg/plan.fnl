@@ -27,7 +27,8 @@
             (each [_ f (ipairs (b:find (b:join b.src :tests) "*"))]
               (when (not (b:exists (b:join f ".")))
                 (let [text (b:read f)
-                      (fixed n) (: text :gsub :/bin/pwd
-                                   (pick-values 1 (: pwd :gsub "%%" "%%%%")))]
+                      (fixed n) (text:gsub :/bin/pwd
+                                           (pick-values 1
+                                                        (pwd:gsub "%%" "%%%%")))]
                   (when (> n 0) (b:write f fixed))))))
           (b:run [:make :check]))}

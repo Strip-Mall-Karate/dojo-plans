@@ -15,7 +15,7 @@
  :lib_dirs [:jars]
  :exports {:port :port}
  :exposes [:port]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :sbin)

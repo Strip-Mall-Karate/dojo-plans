@@ -17,7 +17,7 @@
         :karate/gcc
         :karate/make
         :karate/pkg-config]
- :build (fn [b] nil)
+ :build (fn [_b] nil)
  :install (fn [b]
             (b:copy (b:join b.plan_dir :lib/scaffolding.fnl)
                     (b:join b.prefix :lib/scaffolding.fnl))

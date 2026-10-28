@@ -13,7 +13,7 @@
           :sha256 :ab0a6ca09f8ef70c564c8241fb5a23957886a0b53fb58412b5e07eaf07dba743}
  :deps [:karate/python :karate/ninja]
  :bin_dirs [:bin]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (b:join b.prefix :bin))

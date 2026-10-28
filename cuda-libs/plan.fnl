@@ -5,20 +5,21 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 {:name :cuda-libs
@@ -39,20 +40,20 @@
              ;; From do_before.
              (use-dependency-path b :/usr/bin/perl (b:path_for :perl :bin/perl))
              (use-dependency-path b :/bin/rm (b:path_for :coreutils :bin/rm)))
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :prepare (fn [b]
+ :prepare (fn [_b]
             nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (var v--cuda-libs "")
             (var v--cuda-stubs-libs "")
-            (var v-cuda-run-path
-                 (.. b.prefix "/lib64:" b.prefix "/nvvm/lib64:"
-                     (b:path_for :gcc-libs) "/lib:" (b:path_for :glibc) :/lib))
+            (local v-cuda-run-path
+                   (.. b.prefix "/lib64:" b.prefix "/nvvm/lib64:"
+                       (b:path_for :gcc-libs) "/lib:" (b:path_for :glibc) :/lib))
             (set v--cuda-libs [:libOpenCL
                                :libcufftw
                                :libnppc
@@ -83,7 +84,7 @@
             (each [_ v-lib (ipairs v--cuda-libs)]
               (each [_ p (ipairs (b:glob (.. (b:path_for :karate/cuda) :/lib64)
                                          (.. v-lib ".*")))]
-                (b:copy p (b:join (.. b.prefix :/lib64/) (: p :match "[^/]+$"))))
+                (b:copy p (b:join (.. b.prefix :/lib64/) (p:match "[^/]+$"))))
               (b:run [:patchelf
                       :--set-rpath
                       v-cuda-run-path
@@ -115,9 +116,8 @@
               (each [_ p (ipairs (b:glob (.. (b:path_for :karate/cuda)
                                              :/lib64/stubs)
                                          (.. v-lib ".*")))]
-                (b:copy p
-                        (b:join (.. b.prefix :/lib64/stubs/)
-                                (: p :match "[^/]+$"))))
+                (b:copy p (b:join (.. b.prefix :/lib64/stubs/)
+                                  (p:match "[^/]+$"))))
               (b:run [:patchelf
                       :--set-rpath
                       v-cuda-run-path
@@ -125,8 +125,7 @@
             (each [_ p (ipairs (b:glob (.. (b:path_for :karate/cuda)
                                            :/nvvm/lib64)
                                        :libnvvm.*))]
-              (b:copy p (b:join (.. b.prefix :/nvvm/lib64/)
-                                (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/nvvm/lib64/) (p:match "[^/]+$"))))
             (b:run [:patchelf
                     :--set-rpath
                     v-cuda-run-path
@@ -140,6 +139,6 @@
                                    :match "[^/]+$")))
                 (b:copy (.. (b:path_for :karate/cuda) :/share/licenses/EULA.pdf)
                         (.. b.prefix :/share/licenses/EULA.pdf))))
- :strip (fn [b]
+ :strip (fn [_b]
           ;; From do_end.
           )}

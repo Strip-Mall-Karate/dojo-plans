@@ -4,7 +4,7 @@
   (set v-bin a1)
   (b:log (.. "Adding wrapper " v-bin " to " v-bin :.real))
   (if (b:exists (.. v-bin :.real))
-      (b:move v-bin (b:join (.. v-bin :.real) (: v-bin :match "[^/]+$")))
+      (b:move v-bin (b:join (.. v-bin :.real) (v-bin:match "[^/]+$")))
       (b:move v-bin (.. v-bin :.real)))
   (b:write v-bin (.. "#!" (b:path_for :busybox-static) "/bin/sh
 set -e
@@ -33,7 +33,7 @@ export GEM_HOME=\""
             (b:log (.. "Setting GEM_HOME='" (or (b:getenv :GEM_HOME) "") "'"))
             (b:env :GEM_PATH (or (b:getenv :GEM_HOME) ""))
             (b:log (.. "Setting GEM_PATH='" (or (b:getenv :GEM_PATH) "") "'")))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:log "Installing from RubyGems")

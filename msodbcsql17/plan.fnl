@@ -24,7 +24,7 @@
            (b:run [:dpkg
                    :-x
                    (.. b.cache :/msodbcsql17_17.2.0.1-1_amd64.deb)
-                   (.. b.cache "/" (.. b.name "-" b.version))]))
+                   (.. b.cache "/" b.name "-" b.version)]))
  :build (fn [b]
           (b:log "Fixing rpath for lib:")
           (b:run [:find
@@ -62,7 +62,7 @@
                                                            b.name))
                                                :lib64)
                                        "*"))]
-              (b:copy p (b:join (.. b.prefix :/lib/) (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/lib/) (p:match "[^/]+$"))))
             (if (b:exists b.prefix)
                 (b:copy (b:join (b:join b.src (.. :opt/microsoft/ b.name))
                                 :share)
@@ -77,6 +77,6 @@
             (each [_ p (ipairs (b:glob (b:join b.src
                                                (.. :usr/share/doc/ b.name))
                                        "*"))]
-              (b:copy p (b:join (.. b.prefix :/doc/) (: p :match "[^/]+$")))))
- :strip (fn [b]
+              (b:copy p (b:join (.. b.prefix :/doc/) (p:match "[^/]+$")))))
+ :strip (fn [_b]
           nil)}

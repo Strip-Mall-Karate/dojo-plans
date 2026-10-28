@@ -31,7 +31,7 @@
                                 (.. b.prefix :/lib/cmake/benchmark))
             (b:mkdir (or (b:getenv :BUILD_DIR) "")))
  :build (fn [b]
-          (var v-gtest-dir (b:path_for :karate/googletest))
+          (local v-gtest-dir (b:path_for :karate/googletest))
           (b:run [:cmake
                   (.. :-DCMAKE_INSTALL_PREFIX= (or (b:getenv :PREFIX) ""))
                   (.. :-DBENCHMARK_ENABLE_TESTING= (or (b:getenv :DO_CHECK) ""))

@@ -51,5 +51,5 @@
           (b:run [:make] {:cwd :build}))
  :install (fn [b]
             (b:run [:make :install] {:cwd :build}))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

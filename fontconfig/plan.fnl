@@ -57,18 +57,17 @@ customizing font access."
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
                        (pick-values 1
                                     (string.gsub line :/usr/bin/file
                                                  (pick-values 1
-                                                              (: v--file-path
-                                                                 :gsub "%%"
-                                                                 "%%%%"))))))
+                                                              (v--file-path:gsub "%%"
+                                                                                 "%%%%"))))))
                 (when (not deleted) (table.insert out line))
                 (each [_ x (ipairs after)] (table.insert out x)))
               (b:write (b:join b.src :configure)
@@ -82,18 +81,17 @@ customizing font access."
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
                        (pick-values 1
                                     (string.gsub line :/usr/bin/uname
                                                  (pick-values 1
-                                                              (: v--uname-path
-                                                                 :gsub "%%"
-                                                                 "%%%%"))))))
+                                                              (v--uname-path:gsub "%%"
+                                                                                  "%%%%"))))))
                 (when (not deleted) (table.insert out line))
                 (each [_ x (ipairs after)] (table.insert out x)))
               (b:write (b:join b.src :configure)

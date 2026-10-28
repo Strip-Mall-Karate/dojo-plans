@@ -29,12 +29,12 @@
  :interpreters [:bin/runhaskell :bin/runghc]
  :prepare (fn [b]
             (b.default.prepare b)
-            (var v-ld (.. (b:path_for :binutils) :/bin/ld))
+            (local v-ld (.. (b:path_for :binutils) :/bin/ld))
             (b:env :LD v-ld)
             (b:log (.. "Updating LD=" v-ld))
-            (var v-library-path
-                 (.. (or (b:getenv :LIBRARY_PATH) "") ":"
-                     (or (b:getenv :LD_RUN_PATH) "")))
+            (local v-library-path
+                   (.. (or (b:getenv :LIBRARY_PATH) "") ":"
+                       (or (b:getenv :LD_RUN_PATH) "")))
             (b:env :LIBRARY_PATH v-library-path)
             (b:log (.. "Updating LIBRARY_PATH=" v-library-path))
             (if (b:exists (b:join b.src :mk/build.mk))
@@ -51,8 +51,8 @@
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
               (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (= n 1) (table.insert out "BuildFlavour = perf")))

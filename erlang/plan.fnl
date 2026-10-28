@@ -4,20 +4,21 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 {:name :erlang
@@ -52,9 +53,9 @@
                 out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
               (table.insert lines l))
-            (each [n l (ipairs lines)]
+            (each [_n l (ipairs lines)]
               (var line l)
-              (var deleted false)
+              (local deleted false)
               (local after [])
               (when (not deleted)
                 (set line
@@ -74,9 +75,9 @@
                 out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
               (table.insert lines l))
-            (each [n l (ipairs lines)]
+            (each [_n l (ipairs lines)]
               (var line l)
-              (var deleted false)
+              (local deleted false)
               (local after [])
               (when (not deleted)
                 (set line

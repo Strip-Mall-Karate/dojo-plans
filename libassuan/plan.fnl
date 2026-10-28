@@ -39,5 +39,5 @@
           (b:run [:make]))
  :check (fn [b]
           (b:run [:make :check]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

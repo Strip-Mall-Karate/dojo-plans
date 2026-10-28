@@ -19,14 +19,14 @@
  :lib_dirs [:lib]
  :include_dirs [:include]
  :unpack (fn [b]
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version) :/libcxx))
+           (b:mkdir (.. b.cache "/" b.name "-" b.version :/libcxx))
            (b:run [:tar :xf (.. b.cache :/libcxx-5.0.1.src.tar.xz) :--strip :1]
-                  {:cwd (.. b.cache "/" (.. b.name "-" b.version) :/libcxx)}))
+                  {:cwd (.. b.cache "/" b.name "-" b.version :/libcxx)}))
  :prepare (fn [b]
             (b:env :BUILDDIR :_build)
             (b:mkdir (or (b:getenv :BUILDDIR) "")))
  :build (fn [b]
-          (var v-llvm-path (b:path_for :karate/llvm))
+          (local v-llvm-path (b:path_for :karate/llvm))
           (b:run [:cmake
                   (.. :-DCMAKE_INSTALL_PREFIX= b.prefix)
                   (.. :-DLLVM_PATH= v-llvm-path)

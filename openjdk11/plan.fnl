@@ -28,10 +28,10 @@
             ;; From do_setup_environment.
             (b:runtime_env :JAVA_HOME b.prefix)
             (b.default.prepare b))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
-            (b:run [:rsync :-avz (.. (.. b.cache :/jdk-11.0.2) "/") "."]
+            (b:run [:rsync :-avz (.. b.cache :/jdk-11.0.2 "/") "."]
                    {:cwd b.prefix})
             (b:env :LD_RUN_PATH
                    (.. (or (b:getenv :LD_RUN_PATH) "") ":" b.prefix "/lib/jli:"
@@ -72,5 +72,5 @@
                     (or (b:getenv :LD_RUN_PATH) "")
                     "{}"
                     ";"] {:cwd b.prefix}))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

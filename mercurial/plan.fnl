@@ -52,24 +52,21 @@
           out []]
       (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
         (table.insert lines l))
-      (each [n l (ipairs lines)]
+      (each [_n l (ipairs lines)]
         (var line l)
-        (var deleted false)
+        (local deleted false)
         (local after [])
         (when (not deleted)
           (set line (pick-values 1
                                  (string.gsub line
                                               (.. "#!"
                                                   (pick-values 1
-                                                               (: v-interpreter-old
-                                                                  :gsub
-                                                                  "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                  "%%%0")))
+                                                               (v-interpreter-old:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                                       "%%%0")))
                                               (.. "#!"
                                                   (pick-values 1
-                                                               (: v-interpreter-new
-                                                                  :gsub "%%"
-                                                                  "%%%%")))
+                                                               (v-interpreter-new:gsub "%%"
+                                                                                       "%%%%")))
                                               1))))
         (when (not deleted) (table.insert out line))
         (each [_ x (ipairs after)] (table.insert out x)))

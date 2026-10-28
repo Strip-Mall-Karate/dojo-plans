@@ -10,11 +10,11 @@
  :deps [:karate/python2]
  :build_deps [:karate/virtualenv]
  :bin_dirs [:bin]
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
  :prepare (fn [b]
             (b:run [:localedef :-i :en_US :-f :UTF-8 :en_US.UTF-8])
@@ -26,7 +26,7 @@
             (b:env :PATH
                    (.. (: (.. b.prefix :/bin/activate) :gsub :/bin/activate$ "")
                        "/bin:" (or (b:getenv :PATH) ""))))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:pip :install (.. :elasticsearch-curator== b.version)])

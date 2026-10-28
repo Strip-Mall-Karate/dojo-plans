@@ -19,7 +19,7 @@
           (b:run [:./mvnw]))
  :install (fn [b]
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix "/") (p:match "[^/]+$"))))
             (each [_ v-binstub (ipairs (b:glob (.. b.prefix :/bin) "*"))]
               (when (b:exists v-binstub)
                 (let [text (b:read v-binstub)
@@ -29,9 +29,9 @@
                   (each [l (string.gmatch (if ends text (.. text "\n"))
                                           "(.-)\n")]
                     (table.insert lines l))
-                  (each [n l (ipairs lines)]
+                  (each [_n l (ipairs lines)]
                     (var line l)
-                    (var deleted false)
+                    (local deleted false)
                     (local after [])
                     (when (not deleted)
                       (set line
@@ -59,19 +59,17 @@
                   (each [l (string.gmatch (if ends text (.. text "\n"))
                                           "(.-)\n")]
                     (table.insert lines l))
-                  (each [n l (ipairs lines)]
+                  (each [_n l (ipairs lines)]
                     (var line l)
-                    (var deleted false)
+                    (local deleted false)
                     (local after [])
                     (when (not deleted)
                       (set line
                            (pick-values 1
                                         (string.gsub line "/usr/bin/env jruby"
                                                      (.. (pick-values 1
-                                                                      (: b.prefix
-                                                                         :gsub
-                                                                         "%%"
-                                                                         "%%%%"))
+                                                                      (b.prefix:gsub "%%"
+                                                                                     "%%%%"))
                                                          :/bin/jruby)
                                                      1))))
                     (when (not deleted) (table.insert out line))

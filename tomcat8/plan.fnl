@@ -20,13 +20,13 @@
            (b:mkdir v-source-dir)
            (b:run [:tar :xz :--strip-components=1 :-f v-unpack-file]
                   {:cwd v-source-dir}))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:log "Performing install")
             (b:mkdir (.. b.prefix :/tc))
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join (.. b.prefix :/tc) (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/tc) (p:match "[^/]+$"))))
             (b:run [:find
                     (.. b.prefix :/tc)
                     :-type

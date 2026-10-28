@@ -15,7 +15,7 @@
         :karate/mysql-client]
  :svc {:user :root :group :root}
  :binds {:database [:port :username :password]}
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (.. b.cache :/wordpress)

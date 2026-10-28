@@ -67,7 +67,7 @@
                   (table.insert lines l))
                 (each [n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (when (= n 1)
@@ -76,10 +76,8 @@
                                         (string.gsub line ".*"
                                                      (.. "%0 -I"
                                                          (pick-values 1
-                                                                      (: b.prefix
-                                                                         :gsub
-                                                                         "%%"
-                                                                         "%%%%"))
+                                                                      (b.prefix:gsub "%%"
+                                                                                     "%%%%"))
                                                          :/lib/perl5)
                                                      1)))))
                   (when (not deleted) (table.insert out line))

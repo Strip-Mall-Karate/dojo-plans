@@ -5,7 +5,7 @@
   (set v-bin (.. b.prefix :/bin/ a1))
   (b:log (.. "Adding wrapper " v-bin " to " v-bin :.real))
   (if (b:exists (.. v-bin :.real))
-      (b:move v-bin (b:join (.. v-bin :.real) (: v-bin :match "[^/]+$")))
+      (b:move v-bin (b:join (.. v-bin :.real) (v-bin:match "[^/]+$")))
       (b:move v-bin (.. v-bin :.real)))
   (b:write v-bin (.. "#!" (b:path_for :busybox-static) "/bin/sh
 set -e
@@ -42,14 +42,12 @@ export SSL_CERT_FILE=\""
                (for [n 1 1]
                  (set v-p (. v--target-sourcess n))
                  (b:download v-p (. v--target-shasumss n)
-                             (: (: v-p :gsub "/+$" "") :match "[^/]*$"))))
+                             (: (v-p:gsub "/+$" "") :match "[^/]*$"))))
              (set v-p ""))
  :verify (fn [b]
            (b.default.verify b)
-           (let [v--target-shasumss [:89703fc52323fad35169fcf649e56844b7dd62bf9dd9a4113bbcd96865690e36]
-                 v--target-sourcess ["https://static.rust-lang.org/dist/rust-std-1.99.1-x86_64-unknown-linux-musl.tar.gz"]]
-             (for [n 1 1]
-               nil)))
+           (for [_n 1 1]
+             nil))
  :unpack (fn [b]
            (b.default.unpack b)
            (let [v--target-sourcess ["https://static.rust-lang.org/dist/rust-std-1.99.1-x86_64-unknown-linux-musl.tar.gz"]]
@@ -60,10 +58,9 @@ export SSL_CERT_FILE=\""
                            (: (: (. v--target-sourcess n) :gsub "/+$" "")
                               :match "[^/]*$"))]
                       {:cwd (.. b.cache :/rust-1.99.1-x86_64-unknown-linux-gnu)}))))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
-            (var v-dir "")
             (b:run [:./install.sh (.. :--prefix= b.prefix) :--disable-ldconfig])
             ;; Every program the archive ships, the tools under lib/rustlib (rust-lld and the
             ;; rest) and libexec included, runs with karate glibc's dynamic linker: those
@@ -98,5 +95,5 @@ export SSL_CERT_FILE=\""
                   (b:run [:./install.sh (.. :--prefix= sysroot)]
                          {:cwd (b:join b.src dir)}))))
             (v-wrap-with-cert-path b :cargo))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

@@ -16,14 +16,13 @@
  :exposes [:port]
  :binds_optional {:rabbitmq [:port] :redis [:port]}
  :unpack (fn [b]
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version)))
-           (if (b:exists (.. b.cache "/" (.. b.name "-" b.version) :/Gemfile))
+           (b:mkdir (.. b.cache "/" b.name "-" b.version))
+           (if (b:exists (.. b.cache "/" b.name "-" b.version :/Gemfile))
                (b:copy (b:join b.src :Gemfile)
-                       (b:join (.. b.cache "/" (.. b.name "-" b.version)
-                                   :/Gemfile)
+                       (b:join (.. b.cache "/" b.name "-" b.version :/Gemfile)
                                (: (b:join b.src :Gemfile) :match "[^/]+$")))
                (b:copy (b:join b.src :Gemfile)
-                       (.. b.cache "/" (.. b.name "-" b.version) :/Gemfile))))
+                       (.. b.cache "/" b.name "-" b.version :/Gemfile))))
  :prepare (fn [b]
             (var v--bundler-dir "")
             (set v--bundler-dir (b:path_for :bundler))
@@ -46,11 +45,11 @@
                   :--path
                   :./vendor/bundle
                   :--binstubs]
-                 {:cwd (.. b.cache "/" (.. b.name "-" b.version))}))
+                 {:cwd (.. b.cache "/" b.name "-" b.version)}))
  :install (fn [b]
-            (b:copy (.. b.cache "/" (.. b.name "-" b.version))
+            (b:copy (.. b.cache "/" b.name "-" b.version)
                     (b:join (.. b.prefix "/")
-                            (: (.. b.cache "/" (.. b.name "-" b.version))
-                               :match "[^/]+$")))
+                            (: (.. b.cache "/" b.name "-" b.version) :match
+                               "[^/]+$")))
             (b:fix_interpreter (b:glob (.. b.prefix :/bin) "*")
                                :karate/coreutils :bin/env))}

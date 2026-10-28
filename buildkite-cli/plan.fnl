@@ -35,16 +35,14 @@
             (b:mkdir v-parent-go-path)
             (let [link (if (b:exists (b:join (.. v-parent-go-path :/cli) "."))
                            (b:join (.. v-parent-go-path :/cli)
-                                   (: b.src :match "[^/]+$"))
+                                   (b.src:match "[^/]+$"))
                            (.. v-parent-go-path :/cli))]
               (b:symlink b.src link)))
  :build (fn [b]
-          (var v-code "")
           (b:run [:go :install :--tags :extended]
                  {:cwd (.. v-parent-go-path :/cli)})
           (b:run [:go :build :-o :bk :./cmd/bk/main.go]
-                 {:cwd (.. v-parent-go-path :/cli)})
-          (set v-code :0))
+                 {:cwd (.. v-parent-go-path :/cli)}))
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin))
             (if (b:exists (.. b.prefix :/bin/bk))

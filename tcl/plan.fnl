@@ -41,24 +41,21 @@
                 out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
               (table.insert lines l))
-            (each [n l (ipairs lines)]
+            (each [_n l (ipairs lines)]
               (var line l)
-              (var deleted false)
+              (local deleted false)
               (local after [])
               (when (not deleted)
                 (set line
                      (pick-values 1
                                   (string.gsub line
                                                (.. (pick-values 1
-                                                                (: v-srcdir
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                               "%%%0"))
                                                    :/unix)
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/lib)
                                                1))))
               (when (not deleted)
@@ -66,13 +63,11 @@
                      (pick-values 1
                                   (string.gsub line
                                                (pick-values 1
-                                                            (: v-srcdir :gsub
-                                                               "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                               "%%%0"))
+                                                            (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                           "%%%0"))
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/include)
                                                1))))
               (when (not deleted) (table.insert out line))
@@ -89,55 +84,44 @@
                 out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
               (table.insert lines l))
-            (each [n l (ipairs lines)]
+            (each [_n l (ipairs lines)]
               (var line l)
-              (var deleted false)
+              (local deleted false)
               (local after [])
               (when (not deleted)
                 (set line
                      (pick-values 1
                                   (string.gsub line
                                                (.. (pick-values 1
-                                                                (: v-srcdir
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                               "%%%0"))
                                                    :/unix/pkgs/
                                                    (pick-values 1
-                                                                (: v-tdbcver
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0")))
+                                                                (v-tdbcver:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                                "%%%0")))
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/lib/
                                                    (pick-values 1
-                                                                (: v-tdbcver
-                                                                   :gsub "%%"
-                                                                   "%%%%")))
+                                                                (v-tdbcver:gsub "%%"
+                                                                                "%%%%")))
                                                1))))
               (when (not deleted)
                 (set line
                      (pick-values 1
                                   (string.gsub line
                                                (.. (pick-values 1
-                                                                (: v-srcdir
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                               "%%%0"))
                                                    :/pkgs/
                                                    (pick-values 1
-                                                                (: v-tdbcver
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-tdbcver:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                                "%%%0"))
                                                    :/generic)
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/include)
                                                1))))
               (when (not deleted)
@@ -145,21 +129,16 @@
                      (pick-values 1
                                   (string.gsub line
                                                (.. (pick-values 1
-                                                                (: v-srcdir
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                               "%%%0"))
                                                    :/pkgs/
                                                    (pick-values 1
-                                                                (: v-tdbcver
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-tdbcver:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                                "%%%0"))
                                                    :/library)
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/lib/tcl
                                                    (pick-values 1
                                                                 (: :8.6 :gsub
@@ -170,20 +149,15 @@
                      (pick-values 1
                                   (string.gsub line
                                                (.. (pick-values 1
-                                                                (: v-srcdir
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                               "%%%0"))
                                                    :/pkgs/
                                                    (pick-values 1
-                                                                (: v-tdbcver
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0")))
+                                                                (v-tdbcver:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                                "%%%0")))
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/include)
                                                1))))
               (when (not deleted) (table.insert out line))
@@ -201,55 +175,44 @@
                 out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
               (table.insert lines l))
-            (each [n l (ipairs lines)]
+            (each [_n l (ipairs lines)]
               (var line l)
-              (var deleted false)
+              (local deleted false)
               (local after [])
               (when (not deleted)
                 (set line
                      (pick-values 1
                                   (string.gsub line
                                                (.. (pick-values 1
-                                                                (: v-srcdir
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                               "%%%0"))
                                                    :/unix/pkgs/
                                                    (pick-values 1
-                                                                (: v-itclver
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0")))
+                                                                (v-itclver:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                                "%%%0")))
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/lib/
                                                    (pick-values 1
-                                                                (: v-itclver
-                                                                   :gsub "%%"
-                                                                   "%%%%")))
+                                                                (v-itclver:gsub "%%"
+                                                                                "%%%%")))
                                                1))))
               (when (not deleted)
                 (set line
                      (pick-values 1
                                   (string.gsub line
                                                (.. (pick-values 1
-                                                                (: v-srcdir
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                               "%%%0"))
                                                    :/pkgs/
                                                    (pick-values 1
-                                                                (: v-itclver
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-itclver:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                                "%%%0"))
                                                    :/generic)
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/include)
                                                1))))
               (when (not deleted)
@@ -257,20 +220,15 @@
                      (pick-values 1
                                   (string.gsub line
                                                (.. (pick-values 1
-                                                                (: v-srcdir
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0"))
+                                                                (v-srcdir:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                               "%%%0"))
                                                    :/pkgs/
                                                    (pick-values 1
-                                                                (: v-itclver
-                                                                   :gsub
-                                                                   "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                                   "%%%0")))
+                                                                (v-itclver:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                                "%%%0")))
                                                (.. (pick-values 1
-                                                                (: b.prefix
-                                                                   :gsub "%%"
-                                                                   "%%%%"))
+                                                                (b.prefix:gsub "%%"
+                                                                               "%%%%"))
                                                    :/include)
                                                1))))
               (when (not deleted) (table.insert out line))

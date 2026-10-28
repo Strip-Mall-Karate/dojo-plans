@@ -83,5 +83,5 @@
                           (.. (or (b:getenv :LD_RUN_PATH) "") ":"
                               (table.concat origins ":"))
                           f])))))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

@@ -19,7 +19,7 @@
  :bin_dirs [:sbin]
  :lib_dirs [:lib]
  :build (fn [b]
-          (var v-sbindir (.. b.prefix :/sbin))
+          (local v-sbindir (.. b.prefix :/sbin))
           (b:env :SBINDIR v-sbindir)
           (b.default.build b))
  :on {:x86_64-linux-kernel2 {:version :4.10.0
@@ -39,6 +39,6 @@
                              :bin_dirs [:sbin]
                              :lib_dirs [:lib]
                              :build (fn [b]
-                                      (var v-sbindir (.. b.prefix :/sbin))
+                                      (local v-sbindir (.. b.prefix :/sbin))
                                       (b:env :SBINDIR v-sbindir)
                                       (b.default.build b))}}}

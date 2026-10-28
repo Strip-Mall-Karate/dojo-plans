@@ -11,7 +11,7 @@
           :sha256 :69e98a7966353de2f232cbdaccd8ef7dbc5d0bcede9bf7280a676793e8625b0d}
  :deps [:karate/coreutils :karate/python]
  :bin_dirs [:bin]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:fix_interpreter (b:glob (b:join b.src :src) :*.py)
@@ -27,5 +27,5 @@
                     :install])
             (b:fix_interpreter [(.. b.prefix :/bin/ponysay)] :karate/coreutils
                                :bin/env))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

@@ -16,7 +16,7 @@
  :bin_dirs [:sumologic/19.227-19/bin :sumologic]
  :lib_dirs [:sumologic/19.227-19/lib :sumologic/19.227-19/bin/native/lib]
  :svc {:user :root :group :root}
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:find "." :-name :*.bat :-type :f :-delete])
@@ -51,8 +51,7 @@
                     :wrapper])
             (if (b:exists (.. b.prefix "/" b.name))
                 (b:copy b.src
-                        (b:join (.. b.prefix "/" b.name)
-                                (: b.src :match "[^/]+$")))
+                        (b:join (.. b.prefix "/" b.name) (b.src:match "[^/]+$")))
                 (b:copy b.src (.. b.prefix "/" b.name))))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

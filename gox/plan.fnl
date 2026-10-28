@@ -17,5 +17,5 @@
           (b:run [:go :get :github.com/mitchellh/iochan])
           (b:run [:go :get :github.com/hashicorp/go-version])
           (b:run [:go :build :-o (.. b.prefix :/bin/gox)]))
- :install (fn [b]
+ :install (fn [_b]
             nil)}

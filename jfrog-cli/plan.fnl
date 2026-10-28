@@ -5,7 +5,7 @@
   (set v-bin (.. b.prefix :/bin/ a1))
   (b:log (.. "Adding wrapper " v-bin " to " v-bin :.real))
   (if (b:exists (.. v-bin :.real))
-      (b:move v-bin (b:join (.. v-bin :.real) (: v-bin :match "[^/]+$")))
+      (b:move v-bin (b:join (.. v-bin :.real) (v-bin:match "[^/]+$")))
       (b:move v-bin (.. v-bin :.real)))
   (set v-certs (.. (b:path_for :cacerts) :/ssl/cert.pem))
   (b:write v-bin
@@ -34,9 +34,9 @@ export LD_LIBRARY_PATH=\""
  :deps [:karate/glibc :karate/busybox-static :karate/cacerts]
  :build_deps [:karate/coreutils]
  :bin_dirs [:bin]
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (.. b.cache :/jfrog) (.. b.prefix :/bin/jfrog))

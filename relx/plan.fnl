@@ -18,7 +18,7 @@
           (b:run [:rebar3 :escriptize]))
  :install (fn [b]
             (each [_ p (ipairs (b:glob (b:join b.src :_build/default) "*"))]
-              (b:copy p (b:join b.prefix (: p :match "[^/]+$"))))
+              (b:copy p (b:join b.prefix (p:match "[^/]+$"))))
             (b:chmod (.. b.prefix :/bin/relx) :+x)
             (b:fix_interpreter [(.. b.prefix :/bin/relx)] :karate/coreutils
                                :bin/env))}

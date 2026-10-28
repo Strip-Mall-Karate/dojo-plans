@@ -31,4 +31,4 @@
           (b:run [:make]))
  :install (fn [b]
             (each [_ p (ipairs (b:glob (b:join b.src :_output/bin) "*"))]
-              (b:copy p (b:join (.. b.prefix :/bin) (: p :match "[^/]+$")))))}
+              (b:copy p (b:join (.. b.prefix :/bin) (p:match "[^/]+$")))))}
