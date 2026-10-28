@@ -23,7 +23,6 @@ dojo-plans/libmd
 dojo-plans/libbsd
 dojo-plans/shadow
 dojo-plans/psmisc
-dojo-plans/procps-ng
 dojo-plans/coreutils
 dojo-plans/bison
 dojo-plans/flex
@@ -32,6 +31,7 @@ dojo-plans/pcre2
 dojo-plans/grep
 dojo-plans/readline
 dojo-plans/bash
+dojo-plans/procps-ng
 dojo-plans/bc
 dojo-plans/tar
 dojo-plans/gawk
