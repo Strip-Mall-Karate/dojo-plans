@@ -13,7 +13,7 @@
  :deps [:karate/perl :karate/gzip :karate/xz :karate/bzip2]
  :build_deps [:karate/patch :karate/sed]
  :bin_dirs [:bin]
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
  :prepare (fn [b]
             (if (b:exists (b:join b.src :rpm2cpio))
@@ -32,9 +32,9 @@
                                                          (.. text "\n"))
                                                      "(.-)\n")]
                                (table.insert lines l))
-                             (each [n l (ipairs lines)]
+                             (each [_n l (ipairs lines)]
                                (var line l)
-                               (var deleted false)
+                               (local deleted false)
                                (local after [])
                                (when (not deleted)
                                  (set line
@@ -88,7 +88,7 @@
                                      "")))})
             (b:fix_interpreter [(b:join b.src :rpm2cpio)] :karate/perl
                                :bin/perl))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :rpm2cpio) (.. b.prefix :/bin/rpm2cpio))

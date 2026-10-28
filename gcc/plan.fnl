@@ -12,7 +12,7 @@
   (set v-bin (.. b.prefix :/bin/ a1))
   (b:log (.. "Adding wrapper " v-bin " to " v-bin :.real))
   (if (b:exists (.. v-bin :.real))
-      (b:move v-bin (b:join (.. v-bin :.real) (: v-bin :match "[^/]+$")))
+      (b:move v-bin (b:join (.. v-bin :.real) (v-bin:match "[^/]+$")))
       (b:move v-bin (.. v-bin :.real)))
   (b:write v-bin (let [text (b:read (.. b.plan_dir :/cc-wrapper.sh))
                        ends (= (text:sub -1) "\n")
@@ -21,59 +21,52 @@
                    (each [l (string.gmatch (if ends text (.. text "\n"))
                                            "(.-)\n")]
                      (table.insert lines l))
-                   (each [n l (ipairs lines)]
+                   (each [_n l (ipairs lines)]
                      (var line l)
-                     (var deleted false)
+                     (local deleted false)
                      (local after [])
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@shell@"
                                                       (pick-values 1
-                                                                   (: v-bash
-                                                                      :gsub "%%"
-                                                                      "%%%%"))))))
+                                                                   (v-bash:gsub "%%"
+                                                                                "%%%%"))))))
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@glibc@"
                                                       (pick-values 1
-                                                                   (: v-glibc
-                                                                      :gsub "%%"
-                                                                      "%%%%"))))))
+                                                                   (v-glibc:gsub "%%"
+                                                                                 "%%%%"))))))
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@binutils@"
                                                       (pick-values 1
-                                                                   (: v-binutils
-                                                                      :gsub "%%"
-                                                                      "%%%%"))))))
+                                                                   (v-binutils:gsub "%%"
+                                                                                    "%%%%"))))))
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@gcc@"
                                                       (pick-values 1
-                                                                   (: b.prefix
-                                                                      :gsub "%%"
-                                                                      "%%%%"))))))
+                                                                   (b.prefix:gsub "%%"
+                                                                                  "%%%%"))))))
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@dynamic_linker@"
                                                       (pick-values 1
-                                                                   (: v-dynamic-linker
-                                                                      :gsub "%%"
-                                                                      "%%%%"))))))
+                                                                   (v-dynamic-linker:gsub "%%"
+                                                                                          "%%%%"))))))
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@program@"
                                                       (.. (pick-values 1
-                                                                       (: v-bin
-                                                                          :gsub
-                                                                          "%%"
-                                                                          "%%%%"))
+                                                                       (v-bin:gsub "%%"
+                                                                                   "%%%%"))
                                                           :.real)))))
                      (when (not deleted) (table.insert out line))
                      (each [_ x (ipairs after)] (table.insert out x)))
@@ -134,19 +127,18 @@
             (each [_ v-include (ipairs [v-orig-cflags])]
               (when (not (string.find v-include
                                       (pick-values 1
-                                                   (: v-glibc :gsub
-                                                      "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                                      "%%%0"))))
+                                                   (v-glibc:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                                                 "%%%0"))))
                 (b:env :CFLAGS (.. (or (b:getenv :CFLAGS) "") " " v-include))))
             (b:log (.. "Updating CFLAGS=" (or (b:getenv :CFLAGS) "")))
             (b:env :CXXFLAGS (or (b:getenv :CFLAGS) ""))
             (b:log (.. "Setting CXXFLAGS=" (or (b:getenv :CXXFLAGS) "")))
             (b:env :CPPFLAGS (or (b:getenv :CFLAGS) ""))
             (b:log (.. "Setting CPPFLAGS=" (or (b:getenv :CPPFLAGS) "")))
-            (var v-cpath (.. (b:path_for :zlib) :/include))
+            (local v-cpath (.. (b:path_for :zlib) :/include))
             (b:env :CPATH v-cpath)
             (b:log (.. "Setting CPATH=" v-cpath))
-            (var v-library-path (.. (b:path_for :zlib) :/lib))
+            (local v-library-path (.. (b:path_for :zlib) :/lib))
             (b:env :LIBRARY_PATH v-library-path)
             (b:log (.. "Setting LIBRARY_PATH=" v-library-path))
             (set v-bash :/bin/sh)
@@ -157,9 +149,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -168,9 +160,8 @@
                                                  :glibc_header_dir=/usr/include
                                                  (.. :glibc_header_dir=
                                                      (pick-values 1
-                                                                  (: v-headers
-                                                                     :gsub "%%"
-                                                                     "%%%%")))
+                                                                  (v-headers:gsub "%%"
+                                                                                  "%%%%")))
                                                  1))))
                 (when (not deleted) (table.insert out line))
                 (each [_ x (ipairs after)] (table.insert out x)))
@@ -212,9 +203,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line :m64=)
@@ -267,7 +258,7 @@
  :build (fn [b]
           (b:remove (b:join b.src (.. "../" b.name :-build)))
           (b:mkdir (b:join b.src (.. "../" b.name :-build)))
-          (b:run [(.. "../" (.. b.name "-" b.version) :/configure)
+          (b:run [(.. "../" b.name "-" b.version :/configure)
                   (.. :--prefix= b.prefix)
                   (.. :--with-gmp= (b:path_for :gmp))
                   (.. :--with-mpfr= (b:path_for :mpfr))
@@ -295,8 +286,8 @@
                 out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
               (table.insert lines l))
-            (each [n l (ipairs lines)]
-              (var line l)
+            (each [_n l (ipairs lines)]
+              (local line l)
               (var deleted false)
               (local after [])
               (when (not deleted)
@@ -335,7 +326,7 @@
                  {:cwd (.. "../" b.name :-build) :check false})
           (b:unsetenv :LIBRARY_PATH)
           (b:log "Displaying Test Summary")
-          (b:run [(.. "../" (.. b.name "-" b.version) :/contrib/test_summary)]
+          (b:run [(.. "../" b.name "-" b.version :/contrib/test_summary)]
                  {:cwd (.. "../" b.name :-build)}))
  :install (fn [b]
             (b:mkdir (.. b.prefix :/lib))
@@ -355,8 +346,7 @@
                                         :libiberty/pic/libiberty.a)
                                 :match "[^/]+$")) :644)
             (b:copy (b:join (b:join b.src (.. "../" b.name :-build))
-                            (.. "../" (.. b.name "-" b.version)
-                                :/COPYING.RUNTIME))
+                            (.. "../" b.name "-" b.version :/COPYING.RUNTIME))
                     (.. b.prefix :/share/licenses/RUNTIME.LIBRARY.EXCEPTION))
             (b:chmod (.. b.prefix :/share/licenses/RUNTIME.LIBRARY.EXCEPTION)
                      :644)

@@ -17,7 +17,7 @@
                    :terraform_0.11.13_linux_amd64.zip
                    :-d
                    (.. b.name "-" b.version)] {:cwd b.cache}))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :terraform) (.. b.prefix :/bin/terraform))

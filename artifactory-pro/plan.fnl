@@ -20,4 +20,4 @@ Repository managers serve two purposes: they act as highly configurable proxies 
  :install (fn [b]
             (b:log (.. "Copying files from " b.src))
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$")))))}
+              (b:copy p (b:join (.. b.prefix "/") (p:match "[^/]+$")))))}

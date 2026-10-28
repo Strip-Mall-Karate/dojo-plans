@@ -9,11 +9,11 @@
  :upstream_url "https://github.com/jezdez/envdir"
  :deps [:karate/python]
  :bin_dirs [:bin]
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
  :prepare (fn [b]
             (b:run [:python3 :-m :venv b.prefix])
@@ -22,7 +22,7 @@
             (b:env :PATH
                    (.. (: (.. b.prefix :/bin/activate) :gsub :/bin/activate$ "")
                        "/bin:" (or (b:getenv :PATH) ""))))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:pip :install (.. b.name "==" b.version)])

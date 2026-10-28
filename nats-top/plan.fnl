@@ -27,17 +27,15 @@
             (let [link (if (b:exists (b:join (.. v-parent-go-path "/" b.name)
                                              "."))
                            (b:join (.. v-parent-go-path "/" b.name)
-                                   (: b.src :match "[^/]+$"))
+                                   (b.src:match "[^/]+$"))
                            (.. v-parent-go-path "/" b.name))]
               (b:symlink b.src link)))
  :build (fn [b]
-          (var v-code "")
-          (b:run [:go :build] {:cwd (.. v-parent-go-path "/" b.name)})
-          (set v-code :0))
+          (b:run [:go :build] {:cwd (.. v-parent-go-path "/" b.name)}))
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin))
             (if (b:exists (.. b.prefix :/bin/ b.name))
                 (b:copy b.name
                         (b:join (.. b.prefix :/bin/ b.name)
-                                (: b.name :match "[^/]+$")))
+                                (b.name:match "[^/]+$")))
                 (b:copy b.name (.. b.prefix :/bin/ b.name))))}

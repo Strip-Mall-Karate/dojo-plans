@@ -8,9 +8,9 @@
  :description "Proxy package for the Shield backup and restore tool"
  :deps [:karate/nginx :karate/openssl :karate/bash]
  :svc {:user :root :group :root}
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
- :install (fn [b]
+ :install (fn [_b]
             nil)}

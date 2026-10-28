@@ -39,9 +39,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -49,9 +49,8 @@
                                     (string.gsub line :^LEIN_JAR=.*
                                                  (.. :LEIN_JAR=
                                                      (pick-values 1
-                                                                  (: b.prefix
-                                                                     :gsub "%%"
-                                                                     "%%%%"))
+                                                                  (b.prefix:gsub "%%"
+                                                                                 "%%%%"))
                                                      :/share/java/
                                                      (pick-values 1
                                                                   (: :leiningen-2.8.1-standalone

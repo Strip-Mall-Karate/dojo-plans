@@ -20,7 +20,7 @@
               :karate/perl]
  :bin_dirs [:bin]
  :lib_dirs [:lib]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (each [setting (string.gmatch (b:capture [:perl

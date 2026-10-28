@@ -26,7 +26,7 @@
  :verify (fn [b]
            (b.default.verify b)
            (b:log (.. "Verifying crate-" b.version ".tar.gz signature"))
-           (var v-gnupghome (b:capture [:mktemp :-d :-p b.cache]))
+           (local v-gnupghome (b:capture [:mktemp :-d :-p b.cache]))
            (b:run [:gpg
                    :--keyserver
                    :ha.pool.sks-keyservers.net
@@ -39,7 +39,7 @@
                    (.. b.cache "/" b.name "-" b.version :.tar.gz)])
            (b:remove v-gnupghome)
            (b:log (.. "Signature verified for " b.name "-" b.version :.tar.gz)))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join (.. b.cache "/" b.name "-" b.version) :README.rst)
@@ -72,5 +72,5 @@
                                :match "[^/]+$")))
             (each [_ p (ipairs (b:glob (.. b.prefix :/crate/bin) :*.bat))]
               (b:remove p)))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

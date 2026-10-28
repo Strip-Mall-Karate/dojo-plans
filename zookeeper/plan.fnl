@@ -16,7 +16,7 @@
  :bin_dirs [:bin]
  :lib_dirs [:lib]
  :exports {:port :zookeeper.clientPort}
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:fix_interpreter (b:glob (b:join b.src :bin) "*")
@@ -25,9 +25,8 @@
                     (b:join b.prefix (: (b:join b.src :bin) :match "[^/]+$")))
             (b:copy (b:join b.src :lib)
                     (b:join b.prefix (: (b:join b.src :lib) :match "[^/]+$")))
-            (b:copy (b:join b.src (.. :lib/ (.. b.name "-" b.version) :.jar))
+            (b:copy (b:join b.src (.. :lib/ b.name "-" b.version :.jar))
                     (b:join b.prefix
                             (: (b:join b.src
-                                       (.. :lib/ (.. b.name "-" b.version)
-                                           :.jar))
+                                       (.. :lib/ b.name "-" b.version :.jar))
                                :match "[^/]+$"))))}

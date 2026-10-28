@@ -40,9 +40,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -108,8 +108,6 @@
           (b:unsetenv :BUILD_ZLIB)
           (b:unsetenv :BUILD_BZIP2))
  :check (fn [b]
-          (var v-clean-protocols "")
-          (var v-clean-services "")
           ;; The plan copied iana-etc's services file to /etc/services for the tests when it
           ;; was missing. A Dojo build writes nothing outside itself; the tests need a
           ;; services file where the build runs.

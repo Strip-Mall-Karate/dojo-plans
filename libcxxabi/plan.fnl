@@ -26,20 +26,20 @@
                          :5a25152cb7f21e3c223ad36a1022faeb8a5ac27c9e75936a5ae2d3ac48f6e854
                          (.. :libcxx- b.version :.src.tar.xz)))
  :unpack (fn [b]
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version) :/libcxx))
+           (b:mkdir (.. b.cache "/" b.name "-" b.version :/libcxx))
            (b:run [:tar
                    :xf
                    (.. b.cache :/libcxx- b.version :.src.tar.xz)
                    :--strip
                    :1]
-                  {:cwd (.. b.cache "/" (.. b.name "-" b.version) :/libcxx)})
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version) :/libcxxabi))
+                  {:cwd (.. b.cache "/" b.name "-" b.version :/libcxx)})
+           (b:mkdir (.. b.cache "/" b.name "-" b.version :/libcxxabi))
            (b:run [:tar
                    :xf
                    (.. b.cache :/libcxxabi- b.version :.src.tar.xz)
                    :--strip
                    :1]
-                  {:cwd (.. b.cache "/" (.. b.name "-" b.version) :/libcxxabi)}))
+                  {:cwd (.. b.cache "/" b.name "-" b.version :/libcxxabi)}))
  :prepare (fn [b]
             (b:env :BUILDDIR :_build)
             (b:mkdir (or (b:getenv :BUILDDIR) "")))

@@ -4,20 +4,21 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 {:name :apr
@@ -50,7 +51,6 @@
             (b:env :LDFLAGS (.. "-lgcc_s " (or (b:getenv :LDFLAGS) "")))
             (use-dependency-path b :/usr/bin/file (b:path_for :file :bin/file)))
  :check (fn [b]
-          (var v-clean-services "")
           ;; The plan copied iana-etc's services file to /etc/services for the tests when it
           ;; was missing. A Dojo build writes nothing outside itself; the tests need a
           ;; services file where the build runs.

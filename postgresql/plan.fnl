@@ -64,8 +64,8 @@
           (b:run [:make :world]))
  :install (fn [b]
             (b:run [:make :install-world])
-            (var v-doj-library-path
-                 (.. (b:path_for :proj) "/lib:" b.prefix :/lib))
+            (local v-doj-library-path
+                   (.. (b:path_for :proj) "/lib:" b.prefix :/lib))
             (b:env :LIBRARY_PATH
                    (.. (or (b:getenv :LIBRARY_PATH) "") ":" v-doj-library-path))
             (b:log (.. "Added dojo libraries to LIBRARY_PATH: "

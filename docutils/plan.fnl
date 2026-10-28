@@ -25,7 +25,7 @@
             (each [_ v-file (ipairs (b:glob (.. b.prefix :/bin) :*.py))]
               (if (b:exists (.. v-file :.real))
                   (b:move v-file
-                          (b:join (.. v-file :.real) (: v-file :match "[^/]+$")))
+                          (b:join (.. v-file :.real) (v-file:match "[^/]+$")))
                   (b:move v-file (.. v-file :.real)))
               (b:write v-file (.. "#!" v-bash-path
                                   "/bin/bash\nexport PYTHONPATH="

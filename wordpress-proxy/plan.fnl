@@ -9,9 +9,9 @@
  :upstream_url "https://nginx.org/"
  :deps [:karate/nginx]
  :svc {:user :root :group :root}
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
- :install (fn [b]
+ :install (fn [_b]
             nil)}

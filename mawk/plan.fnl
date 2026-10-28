@@ -14,16 +14,16 @@
  :bin_dirs [:bin]
  :check (fn [b]
           (each [_ v-file (ipairs [:test/mawktest :test/fpe_test])]
-            (let [text (b:read (if (= (: v-file :sub 1 1) "/") v-file
+            (let [text (b:read (if (= (v-file:sub 1 1) "/") v-file
                                    (b:join b.src v-file)))
                   ends (= (text:sub -1) "\n")
                   lines []
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -37,7 +37,7 @@
                                                                      "%%%%")))))))
                 (when (not deleted) (table.insert out line))
                 (each [_ x (ipairs after)] (table.insert out x)))
-              (b:write (if (= (: v-file :sub 1 1) "/") v-file
+              (b:write (if (= (v-file:sub 1 1) "/") v-file
                            (b:join b.src v-file))
                        (.. (table.concat out "\n")
                            (if (and ends (> (length out) 0))

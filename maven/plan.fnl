@@ -19,5 +19,5 @@
             (b:log (.. "Setting JAVA_HOME=" (or (b:getenv :JAVA_HOME) ""))))
  :build (fn [b]
           (b:run [:ant (.. :-Dmaven.home= b.prefix)]))
- :install (fn [b]
+ :install (fn [_b]
             nil)}

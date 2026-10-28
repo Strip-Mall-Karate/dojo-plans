@@ -20,5 +20,5 @@
                   (.. :--libdir= b.prefix :/lib)
                   (.. :--pkgdir= b.prefix)])
           (b:run [:make :all]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

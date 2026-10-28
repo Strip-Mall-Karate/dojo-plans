@@ -63,8 +63,8 @@
                                         (b:run [:patch
                                                 :-p1
                                                 :-i
-                                                (.. (.. b.plan_dir
-                                                        :/x86_64-linux-kernel2)
+                                                (.. b.plan_dir
+                                                    :/x86_64-linux-kernel2
                                                     :/libcap-old-kernel-headers.patch)]))
                              :build (fn [b]
                                       (b:run [:make

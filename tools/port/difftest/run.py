@@ -19,6 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 
 import bashplan  # noqa: E402
+import lints  # noqa: E402
 import translate  # noqa: E402
 
 
@@ -51,8 +52,13 @@ def plan_for(case):
     if unported:
         return None, "; ".join(why for why, _ in unported)
     body = translate.indent(forms, 10) if forms else "          nil"
-    return ('{:name "difftest" :origin "karate" :version "1.0" :targets ["aarch64-linux"]\n'
-            f" :build (fn [b]\n{body})\n :install (fn [b] nil)}}\n"), None
+    text = ('{:name "difftest" :origin "karate" :version "1.0" :targets ["aarch64-linux"]\n'
+            f" :build (fn [b]\n{body})\n :install (fn [b] nil)}}\n")
+    # The case runs the Fennel port.py writes: the translation after its lint pass.
+    text, left = lints.clean(text.encode())
+    if left:
+        return None, "; ".join(f"line {line}: {message}" for line, message in left)
+    return text.decode(), None
 
 
 VM_SCRIPT = r"""

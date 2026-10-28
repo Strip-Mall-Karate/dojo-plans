@@ -18,8 +18,6 @@
               :karate/patch]
  :include_dirs [:include]
  :build (fn [b]
-          (var v-prefix "")
           (b:run [:make :ARCH=x86_64 (.. :prefix= b.prefix)]))
  :install (fn [b]
-            (var v-prefix "")
             (b:run [:make :ARCH=x86_64 (.. :prefix= b.prefix) :install]))}

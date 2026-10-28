@@ -33,7 +33,7 @@ exec "
         :karate/busybox-static]
  :build_deps [:karate/patchelf :karate/coreutils]
  :bin_dirs [:bin]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:./install.sh (.. :--prefix= b.prefix) :--disable-ldconfig])
@@ -44,5 +44,5 @@ exec "
                     (or (b:getenv :LD_RUN_PATH) "")
                     (.. b.prefix :/bin/cargo)])
             (v-wrap-with-cert-path b :cargo))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

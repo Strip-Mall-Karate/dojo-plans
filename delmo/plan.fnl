@@ -11,9 +11,9 @@
           :sha256 :1d7a3a27f5c65a281315325bda9b87c176cd3b6f82b26e4eab290bbe2eefb221
           :filename :delmo}
  :bin_dirs [:bin]
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (if (b:exists (.. b.src "/" b.name))

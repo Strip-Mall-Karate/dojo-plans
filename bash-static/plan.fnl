@@ -31,24 +31,21 @@
                (for [n 1 0]
                  (set v-p (. v--patch-filess n))
                  (b:download v-p (. v--patch-shasumss n)
-                             (: (: v-p :gsub "/+$" "") :match "[^/]*$"))))
+                             (: (v-p:gsub "/+$" "") :match "[^/]*$"))))
              (set v-p ""))
  :verify (fn [b]
            (b.default.verify b)
-           (let [v--patch-filess []
-                 v--patch-shasumss []]
-             (for [n 1 0]
-               nil)))
+           (for [_n 1 0]
+             nil))
  :prepare (fn [b]
             (b.default.prepare b)
             (each [_ v-p (ipairs [])]
               (b:log (.. "Applying patch "
-                         (: (: v-p :gsub "/+$" "") :match "[^/]*$")))
+                         (: (v-p:gsub "/+$" "") :match "[^/]*$")))
               (b:run [:patch
                       :-p0
                       :-i
-                      (.. b.cache "/"
-                          (: (: v-p :gsub "/+$" "") :match "[^/]*$"))])))
+                      (.. b.cache "/" (: (v-p:gsub "/+$" "") :match "[^/]*$"))])))
  :build (fn [b]
           (b:run [:./configure
                   (.. :--prefix= b.prefix)
@@ -63,9 +60,9 @@
                 out []]
             (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
               (table.insert lines l))
-            (each [n l (ipairs lines)]
+            (each [_n l (ipairs lines)]
               (var line l)
-              (var deleted false)
+              (local deleted false)
               (local after [])
               (when (not deleted)
                 (set line
@@ -93,12 +90,12 @@
               (let [link (if (b:exists (b:join v-cmd "."))
                              (b:join v-cmd
                                      (: (.. (b:path_for :coreutils) :/bin/
-                                            (: (: v-cmd :gsub "/+$" "") :match
+                                            (: (v-cmd:gsub "/+$" "") :match
                                                "[^/]*$"))
                                         :match "[^/]+$"))
                              v-cmd)]
                 (b:symlink (.. (b:path_for :coreutils) :/bin/
-                               (: (: v-cmd :gsub "/+$" "") :match "[^/]*$"))
+                               (: (v-cmd:gsub "/+$" "") :match "[^/]*$"))
                            link))
               (set v-clean-cmds [v-cmd])))
           (b:run [:make :tests])

@@ -10,10 +10,10 @@
  :source {:url "https://www.iana.org/time-zones/repository/releases/tzdata2018g.tar.gz"
           :sha256 :02dfde534872f6513ae4553a3388fdae579441e31b862ea99170dfc447f46a16}
  :unpack (fn [b]
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version)))
+           (b:mkdir (.. b.cache "/" b.name "-" b.version))
            (b:run [:tar :xf (.. b.cache :/tzdata2018g.tar.gz)]
-                  {:cwd (.. b.cache "/" (.. b.name "-" b.version))}))
- :build (fn [b]
+                  {:cwd (.. b.cache "/" b.name "-" b.version)}))
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:zic

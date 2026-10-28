@@ -1,8 +1,5 @@
 ;; coreutils-static, ported from its plan.sh.
 ;; Built from the coreutils plan, with its own changes.
-(fn v--patch-files [b]
-  (b:run [:patch :-p1 :-i (.. b.plan_dir :/skip-tests.patch)]))
-
 {:name :coreutils-static
  :origin :karate
  :version :8.30

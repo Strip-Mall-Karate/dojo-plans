@@ -12,11 +12,11 @@
  :bin_dirs [:bin]
  :exports {:forward-port :input.forward.port :http-port :input.http.port}
  :exposes [:forward-port :http-port]
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
  :build (fn [b]
           (var v--bundler-dir "")
@@ -38,6 +38,6 @@
                   :./vendor/bundle
                   :--binstubs]))
  :install (fn [b]
-            (b:copy b.src (b:join (.. b.prefix "/") (: b.src :match "[^/]+$")))
+            (b:copy b.src (b:join (.. b.prefix "/") (b.src:match "[^/]+$")))
             (b:fix_interpreter (b:glob (.. b.prefix :/bin) "*")
                                :karate/coreutils :bin/env))}

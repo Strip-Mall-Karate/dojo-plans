@@ -13,12 +13,12 @@
  :build_deps [:karate/bash]
  :bin_dirs [:bin]
  :lib_dirs [:lib]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir b.prefix)
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join b.prefix (: p :match "[^/]+$"))))
+              (b:copy p (b:join b.prefix (p:match "[^/]+$"))))
             (b:mkdir (.. b.prefix :/data/queue))
             (b:chmod (.. b.prefix :/data) :0777)
             (b:chmod (.. b.prefix :/data/queue) :0777)

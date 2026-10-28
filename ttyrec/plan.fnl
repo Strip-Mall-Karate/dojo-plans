@@ -16,6 +16,6 @@
           (b:run [:make "CFLAGS+=-DSVR4 -DHAVE_inotify -D_XOPEN_SOURCE=500"]))
  :install (fn [b]
             (each [_ v-bin (ipairs [:ttyplay :ttyrec :ttytime])]
-              (b:copy (if (= (: v-bin :sub 1 1) "/") v-bin (b:join b.src v-bin))
+              (b:copy (if (= (v-bin:sub 1 1) "/") v-bin (b:join b.src v-bin))
                       (.. b.prefix :/bin/ v-bin))
               (b:chmod (.. b.prefix :/bin/ v-bin) :755)))}

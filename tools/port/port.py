@@ -17,6 +17,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import bashplan  # noqa: E402
+import lints  # noqa: E402
 import translate  # noqa: E402
 
 TARGET = "x86_64-linux"
@@ -282,6 +283,17 @@ def port(package_dir):
     plan = os.path.join(package_dir, "plan.fnl")
     with open(plan, "w", encoding="utf-8") as f:
         f.write(renamed("\n".join(out)) + "\n")
+    formatted(plan)
+    with open(plan, "rb") as f:
+        text, left = lints.clean(f.read())
+    if left:
+        # A definition the lint pass cannot remove safely is a person's to read.
+        problems = [f"line {line}: {message}" for line, message in left]
+        emitter.problems.extend(problems)
+        head, rest = text.split(b"\n", 1)
+        text = head + b"\n" + "".join(f";; UNPORTED: {p}\n" for p in problems).encode() + rest
+    with open(plan, "wb") as f:
+        f.write(text)
     formatted(plan)
     return emitter.problems
 

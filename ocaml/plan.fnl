@@ -18,5 +18,5 @@
           (b:run [:make :world.opt]))
  :check (fn [b]
           (b:run [:make :bootstrap]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

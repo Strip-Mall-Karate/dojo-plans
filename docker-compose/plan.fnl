@@ -16,11 +16,11 @@
             (b:env :PATH
                    (.. (: (.. b.prefix :/bin/activate) :gsub :/bin/activate$ "")
                        "/bin:" (or (b:getenv :PATH) ""))))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:pip :install (.. :docker-compose== b.version)])
             (b:write (.. b.prefix :/requirements.txt)
                      (.. (b:capture [:pip :freeze]) "\n")))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

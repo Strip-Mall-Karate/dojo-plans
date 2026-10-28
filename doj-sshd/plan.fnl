@@ -12,5 +12,5 @@
  :deps [:karate/openssh :karate/busybox-static]
  ;; sshd binds port 22 and switches to the user who logs in, so the service runs as root.
  :svc {:user :root :group :root}
- :build (fn [b] nil)
- :install (fn [b] nil)}
+ :build (fn [_b] nil)
+ :install (fn [_b] nil)}

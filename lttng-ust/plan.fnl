@@ -19,6 +19,6 @@
  :lib_dirs [:lib]
  :include_dirs [:include]
  :prepare (fn [b]
-            (b:fix_interpreter [(.. b.cache "/" (.. b.name "-" b.version)
+            (b:fix_interpreter [(.. b.cache "/" b.name "-" b.version
                                     :/tools/lttng-gen-tp)]
                                :karate/coreutils :bin/env))}

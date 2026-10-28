@@ -11,8 +11,8 @@
  :source {:url "https://github.com/liberationfonts/liberation-fonts/files/7261482/liberation-fonts-ttf-2.1.5.tar.gz"
           :sha256 :7191c669bf38899f73a2094ed00f7b800553364f90e2637010a69c0e268f25d0}
  :deps [:karate/fontconfig]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (each [_ p (ipairs (b:glob b.src :*ttf))]
-              (b:move p (b:join (.. b.prefix "/") (: p :match "[^/]+$")))))}
+              (b:move p (b:join (.. b.prefix "/") (p:match "[^/]+$")))))}

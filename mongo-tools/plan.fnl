@@ -31,4 +31,4 @@
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin))
             (each [_ p (ipairs (b:glob (b:join b.src :bin) "*"))]
-              (b:copy p (b:join (.. b.prefix :/bin) (: p :match "[^/]+$")))))}
+              (b:copy p (b:join (.. b.prefix :/bin) (p:match "[^/]+$")))))}

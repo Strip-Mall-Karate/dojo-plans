@@ -28,9 +28,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -64,5 +64,5 @@
                         (b:join b.prefix
                                 (: (b:join b.src :target) :match "[^/]+$")))
                 (b:copy (b:join b.src :target) b.prefix)))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

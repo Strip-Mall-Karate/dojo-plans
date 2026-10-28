@@ -12,7 +12,7 @@
  :upstream_url "https://github.com/Mic92/iana-etc"
  :source {:url "https://github.com/Mic92/iana-etc/releases/download/20261022/iana-etc-20261022.tar.gz"
           :sha256 :8ea9429c691634056ad8c292cf94df8e4cc5e828dceef658490bcbab132dee7c}
- :build (fn [b])
+ :build (fn [_b])
  :install (fn [b]
             (b:mkdir (.. b.prefix :/etc))
             (b:copy (b:join b.src :services) (.. b.prefix :/etc/services))

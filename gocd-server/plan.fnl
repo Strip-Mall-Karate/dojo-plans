@@ -15,12 +15,12 @@
  :bin_dirs [:bin]
  :exports {:port :port :ssl-port :ssl-port}
  :exposes [:port :ssl-port]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin))
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join (.. b.prefix :/bin) (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/bin) (p:match "[^/]+$"))))
             (b:move (.. b.prefix :/bin/LICENSE)
                     (b:join (.. b.prefix "/")
                             (: (.. b.prefix :/bin/LICENSE) :match "[^/]+$"))))}

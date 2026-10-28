@@ -13,7 +13,7 @@
  :deps [:karate/gnupg :karate/glibc]
  :build_deps [:karate/patchelf]
  :bin_dirs [:bin]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :rkt) (.. b.prefix :/bin/rkt))
@@ -24,5 +24,5 @@
                     :--set-rpath
                     (or (b:getenv :LD_RUN_PATH) "")
                     (.. b.prefix :/bin/rkt)]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

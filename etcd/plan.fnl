@@ -30,7 +30,7 @@
            (b.default.verify b)
            (b:log (.. "Verifying " b.name "-" b.version
                       "-linux-amd64.tar.gz signature"))
-           (var v-gnupghome (b:capture [:mktemp :-d :-p b.cache]))
+           (local v-gnupghome (b:capture [:mktemp :-d :-p b.cache]))
            (b:run [:gpg
                    :--import
                    :--keyid-format
@@ -45,7 +45,7 @@
            (b:remove v-gnupghome)
            (b:log (.. "Signature verified for " b.name "-" b.version
                       :-linux-amd64.tar.gz)))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (when (not (b:exists (.. b.prefix :/etc/nsswitch.conf)))
@@ -59,5 +59,5 @@
             (b:copy (.. b.cache :/etcd-v3.3.10-linux-amd64/etcdctl)
                     (.. b.prefix :/usr/bin/etcdctl))
             (b:chmod (.. b.prefix :/usr/bin/etcdctl) :755))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

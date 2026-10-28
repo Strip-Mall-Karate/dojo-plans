@@ -15,9 +15,9 @@
  :bin_dirs [:bin]
  :exports {:host :srv.address :port :srv.port}
  :exposes [:port]
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin))
@@ -31,5 +31,5 @@
                     :--interpreter
                     (.. (b:path_for :glibc) :/lib/ld-linux-x86-64.so.2)
                     (.. b.prefix :/bin/p4broker)]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

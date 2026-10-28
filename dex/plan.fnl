@@ -13,8 +13,8 @@
  :exports {:port :service.port :host :service.host}
  :download (fn [b]
              ;; From do_before.
-             (b:env :GOPATH (.. b.cache "/" (.. b.name "-" b.version))))
- :verify (fn [b]
+             (b:env :GOPATH (.. b.cache "/" b.name "-" b.version)))
+ :verify (fn [_b]
            nil)
  :unpack (fn [b]
            (b:run [:git

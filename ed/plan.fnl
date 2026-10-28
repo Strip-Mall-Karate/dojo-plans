@@ -13,11 +13,11 @@
  :build_deps [:karate/gcc :karate/make :karate/lzip :karate/diffutils]
  :bin_dirs [:bin]
  :unpack (fn [b]
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version)))
+           (b:mkdir (.. b.cache "/" b.name "-" b.version))
            (b:run [:tar
                    :--lzip
                    :-xf
-                   (.. b.cache "/" (.. b.name "-" b.version :.tar.lz))
+                   (.. b.cache "/" b.name "-" b.version :.tar.lz)
                    :-C
                    b.cache]))
  :check (fn [b]

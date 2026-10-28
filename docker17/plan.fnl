@@ -11,14 +11,13 @@
           :sha256 :1270dce1bd7e1838d62ae21d2505d87f16efc1d9074645571daaefdfd0c14054
           :dirname :docker}
  :bin_dirs [:bin]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (each [_ p (ipairs (b:glob b.src :docker*))]
-              (let [v-bin (: p :match "[^/]+$")]
-                (b:copy (if (= (: v-bin :sub 1 1) "/") v-bin
-                            (b:join b.src v-bin))
+              (let [v-bin (p:match "[^/]+$")]
+                (b:copy (if (= (v-bin:sub 1 1) "/") v-bin (b:join b.src v-bin))
                         (.. b.prefix :/bin/ v-bin))
                 (b:chmod (.. b.prefix :/bin/ v-bin) :755))))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

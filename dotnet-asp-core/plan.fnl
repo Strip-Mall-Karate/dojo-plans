@@ -23,12 +23,12 @@
  :build_deps [:karate/patchelf]
  :bin_dirs [:bin]
  :unpack (fn [b]
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version)))
+           (b:mkdir (.. b.cache "/" b.name "-" b.version))
            (b:run [:tar
                    :xf
                    (.. b.cache :/aspnetcore-runtime-2.2.3-linux-x64.tar.gz)
                    :-C
-                   (.. b.cache "/" (.. b.name "-" b.version))
+                   (.. b.cache "/" b.name "-" b.version)
                    :--no-same-owner]))
  :prepare (fn [b]
             (b:run [:find
@@ -57,12 +57,12 @@
                     (or (b:getenv :LD_RUN_PATH) "")
                     "{}"
                     ";"]))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (if (b:exists (.. b.prefix :/bin))
                 (b:copy b.src
-                        (b:join (.. b.prefix :/bin) (: b.src :match "[^/]+$")))
+                        (b:join (.. b.prefix :/bin) (b.src:match "[^/]+$")))
                 (b:copy b.src (.. b.prefix :/bin)))
             (b:chmod (b:join b.src :-R) :o+r)
             (b:chmod (.. b.prefix :/bin) :o+r)
@@ -80,5 +80,5 @@
                                    :match "[^/]+$")))
                 (b:move (.. b.prefix :/bin/ThirdPartyNotices.txt)
                         (.. b.prefix :/ThirdPartyNotices.txt))))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

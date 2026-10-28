@@ -25,4 +25,4 @@
                                                (.. :admin/runit- b.version
                                                    :/command))
                                        "*"))]
-              (b:copy p (b:join (.. b.prefix :/bin) (: p :match "[^/]+$")))))}
+              (b:copy p (b:join (.. b.prefix :/bin) (p:match "[^/]+$")))))}

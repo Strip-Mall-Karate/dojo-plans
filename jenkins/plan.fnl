@@ -13,9 +13,9 @@
  :svc {:user :root}
  :exports {:port :jenkins.http.port}
  :exposes [:port]
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (if (b:exists (.. b.prefix :/jenkins.war))

@@ -22,9 +22,9 @@
  :include_dirs [:include]
  :pconfig_dirs [:lib/pkgconfig]
  :prepare (fn [b]
-            (var v-aclocal-path
-                 (.. (or (b:getenv :ACLOCAL_PATH) "") ":"
-                     (b:path_for :karate/gettext) "/share/aclocal:"
-                     (b:path_for :karate/pkg-config) :/share/aclocal))
+            (local v-aclocal-path
+                   (.. (or (b:getenv :ACLOCAL_PATH) "") ":"
+                       (b:path_for :karate/gettext) "/share/aclocal:"
+                       (b:path_for :karate/pkg-config) :/share/aclocal))
             (b:env :ACLOCAL_PATH v-aclocal-path)
             (b:run [:./autogen.sh]))}

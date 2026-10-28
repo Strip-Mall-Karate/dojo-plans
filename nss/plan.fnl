@@ -25,9 +25,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line "$%(MKSHLIB%) %-o")
@@ -69,10 +69,8 @@
                   (b:copy f (.. b.prefix :/bin/ (f:match "[^/]+$")))
                   (b:chmod (.. b.prefix :/bin/ (f:match "[^/]+$")) :755))))
             (each [_ p (ipairs (b:glob (b:join b.src :dist/public/nss) :*.h))]
-              (b:copy p (b:join (.. b.prefix :/include/nss)
-                                (: p :match "[^/]+$")))
-              (b:chmod (b:join (.. b.prefix :/include/nss)
-                               (: p :match "[^/]+$"))
+              (b:copy p (b:join (.. b.prefix :/include/nss) (p:match "[^/]+$")))
+              (b:chmod (b:join (.. b.prefix :/include/nss) (p:match "[^/]+$"))
                        :0644))
             ;; Each shared library from the build's dist/Linux* directory, into lib.
             (each [_ dist (ipairs (b:glob (b:join b.src :dist) :Linux*))]

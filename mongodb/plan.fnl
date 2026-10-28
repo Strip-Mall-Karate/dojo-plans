@@ -45,7 +45,7 @@
                 (table.insert lines l))
               (each [n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (= n 891)
@@ -54,16 +54,12 @@
                                       (string.gsub line :**envDict
                                                    (.. "ENV = os.environ, CPPPATH = ['"
                                                        (pick-values 1
-                                                                    (: v-incpath
-                                                                       :gsub
-                                                                       "%%"
-                                                                       "%%%%"))
+                                                                    (v-incpath:gsub "%%"
+                                                                                    "%%%%"))
                                                        "'], LIBPATH = ['"
                                                        (pick-values 1
-                                                                    (: v-libpath
-                                                                       :gsub
-                                                                       "%%"
-                                                                       "%%%%"))
+                                                                    (v-libpath:gsub "%%"
+                                                                                    "%%%%"))
                                                        "'], CFLAGS = os.environ['CFLAGS'], CXXFLAGS = os.environ['CXXFLAGS'], LINKFLAGS = os.environ['LDFLAGS'], CC = os.environ['CC'], CXX = os.environ['CXX'], PATH = os.environ['PATH'], **envDict"))))))
                 (when (not deleted) (table.insert out line))
                 (each [_ x (ipairs after)] (table.insert out x)))
@@ -104,5 +100,5 @@
                     (.. b.prefix :/bin/mongos)])
             (b:fix_interpreter [(.. b.prefix :/bin/install_compass)]
                                :karate/coreutils :bin/env))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

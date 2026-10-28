@@ -15,11 +15,11 @@
  :svc {:user :doj :group :doj}
  :exports {:port :port}
  :exposes [:port]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (each [_ p (ipairs (b:glob b.src "*"))]
-              (b:copy p (b:join (.. b.prefix "/") (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix "/") (p:match "[^/]+$"))))
             (b:mkdir (.. b.prefix :/logs))
             (b:fix_interpreter (b:glob (.. b.prefix :/bin) "*")
                                :karate/coreutils :bin/env))}

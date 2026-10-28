@@ -10,9 +10,9 @@
  :source {:url "https://dl.minio.io/server/minio/release/linux-amd64/archive/minio.RELEASE.2018-11-30T03-56-59Z"
           :sha256 :cbb86818efa9f281195334e37cebc8aa014a41cd20173216617c2267b0d71ec3}
  :bin_dirs [:bin]
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin))
@@ -25,5 +25,5 @@
                 (b:copy (b:join b.src (.. :../minio.RELEASE. b.version))
                         (.. b.prefix :/bin/minio)))
             (b:chmod (.. b.prefix :/bin/minio) :+x))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

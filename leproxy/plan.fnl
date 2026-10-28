@@ -12,7 +12,7 @@
  :bin_dirs [:bin]
  :build (fn [b]
           (b:move (.. b.cache :/leproxy)
-                  (b:join (.. b.cache "/" (.. b.name "-" b.version) "/")
+                  (b:join (.. b.cache "/" b.name "-" b.version "/")
                           (: (.. b.cache :/leproxy) :match "[^/]+$"))))
  :install (fn [b]
             (b:copy (b:join b.src :leproxy) (.. b.prefix :/bin/leproxy))

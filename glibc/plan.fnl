@@ -5,26 +5,25 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 (fn v-extract-src [b a1]
-  (var v-build-dirname "")
   (var v-plan "")
-  (set v-build-dirname (.. (.. b.name "-" b.version) "/../" b.name :-build))
   (set v-plan a1)
   ;; The plan sourced the named plan to download and unpack its source into the
   ;; build directory. glibc names only tzdata; these are its source and unpacking.
@@ -94,19 +93,17 @@
                                                          (.. text "\n"))
                                                      "(.-)\n")]
                                (table.insert lines l))
-                             (each [n l (ipairs lines)]
+                             (each [_n l (ipairs lines)]
                                (var line l)
-                               (var deleted false)
+                               (local deleted false)
                                (local after [])
                                (when (not deleted)
                                  (set line
                                       (pick-values 1
                                                    (string.gsub line "@prefix@"
                                                                 (pick-values 1
-                                                                             (: b.prefix
-                                                                                :gsub
-                                                                                "%%"
-                                                                                "%%%%"))))))
+                                                                             (b.prefix:gsub "%%"
+                                                                                            "%%%%"))))))
                                (when (not deleted) (table.insert out line))
                                (each [_ x (ipairs after)] (table.insert out x)))
                              (.. (table.concat out "\n")
@@ -119,9 +116,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -129,14 +126,12 @@
                                     (string.gsub line "libs %-o"
                                                  (.. "libs -L"
                                                      (pick-values 1
-                                                                  (: b.prefix
-                                                                     :gsub "%%"
-                                                                     "%%%%"))
+                                                                  (b.prefix:gsub "%%"
+                                                                                 "%%%%"))
                                                      "/lib -Wl,-dynamic-linker="
                                                      (pick-values 1
-                                                                  (: v-dynamic-linker
-                                                                     :gsub "%%"
-                                                                     "%%%%"))
+                                                                  (v-dynamic-linker:gsub "%%"
+                                                                                         "%%%%"))
                                                      " -o")
                                                  1))))
                 (when (not deleted) (table.insert out line))
@@ -157,8 +152,8 @@
                            (b:read (b:join (b:join b.src
                                                    (.. "../" b.name :-build))
                                            :config.cache))
-                           "")
-                       (.. (.. :libc_cv_slibdir= b.prefix :/lib) "\n")))
+                           "") :libc_cv_slibdir=
+                       b.prefix :/lib "\n"))
           (b:write (b:join (b:join b.src (.. "../" b.name :-build))
                            :config.cache) (.. (if (b:exists (b:join (b:join b.src
                                                                                                (.. "../"
@@ -173,7 +168,7 @@
                                                                      "")
                                                                  "libc_cv_ssp=no
 "))
-          (b:run [(.. "../" (.. b.name "-" b.version) :/configure)
+          (b:run [(.. "../" b.name "-" b.version :/configure)
                   (.. :--prefix= b.prefix)
                   (.. :--sbindir= b.prefix :/bin)
                   (.. :--with-headers= (b:path_for :linux-headers) :/include)
@@ -240,7 +235,7 @@
                     (.. :sbindir= b.prefix :/bin)]
                    {:cwd (.. "../" b.name :-build)})
             (each [_ p (ipairs (b:glob (.. b.prefix :/sbin) "*"))]
-              (b:move p (b:join (.. b.prefix :/bin/) (: p :match "[^/]+$"))))
+              (b:move p (b:join (.. b.prefix :/bin/) (p:match "[^/]+$"))))
             (b:remove (.. b.prefix :/sbin))
             (b:remove (.. b.prefix :/lib/ld-linux.so.2))
             (b:remove (.. b.prefix :/bin/sln))
@@ -251,9 +246,9 @@
                     out []]
                 (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                   (table.insert lines l))
-                (each [n l (ipairs lines)]
+                (each [_n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (set line
@@ -302,11 +297,10 @@
             (b:run [:localedef :-i :ja_JP :-f :EUC-JP :ja_JP]
                    {:cwd (.. "../" b.name :-build)})
             (b:copy (b:join (b:join b.src (.. "../" b.name :-build))
-                            (.. "../" (.. b.name "-" b.version)
-                                :/nscd/nscd.conf))
+                            (.. "../" b.name "-" b.version :/nscd/nscd.conf))
                     (b:join (.. b.prefix :/etc/)
                             (: (b:join (b:join b.src (.. "../" b.name :-build))
-                                       (.. "../" (.. b.name "-" b.version)
+                                       (.. "../" b.name "-" b.version
                                            :/nscd/nscd.conf))
                                :match "[^/]+$")))
             (b:write (.. b.prefix :/etc/nsswitch.conf) "passwd: files
@@ -344,7 +338,7 @@ rpc: files
                       :-y
                       "sh yearistype.sh"
                       v-tz]
-                     {:cwd (.. (.. "../" b.name :-build) :/./tzdata)})
+                     {:cwd (.. "../" b.name :-build :/./tzdata)})
               (b:run [:zic
                       :-L
                       :/dev/null
@@ -353,7 +347,7 @@ rpc: files
                       :-y
                       "sh yearistype.sh"
                       v-tz]
-                     {:cwd (.. (.. "../" b.name :-build) :/./tzdata)})
+                     {:cwd (.. "../" b.name :-build :/./tzdata)})
               (b:run [:zic
                       :-L
                       :leapseconds
@@ -362,36 +356,33 @@ rpc: files
                       :-y
                       "sh yearistype.sh"
                       v-tz]
-                     {:cwd (.. (.. "../" b.name :-build) :/./tzdata)}))
-            (b:copy (b:join (b:join b.src
-                                    (.. (.. "../" b.name :-build) :/./tzdata))
+                     {:cwd (.. "../" b.name :-build :/./tzdata)}))
+            (b:copy (b:join (b:join b.src (.. "../" b.name :-build :/./tzdata))
                             :zone.tab)
                     (b:join v-zoneinfo
                             (: (b:join (b:join b.src
-                                               (.. (.. "../" b.name :-build)
+                                               (.. "../" b.name :-build
                                                    :/./tzdata))
                                        :zone.tab)
                                :match "[^/]+$")))
-            (b:copy (b:join (b:join b.src
-                                    (.. (.. "../" b.name :-build) :/./tzdata))
+            (b:copy (b:join (b:join b.src (.. "../" b.name :-build :/./tzdata))
                             :zone1970.tab)
                     (b:join v-zoneinfo
                             (: (b:join (b:join b.src
-                                               (.. (.. "../" b.name :-build)
+                                               (.. "../" b.name :-build
                                                    :/./tzdata))
                                        :zone1970.tab)
                                :match "[^/]+$")))
-            (b:copy (b:join (b:join b.src
-                                    (.. (.. "../" b.name :-build) :/./tzdata))
+            (b:copy (b:join (b:join b.src (.. "../" b.name :-build :/./tzdata))
                             :iso3166.tab)
                     (b:join v-zoneinfo
                             (: (b:join (b:join b.src
-                                               (.. (.. "../" b.name :-build)
+                                               (.. "../" b.name :-build
                                                    :/./tzdata))
                                        :iso3166.tab)
                                :match "[^/]+$")))
             (b:run [:zic :-d v-zoneinfo :-p :America/New_York]
-                   {:cwd (.. (.. "../" b.name :-build) :/./tzdata)})
+                   {:cwd (.. "../" b.name :-build :/./tzdata)})
             (set v-zoneinfo "")
             (if (b:exists (.. b.prefix :/etc/localtime))
                 (b:copy (.. b.prefix :/share/zoneinfo/UTC)
@@ -456,12 +447,12 @@ pthread_create, crypt, login, exit and more."
                                         (b:run [:patch
                                                 :-p1
                                                 :-i
-                                                (.. (.. b.plan_dir
-                                                        :/x86_64-linux-kernel2)
+                                                (.. b.plan_dir
+                                                    :/x86_64-linux-kernel2
                                                     :/rpcgen-path.patch)])
                                         (b:run [:patch :-p1]
-                                               {:stdin (let [text (b:read (.. (.. b.plan_dir
-                                                                                  :/x86_64-linux-kernel2)
+                                               {:stdin (let [text (b:read (.. b.plan_dir
+                                                                              :/x86_64-linux-kernel2
                                                                               :/dont-use-system-ld-so.patch))
                                                              ends (= (text:sub -1)
                                                                      "\n")
@@ -475,9 +466,9 @@ pthread_create, crypt, login, exit and more."
 ")]
                                                            (table.insert lines
                                                                          l))
-                                                         (each [n l (ipairs lines)]
+                                                         (each [_n l (ipairs lines)]
                                                            (var line l)
-                                                           (var deleted false)
+                                                           (local deleted false)
                                                            (local after [])
                                                            (when (not deleted)
                                                              (set line
@@ -485,10 +476,8 @@ pthread_create, crypt, login, exit and more."
                                                                                (string.gsub line
                                                                                             "@prefix@"
                                                                                             (pick-values 1
-                                                                                                         (: b.prefix
-                                                                                                            :gsub
-                                                                                                            "%%"
-                                                                                                            "%%%%"))))))
+                                                                                                         (b.prefix:gsub "%%"
+                                                                                                                        "%%%%"))))))
                                                            (when (not deleted)
                                                              (table.insert out
                                                                            line))
@@ -505,38 +494,38 @@ pthread_create, crypt, login, exit and more."
                                         (b:run [:patch
                                                 :-p1
                                                 :-i
-                                                (.. (.. b.plan_dir
-                                                        :/x86_64-linux-kernel2)
+                                                (.. b.plan_dir
+                                                    :/x86_64-linux-kernel2
                                                     :/testsuite-fix.patch)])
                                         (b:run [:patch
                                                 :-p1
                                                 :-i
-                                                (.. (.. b.plan_dir
-                                                        :/x86_64-linux-kernel2)
+                                                (.. b.plan_dir
+                                                    :/x86_64-linux-kernel2
                                                     :/glibc-2.23-upstream_fixes-1.patch)])
                                         (b:run [:patch
                                                 :-p1
                                                 :-i
-                                                (.. (.. b.plan_dir
-                                                        :/x86_64-linux-kernel2)
+                                                (.. b.plan_dir
+                                                    :/x86_64-linux-kernel2
                                                     :/0005-fix-binutils-2-29-build.patch)])
                                         (b:run [:patch
                                                 :-p1
                                                 :-i
-                                                (.. (.. b.plan_dir
-                                                        :/x86_64-linux-kernel2)
+                                                (.. b.plan_dir
+                                                    :/x86_64-linux-kernel2
                                                     :/gcc-implicit-boolean.patch)])
                                         (b:run [:patch
                                                 :-p1
                                                 :-i
-                                                (.. (.. b.plan_dir
-                                                        :/x86_64-linux-kernel2)
+                                                (.. b.plan_dir
+                                                    :/x86_64-linux-kernel2
                                                     :/remove-sun-rpm-bug.patch)])
                                         (b:run [:patch
                                                 :-p1
                                                 :-i
-                                                (.. (.. b.plan_dir
-                                                        :/x86_64-linux-kernel2)
+                                                (.. b.plan_dir
+                                                    :/x86_64-linux-kernel2
                                                     :/nss-nisplus-gcc7.patch)])
                                         (let [text (b:read (b:join b.src
                                                                    :scripts/test-installation.pl))
@@ -548,9 +537,9 @@ pthread_create, crypt, login, exit and more."
                                                                           "\n"))
                                                                   "(.-)\n")]
                                             (table.insert lines l))
-                                          (each [n l (ipairs lines)]
+                                          (each [_n l (ipairs lines)]
                                             (var line l)
-                                            (var deleted false)
+                                            (local deleted false)
                                             (local after [])
                                             (when (not deleted)
                                               (set line
@@ -559,16 +548,12 @@ pthread_create, crypt, login, exit and more."
                                                                              "libs %-o"
                                                                              (.. "libs -L"
                                                                                  (pick-values 1
-                                                                                              (: b.prefix
-                                                                                                 :gsub
-                                                                                                 "%%"
-                                                                                                 "%%%%"))
+                                                                                              (b.prefix:gsub "%%"
+                                                                                                             "%%%%"))
                                                                                  "/lib -Wl,-dynamic-linker="
                                                                                  (pick-values 1
-                                                                                              (: v-dynamic-linker
-                                                                                                 :gsub
-                                                                                                 "%%"
-                                                                                                 "%%%%"))
+                                                                                              (v-dynamic-linker:gsub "%%"
+                                                                                                                     "%%%%"))
                                                                                  " -o")
                                                                              1))))
                                             (when (not deleted)
@@ -604,9 +589,8 @@ pthread_create, crypt, login, exit and more."
                                                                                    :-build))
                                                                        :config.cache))
                                                        "")
-                                                   (.. (.. :libc_cv_slibdir=
-                                                           b.prefix :/lib)
-                                                       "\n")))
+                                                   :libc_cv_slibdir= b.prefix
+                                                   :/lib "\n"))
                                       (b:write (b:join (b:join b.src
                                                                (.. "../" b.name
                                                                    :-build))
@@ -623,8 +607,7 @@ pthread_create, crypt, login, exit and more."
                                                                        :config.cache))
                                                        "")
                                                    "libc_cv_ssp=no\n"))
-                                      (b:run [(.. "../"
-                                                  (.. b.name "-" b.version)
+                                      (b:run [(.. "../" b.name "-" b.version
                                                   :/configure)
                                               (.. :--prefix= b.prefix)
                                               (.. :--sbindir= b.prefix :/bin)
@@ -733,7 +716,7 @@ pthread_create, crypt, login, exit and more."
                                                                    "*"))]
                                           (b:move p
                                                   (b:join (.. b.prefix :/bin/)
-                                                          (: p :match "[^/]+$"))))
+                                                          (p:match "[^/]+$"))))
                                         (b:remove (.. b.prefix :/sbin))
                                         (each [_ p (ipairs (b:glob (.. b.prefix
                                                                        :/include/rpcsvc)
@@ -757,9 +740,9 @@ pthread_create, crypt, login, exit and more."
                                                                             "\n"))
                                                                     "(.-)\n")]
                                               (table.insert lines l))
-                                            (each [n l (ipairs lines)]
+                                            (each [_n l (ipairs lines)]
                                               (var line l)
-                                              (var deleted false)
+                                              (local deleted false)
                                               (local after [])
                                               (when (not deleted)
                                                 (set line
@@ -885,9 +868,8 @@ pthread_create, crypt, login, exit and more."
                                                                 (.. "../"
                                                                     b.name
                                                                     :-build))
-                                                        (.. "../"
-                                                            (.. b.name "-"
-                                                                b.version)
+                                                        (.. "../" b.name "-"
+                                                            b.version
                                                             :/nscd/nscd.conf))
                                                 (b:join (.. b.prefix :/etc/)
                                                         (: (b:join (b:join b.src
@@ -895,9 +877,9 @@ pthread_create, crypt, login, exit and more."
                                                                                b.name
                                                                                :-build))
                                                                    (.. "../"
-                                                                       (.. b.name
-                                                                           "-"
-                                                                           b.version)
+                                                                       b.name
+                                                                       "-"
+                                                                       b.version
                                                                        :/nscd/nscd.conf))
                                                            :match "[^/]+$")))
                                         (b:write (.. b.prefix
@@ -938,8 +920,7 @@ rpc: files
                                                   :-y
                                                   "sh yearistype.sh"
                                                   v-tz]
-                                                 {:cwd (.. (.. "../" b.name
-                                                               :-build)
+                                                 {:cwd (.. "../" b.name :-build
                                                            :/./tzdata)})
                                           (b:run [:zic
                                                   :-L
@@ -949,8 +930,7 @@ rpc: files
                                                   :-y
                                                   "sh yearistype.sh"
                                                   v-tz]
-                                                 {:cwd (.. (.. "../" b.name
-                                                               :-build)
+                                                 {:cwd (.. "../" b.name :-build
                                                            :/./tzdata)})
                                           (b:run [:zic
                                                   :-L
@@ -960,48 +940,47 @@ rpc: files
                                                   :-y
                                                   "sh yearistype.sh"
                                                   v-tz]
-                                                 {:cwd (.. (.. "../" b.name
-                                                               :-build)
+                                                 {:cwd (.. "../" b.name :-build
                                                            :/./tzdata)}))
                                         (b:copy (b:join (b:join b.src
-                                                                (.. (.. "../"
-                                                                        b.name
-                                                                        :-build)
+                                                                (.. "../"
+                                                                    b.name
+                                                                    :-build
                                                                     :/./tzdata))
                                                         :zone.tab)
                                                 (b:join v-zoneinfo
                                                         (: (b:join (b:join b.src
-                                                                           (.. (.. "../"
-                                                                                   b.name
-                                                                                   :-build)
+                                                                           (.. "../"
+                                                                               b.name
+                                                                               :-build
                                                                                :/./tzdata))
                                                                    :zone.tab)
                                                            :match "[^/]+$")))
                                         (b:copy (b:join (b:join b.src
-                                                                (.. (.. "../"
-                                                                        b.name
-                                                                        :-build)
+                                                                (.. "../"
+                                                                    b.name
+                                                                    :-build
                                                                     :/./tzdata))
                                                         :zone1970.tab)
                                                 (b:join v-zoneinfo
                                                         (: (b:join (b:join b.src
-                                                                           (.. (.. "../"
-                                                                                   b.name
-                                                                                   :-build)
+                                                                           (.. "../"
+                                                                               b.name
+                                                                               :-build
                                                                                :/./tzdata))
                                                                    :zone1970.tab)
                                                            :match "[^/]+$")))
                                         (b:copy (b:join (b:join b.src
-                                                                (.. (.. "../"
-                                                                        b.name
-                                                                        :-build)
+                                                                (.. "../"
+                                                                    b.name
+                                                                    :-build
                                                                     :/./tzdata))
                                                         :iso3166.tab)
                                                 (b:join v-zoneinfo
                                                         (: (b:join (b:join b.src
-                                                                           (.. (.. "../"
-                                                                                   b.name
-                                                                                   :-build)
+                                                                           (.. "../"
+                                                                               b.name
+                                                                               :-build
                                                                                :/./tzdata))
                                                                    :iso3166.tab)
                                                            :match "[^/]+$")))
@@ -1010,8 +989,7 @@ rpc: files
                                                 v-zoneinfo
                                                 :-p
                                                 :America/New_York]
-                                               {:cwd (.. (.. "../" b.name
-                                                             :-build)
+                                               {:cwd (.. "../" b.name :-build
                                                          :/./tzdata)})
                                         (set v-zoneinfo "")
                                         (if (b:exists (.. b.prefix

@@ -18,7 +18,7 @@
                    :gor_0.16.1_x64.tar.gz
                    :--directory
                    (.. b.name "-" b.version)] {:cwd b.cache}))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :goreplay) (.. b.prefix :/bin/goreplay))

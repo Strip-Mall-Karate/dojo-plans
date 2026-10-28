@@ -15,15 +15,15 @@
            (b:mkdir (.. b.name "-" b.version))
            (b:run [:tar
                    :--strip-components=1
-                   (.. :--directory= (.. b.name "-" b.version))
+                   (.. :--directory= b.name "-" b.version)
                    :-xf
                    :yarn-v1.12.1.tar.gz] {:cwd b.cache}))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (each [v-f (: (b:capture [:find :bin :-type :f]) :gmatch
                           "[^\n          ]+")]
-              (b:copy (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))
+              (b:copy (if (= (v-f:sub 1 1) "/") v-f (b:join b.src v-f))
                       (.. b.prefix "/" v-f))
               (b:chmod (.. b.prefix "/" v-f) :0755))
             (each [_ p (ipairs (b:glob (.. b.prefix :/bin) :*.cmd))]
@@ -35,6 +35,6 @@
                                       :-type
                                       :f]) :gmatch
                           "[^\n          ]+")]
-              (b:copy (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))
+              (b:copy (if (= (v-f:sub 1 1) "/") v-f (b:join b.src v-f))
                       (.. b.prefix "/" v-f))
               (b:chmod (.. b.prefix "/" v-f) :0644)))}

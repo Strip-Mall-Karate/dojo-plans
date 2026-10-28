@@ -3,7 +3,6 @@
 (var v-bash "")
 (var v-dynamic-linker "")
 (fn v--verify-tty [b]
-  (var v-actual "")
   (var v-cmd "")
   (var v-expected "")
   (set v-expected "spawn ls")
@@ -21,7 +20,7 @@
   (set v-bin (.. b.prefix :/bin/ a1))
   (b:log (.. "Adding wrapper " v-bin " to " v-bin :.real))
   (if (b:exists (.. v-bin :.real))
-      (b:move v-bin (b:join (.. v-bin :.real) (: v-bin :match "[^/]+$")))
+      (b:move v-bin (b:join (.. v-bin :.real) (v-bin:match "[^/]+$")))
       (b:move v-bin (.. v-bin :.real)))
   (b:write v-bin (let [text (b:read (.. b.plan_dir :/ld-wrapper.sh))
                        ends (= (text:sub -1) "\n")
@@ -30,35 +29,31 @@
                    (each [l (string.gmatch (if ends text (.. text "\n"))
                                            "(.-)\n")]
                      (table.insert lines l))
-                   (each [n l (ipairs lines)]
+                   (each [_n l (ipairs lines)]
                      (var line l)
-                     (var deleted false)
+                     (local deleted false)
                      (local after [])
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@shell@"
                                                       (pick-values 1
-                                                                   (: v-bash
-                                                                      :gsub "%%"
-                                                                      "%%%%"))))))
+                                                                   (v-bash:gsub "%%"
+                                                                                "%%%%"))))))
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@dynamic_linker@"
                                                       (pick-values 1
-                                                                   (: v-dynamic-linker
-                                                                      :gsub "%%"
-                                                                      "%%%%"))))))
+                                                                   (v-dynamic-linker:gsub "%%"
+                                                                                          "%%%%"))))))
                      (when (not deleted)
                        (set line
                             (pick-values 1
                                          (string.gsub line "@program@"
                                                       (.. (pick-values 1
-                                                                       (: v-bin
-                                                                          :gsub
-                                                                          "%%"
-                                                                          "%%%%"))
+                                                                       (v-bin:gsub "%%"
+                                                                                   "%%%%"))
                                                           :.real)))))
                      (when (not deleted) (table.insert out line))
                      (each [_ x (ipairs after)] (table.insert out x)))
@@ -121,23 +116,23 @@
             (each [_ v-f (ipairs [:binutils/Makefile.in
                                   :gas/Makefile.in
                                   :ld/Makefile.in])]
-              (let [text (b:read (if (= (: v-f :sub 1 1) "/") v-f
+              (let [text (b:read (if (= (v-f:sub 1 1) "/") v-f
                                      (b:join b.src v-f)))
                     ends (= (text:sub -1) "\n")
                     lines []
                     out []]
                 (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                   (table.insert lines l))
-                (each [n l (ipairs lines)]
+                (each [_n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (set line
                          (pick-values 1 (string.gsub line "ln " "ln -s " 1))))
                   (when (not deleted) (table.insert out line))
                   (each [_ x (ipairs after)] (table.insert out x)))
-                (b:write (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))
+                (b:write (if (= (v-f:sub 1 1) "/") v-f (b:join b.src v-f))
                          (.. (table.concat out "\n")
                              (if (and ends (> (length out) 0))
                                  "\n"
@@ -145,7 +140,7 @@
  :build (fn [b]
           (b:remove (b:join b.src (.. "../" b.name :-build)))
           (b:mkdir (b:join b.src (.. "../" b.name :-build)))
-          (b:run [(.. "../" (.. b.name "-" b.version) :/configure)
+          (b:run [(.. "../" b.name "-" b.version :/configure)
                   (.. :--prefix= b.prefix)
                   :--enable-shared
                   :--enable-ld=default
@@ -163,13 +158,11 @@
           (var v-original-ld-run-path "")
           (set v-original-ld-run-path (or (b:getenv :LD_RUN_PATH) ""))
           (if (= (or (b:getenv :STUDIO_TYPE) "") :stage1)
-              (do
-                (b:env :LD_LIBRARY_PATH
-                       (.. (or (b:getenv :LD_RUN_PATH) "") ":/tools/lib")))
-              (do
-                (b:env :LD_LIBRARY_PATH
-                       (.. (or (b:getenv :LD_RUN_PATH) "") ":"
-                           (b:path_for :gcc) :/lib))))
+              (b:env :LD_LIBRARY_PATH
+                     (.. (or (b:getenv :LD_RUN_PATH) "") ":/tools/lib"))
+              (b:env :LD_LIBRARY_PATH
+                     (.. (or (b:getenv :LD_RUN_PATH) "") ":" (b:path_for :gcc)
+                         :/lib)))
           (b:unsetenv :LD_RUN_PATH)
           (b:run [:make :check (.. :LDFLAGS= (or (b:getenv :LDFLAGS) ""))]
                  {:cwd (.. "../" b.name :-build)})

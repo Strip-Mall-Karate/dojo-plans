@@ -8,7 +8,7 @@
   (set v-bin (.. b.prefix :/bin/ a1))
   (b:log (.. "Adding wrapper " v-bin " to " v-bin :.real))
   (if (b:exists (.. v-bin :.real))
-      (b:move v-bin (b:join (.. v-bin :.real) (: v-bin :match "[^/]+$")))
+      (b:move v-bin (b:join (.. v-bin :.real) (v-bin:match "[^/]+$")))
       (b:move v-bin (.. v-bin :.real)))
   (b:write v-bin (.. "#!" (b:path_for :busybox-static) "/bin/sh
 set -e
@@ -49,10 +49,9 @@ export SSL_CERT_FILE=\""
                    (b:join b.cache
                            :rust-std-nightly-x86_64-unknown-linux-musl.tar.gz)]
                   {:cwd b.src}))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
-            (var v-dir "")
             (b:run [:./install.sh (.. :--prefix= b.prefix) :--disable-ldconfig])
             (each [_ v-b (ipairs [:rustc :cargo :rustdoc])]
               (b:run [:patchelf
@@ -75,5 +74,5 @@ export SSL_CERT_FILE=\""
                   (b:run [:./install.sh (.. :--prefix= sysroot)]
                          {:cwd (b:join b.src dir)}))))
             (v-wrap-with-cert-path b :cargo))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

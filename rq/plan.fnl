@@ -17,10 +17,9 @@
  :unpack (fn [b]
            ;; The release tarball holds the bare rq binary, no directory.
            (b.default.unpack b)
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version)))
-           (b:move (.. b.cache :/rq)
-                   (.. b.cache "/" (.. b.name "-" b.version) :/rq)))
- :build (fn [b]
+           (b:mkdir (.. b.cache "/" b.name "-" b.version))
+           (b:move (.. b.cache :/rq) (.. b.cache "/" b.name "-" b.version :/rq)))
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :rq) (.. b.prefix :/bin/ b.name))

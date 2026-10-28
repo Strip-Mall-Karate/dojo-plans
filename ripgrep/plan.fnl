@@ -11,10 +11,10 @@
           :sha256 :ecb53ed7e9f3a1ebea76a4e517af42ffe1e778eab3b413200a3e543d033f68f5
           :dirname :ripgrep-0.5.2-x86_64-unknown-linux-musl}
  :bin_dirs [:bin]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (.. b.src :/rg) (.. b.prefix :/bin/rg))
             (b:chmod (.. b.prefix :/bin/rg) :0755))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

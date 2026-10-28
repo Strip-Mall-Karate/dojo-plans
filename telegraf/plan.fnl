@@ -12,7 +12,7 @@
  :build_deps [:karate/wget :karate/tar]
  :bin_dirs [:bin]
  :svc {:run "telegraf --config /doj/svc/telegraf/config/telegraf.conf"}
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (.. b.cache :/telegraf/telegraf)

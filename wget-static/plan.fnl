@@ -2,15 +2,15 @@
 ;; Built from the wget plan, with its own changes.
 (fn v--wget-common-prepare [b]
   (each [v-f (: (b:capture [:grep :-lr :/usr/bin/env "."]) :gmatch "[^\n  ]+")]
-    (let [text (b:read (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f)))
+    (let [text (b:read (if (= (v-f:sub 1 1) "/") v-f (b:join b.src v-f)))
           ends (= (text:sub -1) "\n")
           lines []
           out []]
       (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
         (table.insert lines l))
-      (each [n l (ipairs lines)]
+      (each [_n l (ipairs lines)]
         (var line l)
-        (var deleted false)
+        (local deleted false)
         (local after [])
         (when (not deleted)
           (set line
@@ -22,7 +22,7 @@
                                              :/bin/env)))))
         (when (not deleted) (table.insert out line))
         (each [_ x (ipairs after)] (table.insert out x)))
-      (b:write (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))
+      (b:write (if (= (v-f:sub 1 1) "/") v-f (b:join b.src v-f))
                (.. (table.concat out "\n")
                    (if (and ends (> (length out) 0))
                        "\n"
@@ -78,14 +78,11 @@
           (b:run [:cpan "HTTP:Daemon"] {:env {:PERL_MM_USE_DEFAULT :1}})
           (b:run [:make :check]))
  :install (fn [b]
-            (var v-ca-certificate "")
             (b.default.install b)
             (b:write (.. b.prefix :/etc/wgetrc)
                      (.. (if (b:exists (.. b.prefix :/etc/wgetrc))
                              (b:read (.. b.prefix :/etc/wgetrc))
-                             "") (.. "
+                             "") "
 # Default root CA certs location
 ca_certificate="
-                                                              (b:path_for :karate/cacerts)
-                                                              "/ssl/certs/cacert.pem
-"))))}
+                         (b:path_for :karate/cacerts) "/ssl/certs/cacert.pem\n")))}

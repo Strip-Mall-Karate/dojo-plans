@@ -5,20 +5,21 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 {:name :go17
@@ -72,9 +73,9 @@ build simple, reliable, and efficient software."
                                                          (.. text "\n"))
                                                      "(.-)\n")]
                                (table.insert lines l))
-                             (each [n l (ipairs lines)]
+                             (each [_n l (ipairs lines)]
                                (var line l)
-                               (var deleted false)
+                               (local deleted false)
                                (local after [])
                                (when (not deleted)
                                  (set line
@@ -102,9 +103,9 @@ build simple, reliable, and efficient software."
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -112,9 +113,8 @@ build simple, reliable, and efficient software."
                                     (string.gsub line
                                                  "/lib64/ld%-linux%-x86%-64.so.2"
                                                  (pick-values 1
-                                                              (: v-dynamic-linker
-                                                                 :gsub "%%"
-                                                                 "%%%%"))
+                                                              (v-dynamic-linker:gsub "%%"
+                                                                                     "%%%%"))
                                                  1))))
                 (when (not deleted) (table.insert out line))
                 (each [_ x (ipairs after)] (table.insert out x)))
@@ -124,16 +124,16 @@ build simple, reliable, and efficient software."
                                "\n"
                                ""))))
             (each [_ v-f (ipairs [:src/net/port_unix.go :src/net/parse_test.go])]
-              (let [text (b:read (if (= (: v-f :sub 1 1) "/") v-f
+              (let [text (b:read (if (= (v-f:sub 1 1) "/") v-f
                                      (b:join b.src v-f)))
                     ends (= (text:sub -1) "\n")
                     lines []
                     out []]
                 (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                   (table.insert lines l))
-                (each [n l (ipairs lines)]
+                (each [_n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (set line
@@ -148,7 +148,7 @@ build simple, reliable, and efficient software."
                                                    1))))
                   (when (not deleted) (table.insert out line))
                   (each [_ x (ipairs after)] (table.insert out x)))
-                (b:write (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))
+                (b:write (if (= (v-f:sub 1 1) "/") v-f (b:join b.src v-f))
                          (.. (table.concat out "\n")
                              (if (and ends (> (length out) 0))
                                  "\n"
@@ -156,7 +156,6 @@ build simple, reliable, and efficient software."
  :build (fn [b]
           (b:run [:bash :make.bash :--no-clean] {:cwd :src}))
  :check (fn [b]
-          (var v--clean-cmds [])
           (use-dependency-path b :/bin/pwd (b:path_for :coreutils :bin/pwd))
           (use-dependency-path b :/usr/bin/env (b:path_for :coreutils :bin/env))
           (use-dependency-path b :/bin/hostname

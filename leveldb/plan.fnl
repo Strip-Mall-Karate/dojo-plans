@@ -17,7 +17,7 @@
           (b:run [:make]))
  :install (fn [b]
             (each [_ p (ipairs (b:glob (b:join b.src :out-shared) :libleveldb.*))]
-              (b:copy p (b:join (.. b.prefix :/lib) (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/lib) (p:match "[^/]+$"))))
             (if (b:exists (.. b.prefix :/include))
                 (b:copy (b:join b.src :include/leveldb)
                         (b:join (.. b.prefix :/include)

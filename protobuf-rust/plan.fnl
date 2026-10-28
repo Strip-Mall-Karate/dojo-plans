@@ -10,7 +10,7 @@
  :deps [:karate/glibc :karate/gcc-libs]
  :build_deps [:karate/rust]
  :bin_dirs [:bin]
- :download (fn [b]
+ :download (fn [_b]
              nil)
  :build (fn [b]
           (b:run [:cargo
@@ -22,5 +22,5 @@
                   b.version
                   (.. :-j (tostring b.jobs))
                   :--verbose]))
- :install (fn [b]
+ :install (fn [_b]
             nil)}

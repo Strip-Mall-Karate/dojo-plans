@@ -17,11 +17,11 @@
  :exposes [:port]
  :prepare (fn [b]
             (b:run [:npm :config :set :spin=false]))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (if (b:exists b.prefix)
-                (b:copy b.src (b:join b.prefix (: b.src :match "[^/]+$")))
+                (b:copy b.src (b:join b.prefix (b.src:match "[^/]+$")))
                 (b:copy b.src b.prefix))
             (b:run [:npm :install :flow-bin] {:cwd b.prefix})
             (b:run [:patchelf

@@ -9,7 +9,7 @@
  :source {:url "https://www.kernel.org/pub/linux/docs/man-pages/man-pages-6.20.tar.xz"
           :sha256 :180f0d16a2142dd9671760ac0afeadcc25e861f695eb420293e1206a87ca083f}
  :build_deps [:karate/coreutils :karate/make]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:run [:make :install (.. :prefix= b.prefix)]))}

@@ -12,14 +12,14 @@
           :sha256 :796f1389bfea13c0ed78f663b765baaff54a508e5483786bd6ece73c5e3e3cbe
           :filename :cacert.pem}
  :unpack (fn [b]
-           (b:mkdir (.. b.cache "/" (.. b.name "-" b.version)))
-           (if (b:exists (.. b.cache "/" (.. b.name "-" b.version)))
+           (b:mkdir (.. b.cache "/" b.name "-" b.version))
+           (if (b:exists (.. b.cache "/" b.name "-" b.version))
                (b:copy (.. b.cache :/cacert.pem)
-                       (b:join (.. b.cache "/" (.. b.name "-" b.version))
+                       (b:join (.. b.cache "/" b.name "-" b.version)
                                (: (.. b.cache :/cacert.pem) :match "[^/]+$")))
                (b:copy (.. b.cache :/cacert.pem)
-                       (.. b.cache "/" (.. b.name "-" b.version)))))
- :build (fn [b]
+                       (.. b.cache "/" b.name "-" b.version))))
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (.. b.prefix :/ssl/certs))

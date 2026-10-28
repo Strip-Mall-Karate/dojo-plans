@@ -24,9 +24,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -61,16 +61,16 @@
                                            "^\\#\\!/usr/bin/env"
                                            b.prefix])
                                :gmatch "[^\n          ]+")]
-              (let [text (b:read (if (= (: v-target :sub 1 1) "/") v-target
+              (let [text (b:read (if (= (v-target:sub 1 1) "/") v-target
                                      (b:join b.src v-target)))
                     ends (= (text:sub -1) "\n")
                     lines []
                     out []]
                 (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                   (table.insert lines l))
-                (each [n l (ipairs lines)]
+                (each [_n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (set line
@@ -78,30 +78,28 @@
                                       (string.gsub line "#!/usr/bin/env node"
                                                    (.. "#!"
                                                        (pick-values 1
-                                                                    (: b.prefix
-                                                                       :gsub
-                                                                       "%%"
-                                                                       "%%%%"))
+                                                                    (b.prefix:gsub "%%"
+                                                                                   "%%%%"))
                                                        :/bin/node)
                                                    1))))
                   (when (not deleted) (table.insert out line))
                   (each [_ x (ipairs after)] (table.insert out x)))
-                (b:write (if (= (: v-target :sub 1 1) "/") v-target
+                (b:write (if (= (v-target:sub 1 1) "/") v-target
                              (b:join b.src v-target))
                          (.. (table.concat out "\n")
                              (if (and ends (> (length out) 0))
                                  "\n"
                                  ""))))
-              (let [text (b:read (if (= (: v-target :sub 1 1) "/") v-target
+              (let [text (b:read (if (= (v-target:sub 1 1) "/") v-target
                                      (b:join b.src v-target)))
                     ends (= (text:sub -1) "\n")
                     lines []
                     out []]
                 (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                   (table.insert lines l))
-                (each [n l (ipairs lines)]
+                (each [_n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (set line
@@ -117,22 +115,22 @@
                                                    1))))
                   (when (not deleted) (table.insert out line))
                   (each [_ x (ipairs after)] (table.insert out x)))
-                (b:write (if (= (: v-target :sub 1 1) "/") v-target
+                (b:write (if (= (v-target:sub 1 1) "/") v-target
                              (b:join b.src v-target))
                          (.. (table.concat out "\n")
                              (if (and ends (> (length out) 0))
                                  "\n"
                                  ""))))
-              (let [text (b:read (if (= (: v-target :sub 1 1) "/") v-target
+              (let [text (b:read (if (= (v-target:sub 1 1) "/") v-target
                                      (b:join b.src v-target)))
                     ends (= (text:sub -1) "\n")
                     lines []
                     out []]
                 (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                   (table.insert lines l))
-                (each [n l (ipairs lines)]
+                (each [_n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (set line
@@ -148,22 +146,22 @@
                                                    1))))
                   (when (not deleted) (table.insert out line))
                   (each [_ x (ipairs after)] (table.insert out x)))
-                (b:write (if (= (: v-target :sub 1 1) "/") v-target
+                (b:write (if (= (v-target:sub 1 1) "/") v-target
                              (b:join b.src v-target))
                          (.. (table.concat out "\n")
                              (if (and ends (> (length out) 0))
                                  "\n"
                                  ""))))
-              (let [text (b:read (if (= (: v-target :sub 1 1) "/") v-target
+              (let [text (b:read (if (= (v-target:sub 1 1) "/") v-target
                                      (b:join b.src v-target)))
                     ends (= (text:sub -1) "\n")
                     lines []
                     out []]
                 (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                   (table.insert lines l))
-                (each [n l (ipairs lines)]
+                (each [_n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (set line
@@ -179,7 +177,7 @@
                                                    1))))
                   (when (not deleted) (table.insert out line))
                   (each [_ x (ipairs after)] (table.insert out x)))
-                (b:write (if (= (: v-target :sub 1 1) "/") v-target
+                (b:write (if (= (v-target:sub 1 1) "/") v-target
                              (b:join b.src v-target))
                          (.. (table.concat out "\n")
                              (if (and ends (> (length out) 0))
@@ -192,9 +190,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -202,9 +200,8 @@
                                     (string.gsub line "^[%s]*([%s])node([%s])"
                                                  (.. "%1"
                                                      (pick-values 1
-                                                                  (: b.prefix
-                                                                     :gsub "%%"
-                                                                     "%%%%"))
+                                                                  (b.prefix:gsub "%%"
+                                                                                 "%%%%"))
                                                      "/bin/node%2")
                                                  1))))
                 (when (not deleted) (table.insert out line))

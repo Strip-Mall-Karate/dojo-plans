@@ -12,7 +12,7 @@
  :deps [:karate/glibc]
  :build_deps [:karate/patchelf]
  :bin_dirs [:bin]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (if (b:exists (.. b.prefix :/bin/ b.name))

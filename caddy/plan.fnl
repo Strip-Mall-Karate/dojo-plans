@@ -15,7 +15,7 @@
  :svc {:run "caddy -conf /doj/svc/caddy/config/Caddyfile"}
  :exports {:port :http.port}
  :exposes [:port]
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (.. b.cache :/caddy) (.. b.prefix :/bin/caddy))

@@ -17,41 +17,40 @@ workflow."
  :build_deps [:karate/git]
  :bin_dirs [:bin]
  :download (fn [b]
-             (var v-git-ssl-cainfo
-                  (.. (b:path_for :karate/cacerts) :/ssl/certs/cacert.pem))
+             (local v-git-ssl-cainfo
+                    (.. (b:path_for :karate/cacerts) :/ssl/certs/cacert.pem))
              (b:env :GIT_SSL_CAINFO v-git-ssl-cainfo)
              (b:run [:git :clone "https://gerrit.googlesource.com/git-repo"])
              (b:run [:git :checkout (.. :tags/v b.version)] {:cwd :git-repo})
              (b:copy b.name (.. b.cache "/" b.name))
              (b:chmod (.. b.cache "/" b.name) :755)
              (b:remove (b:join b.src :git-repo)))
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin))
             (b:copy (.. b.cache "/" b.name) (.. b.prefix :/bin/ b.name))
             (b:chmod (.. b.prefix :/bin/ b.name) :0755)
-            (var v-pythonpath (b:path_for :karate/python2))
+            (local v-pythonpath (b:path_for :karate/python2))
             (let [text (b:read (.. b.prefix :/bin/ b.name))
                   ends (= (text:sub -1) "\n")
                   lines []
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
                        (pick-values 1
                                     (string.gsub line "/usr/bin/env python"
                                                  (.. (pick-values 1
-                                                                  (: v-pythonpath
-                                                                     :gsub "%%"
-                                                                     "%%%%"))
+                                                                  (v-pythonpath:gsub "%%"
+                                                                                     "%%%%"))
                                                      :/bin/python)
                                                  1))))
                 (when (not deleted) (table.insert out line))

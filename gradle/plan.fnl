@@ -40,7 +40,7 @@
                              :bin/env))
  :install (fn [b]
             (if (b:exists b.prefix)
-                (b:copy b.src (b:join b.prefix (: b.src :match "[^/]+$")))
+                (b:copy b.src (b:join b.prefix (b.src:match "[^/]+$")))
                 (b:copy b.src b.prefix)))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

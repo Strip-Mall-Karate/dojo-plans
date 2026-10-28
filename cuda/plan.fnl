@@ -4,20 +4,21 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 (fn v--fix-interpreter-in-path [b a1 a2 a3 a4]
@@ -68,7 +69,7 @@
  :unpack (fn [b]
            (b:run [:sh
                    :cuda_9.2.148_396.37_linux.run
-                   (.. :--extract= b.cache "/" (.. b.name "-" b.version))]
+                   (.. :--extract= b.cache "/" b.name "-" b.version)]
                   {:cwd b.cache})
            (each [_ program (ipairs (b:glob (.. b.name "-" b.version)
                                             :cuda-*.run))]
@@ -85,18 +86,17 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
                        (pick-values 1
                                     (string.gsub line :/usr/share
                                                  (.. (pick-values 1
-                                                                  (: b.prefix
-                                                                     :gsub "%%"
-                                                                     "%%%%"))
+                                                                  (b.prefix:gsub "%%"
+                                                                                 "%%%%"))
                                                      :/share)))))
                 (when (not deleted)
                   (set line
@@ -123,9 +123,9 @@
             (v--fix-interpreter-in-path b :pkg :*.py :karate/python2
                                         :bin/python)
             (v--fix-interpreter-in-path b :pkg :*.py :karate/coreutils :bin/env))
- :build (fn [b]
+ :build (fn [_b]
           nil)
- :check (fn [b]
+ :check (fn [_b]
           nil)
  :install (fn [b]
             (var v--cuda-bins "")
@@ -149,8 +149,8 @@
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
               (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (= n 1) (table.insert out "#define _BITS_FLOATN_H")))
@@ -202,9 +202,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -228,9 +228,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -263,9 +263,9 @@
                                :karate/busybox-static :bin/sh)
             (b:fix_interpreter [(.. b.prefix :/bin/nsight_ee_plugins_manage.sh)]
                                :karate/busybox-static :bin/sh)
-            (var v-cuda-run-path
-                 (.. b.prefix "/lib64:" b.prefix "/nvvm/lib64:"
-                     (b:path_for :gcc-libs) "/lib:" (b:path_for :glibc) :/lib))
+            (local v-cuda-run-path
+                   (.. b.prefix "/lib64:" b.prefix "/nvvm/lib64:"
+                       (b:path_for :gcc-libs) "/lib:" (b:path_for :glibc) :/lib))
             (set v--cuda-bins
                  [:nvvm/bin/cicc
                   :libnvvp/nvvp
@@ -391,6 +391,6 @@
                     v-cuda-run-path
                     (.. b.prefix :/extras/CUPTI/lib64/libcupti.so)]
                    {:cwd :pkg}))
- :strip (fn [b]
+ :strip (fn [_b]
           ;; From do_end.
           )}

@@ -26,7 +26,7 @@
  :download (fn [b]
              ;; From do_begin.
              (b.default.download b))
- :prepare (fn [b]
+ :prepare (fn [_b]
             nil)
  :build (fn [b]
           (b:copy (.. (b:path_for :karate/pkg-config) :/share/aclocal/pkg.m4)
@@ -37,5 +37,5 @@
           (b:run [:sh :autogen.sh])
           (b:run [:sh :configure (.. :--prefix= b.prefix)])
           (b:run [:make]))
- :check (fn [b]
+ :check (fn [_b]
           nil)}

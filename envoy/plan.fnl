@@ -25,9 +25,9 @@
                    out []]
                (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                  (table.insert lines l))
-               (each [n l (ipairs lines)]
+               (each [_n l (ipairs lines)]
                  (var line l)
-                 (var deleted false)
+                 (local deleted false)
                  (local after [])
                  (when (not deleted)
                    (set line
@@ -45,7 +45,7 @@
              (b:run [(.. b.cache :/download-frozen-image-v2.sh)
                      (.. b.cache :/envoy)
                      (.. "envoyproxy/envoy:" b.version)]))
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
  :unpack (fn [b]
            (b:mkdir b.src)
@@ -60,7 +60,7 @@
                    :-C
                    b.src
                    ";"]))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin/))
@@ -77,5 +77,5 @@
                     :--set-rpath
                     (or (b:getenv :LD_RUN_PATH) "")
                     (.. b.prefix :/bin/envoy)]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

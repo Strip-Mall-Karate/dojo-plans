@@ -2,7 +2,6 @@
 ;; Built from the postgresql plan, with its own changes.
 ;; The plan's do_clean is not ported: a build empties its source directory before
 ;; unpacking and starts with no state from an earlier one.
-(var v-ext-postgis-cache-path "")
 {:name :postgresql-client
  :origin :karate
  :version :9.6.11
@@ -35,10 +34,6 @@
  :include_dirs [:include]
  :download (fn [b]
              ;; From do_before.
-             (var v-ext-postgis-dirname "")
-             (set v-ext-postgis-dirname :postgis-2.4.2)
-             (set v-ext-postgis-cache-path
-                  (.. b.cache "/" v-ext-postgis-dirname))
              (b.default.download b)
              (b:download "http://download.osgeo.org/postgis/source/postgis-2.4.2.tar.gz"
                          :23625bc99ed440d53a20225721095a3f5c653b62421c4d597c8038f0d7a321d9

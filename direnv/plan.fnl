@@ -11,13 +11,13 @@
           :sha256 :3341afc4a2255a680e446230f9db5cee66f2f208f3c43cb251ba908957fe7636
           :filename :direnv.linux-amd64}
  :bin_dirs [:bin]
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (.. b.cache :/direnv.linux-amd64)
                     (.. b.prefix :/bin/ b.name))
             (b:chmod (.. b.prefix :/bin/ b.name) :0755))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

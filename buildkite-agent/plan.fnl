@@ -35,20 +35,18 @@
             (b:mkdir v-parent-go-path)
             (let [link (if (b:exists (b:join (.. v-parent-go-path :/agent) "."))
                            (b:join (.. v-parent-go-path :/agent)
-                                   (: b.src :match "[^/]+$"))
+                                   (b.src:match "[^/]+$"))
                            (.. v-parent-go-path :/agent))]
               (b:symlink b.src link)))
  :build (fn [b]
-          (var v-code "")
           (b:run [:go :install :--tags :extended]
                  {:cwd (.. v-parent-go-path :/agent)})
           (b:run [:go :build :-o :buildkite-agent :main.go]
-                 {:cwd (.. v-parent-go-path :/agent)})
-          (set v-code :0))
+                 {:cwd (.. v-parent-go-path :/agent)}))
  :install (fn [b]
             (b:mkdir (.. b.prefix :/bin))
             (if (b:exists (.. b.prefix :/bin/ b.name))
                 (b:copy b.name
                         (b:join (.. b.prefix :/bin/ b.name)
-                                (: b.name :match "[^/]+$")))
+                                (b.name:match "[^/]+$")))
                 (b:copy b.name (.. b.prefix :/bin/ b.name))))}

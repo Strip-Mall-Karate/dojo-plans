@@ -5,20 +5,21 @@
   ;; build. A Dojo build writes nothing outside itself, so the build's scripts
   ;; name the dependency's tool instead.
   (each [_ f (ipairs (b:find b.src "*"))]
-    (let [name (: f :match "[^/]+$")]
-      (when (and (or (: name :match :^configure) (: name :match :^Makefile)
-                     (: name :match :^ltmain) (: name :match "%.in$")
-                     (: name :match "%.am$") (: name :match "%.ac$")
-                     (: name :match "%.m4$") (: name :match "%.mk$")
-                     (: name :match "%.sh$") (: name :match "%.pl$")
-                     (: name :match "%.py$"))
+    (let [name (f:match "[^/]+$")]
+      (when (and (or (name:match :^configure) (name:match :^Makefile)
+                     (name:match :^ltmain) (name:match "%.in$")
+                     (name:match "%.am$") (name:match "%.ac$")
+                     (name:match "%.m4$") (name:match "%.mk$")
+                     (name:match "%.sh$") (name:match "%.pl$")
+                     (name:match "%.py$"))
                  (not (b:exists (b:join f "."))))
         (let [text (b:read f)
               escaped (pick-values 1
-                                   (: path :gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
-                                      "%%%0"))
-              (fixed n) (: text :gsub escaped
-                           (pick-values 1 (: replacement :gsub "%%" "%%%%")))]
+                                   (path:gsub "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+                                              "%%%0"))
+              (fixed n) (text:gsub escaped
+                                   (pick-values 1
+                                                (replacement:gsub "%%" "%%%%")))]
           (when (> n 0) (b:write f fixed)))))))
 
 {:name :go14
@@ -69,9 +70,9 @@
                                                          (.. text "\n"))
                                                      "(.-)\n")]
                                (table.insert lines l))
-                             (each [n l (ipairs lines)]
+                             (each [_n l (ipairs lines)]
                                (var line l)
-                               (var deleted false)
+                               (local deleted false)
                                (local after [])
                                (when (not deleted)
                                  (set line
@@ -108,9 +109,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
+              (each [_n l (ipairs lines)]
                 (var line l)
-                (var deleted false)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (set line
@@ -130,16 +131,16 @@
                                "\n"
                                ""))))
             (each [_ v-f (ipairs [:src/net/port_unix.go :src/net/parse_test.go])]
-              (let [text (b:read (if (= (: v-f :sub 1 1) "/") v-f
+              (let [text (b:read (if (= (v-f:sub 1 1) "/") v-f
                                      (b:join b.src v-f)))
                     ends (= (text:sub -1) "\n")
                     lines []
                     out []]
                 (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                   (table.insert lines l))
-                (each [n l (ipairs lines)]
+                (each [_n l (ipairs lines)]
                   (var line l)
-                  (var deleted false)
+                  (local deleted false)
                   (local after [])
                   (when (not deleted)
                     (set line
@@ -154,7 +155,7 @@
                                                    1))))
                   (when (not deleted) (table.insert out line))
                   (each [_ x (ipairs after)] (table.insert out x)))
-                (b:write (if (= (: v-f :sub 1 1) "/") v-f (b:join b.src v-f))
+                (b:write (if (= (v-f:sub 1 1) "/") v-f (b:join b.src v-f))
                          (.. (table.concat out "\n")
                              (if (and ends (> (length out) 0))
                                  "\n"
@@ -165,9 +166,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+              (each [_n l (ipairs lines)]
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line :TestLookupHost)
@@ -185,9 +186,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+              (each [_n l (ipairs lines)]
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line :TestDialDualStackLocalhost)
@@ -205,9 +206,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+              (each [_n l (ipairs lines)]
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line :TestResolveIPAddr)
@@ -225,9 +226,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+              (each [_n l (ipairs lines)]
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line :TestResolveTCPAddr)
@@ -245,9 +246,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+              (each [_n l (ipairs lines)]
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line :TestResolveUDPAddr)
@@ -265,9 +266,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+              (each [_n l (ipairs lines)]
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line :TestLookupPort)
@@ -285,9 +286,9 @@
                   out []]
               (each [l (string.gmatch (if ends text (.. text "\n")) "(.-)\n")]
                 (table.insert lines l))
-              (each [n l (ipairs lines)]
-                (var line l)
-                (var deleted false)
+              (each [_n l (ipairs lines)]
+                (local line l)
+                (local deleted false)
                 (local after [])
                 (when (not deleted)
                   (when (string.find line :TestFilePacketConn)
@@ -302,7 +303,6 @@
  :build (fn [b]
           (b:run [:bash :make.bash :--no-clean] {:cwd :src}))
  :check (fn [b]
-          (var v--clean-cmds [])
           (use-dependency-path b :/bin/pwd (b:path_for :coreutils :bin/pwd))
           (use-dependency-path b :/usr/bin/env (b:path_for :coreutils :bin/env))
           (use-dependency-path b :/bin/hostname

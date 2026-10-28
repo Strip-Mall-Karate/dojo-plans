@@ -14,15 +14,15 @@
  :deps [:karate/glibc]
  :build_deps [:karate/gcc/16.2.0 :karate/patchelf]
  :lib_dirs [:lib]
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
- :prepare (fn [b]
+ :prepare (fn [_b]
             nil)
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:mkdir (.. b.prefix :/lib))
@@ -40,7 +40,7 @@
                                     :libvtv])]
               (each [_ p (ipairs (b:glob (.. (b:path_for :gcc) :/lib)
                                          (.. v-lib ".*")))]
-                (b:copy p (b:join (.. b.prefix :/lib/) (: p :match "[^/]+$")))))
+                (b:copy p (b:join (.. b.prefix :/lib/) (p:match "[^/]+$")))))
             (each [_ p (ipairs (b:glob (.. b.prefix :/lib) :*.spec))]
               (b:remove p))
             (each [_ p (ipairs (b:glob (.. b.prefix :/lib) :*.py))]

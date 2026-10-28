@@ -20,7 +20,7 @@
                                (: (.. b.name :_linux_amd64) :match "[^/]+$")))
                (b:move (.. b.name :_linux_amd64) b.name))
            (b:chmod b.name :+x))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (if (b:exists (.. b.prefix :/bin/ b.name))

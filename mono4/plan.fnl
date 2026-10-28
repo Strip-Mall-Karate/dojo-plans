@@ -27,5 +27,4 @@
  :include_dirs [:include]
  :pconfig_dirs [:lib/pkgconfig]
  :prepare (fn [b]
-            (var v-with-gnu-ld "")
             (b:env :with_gnu_ld :yes))}

@@ -60,4 +60,4 @@
               (b:run [:make :install] {:cwd (build-dir b platform)})))
  ;; grub-install strips the modules it needs as it installs them; a strip here would
  ;; take the symbols the boot images link by.
- :strip (fn [b] nil)}
+ :strip (fn [_b] nil)}

@@ -23,7 +23,7 @@
                    :consul-1.4.4_linux_amd64.zip
                    :-d
                    (.. b.name "-" b.version)] {:cwd b.cache}))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (b:copy (b:join b.src :consul) (.. b.prefix :/bin/consul))

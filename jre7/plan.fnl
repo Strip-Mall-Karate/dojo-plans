@@ -24,11 +24,11 @@
             ;; From do_setup_environment.
             (b:runtime_env :JAVA_HOME b.prefix)
             (b.default.prepare b))
- :build (fn [b]
+ :build (fn [_b]
           nil)
  :install (fn [b]
             (each [_ p (ipairs (b:glob (.. b.cache :/jre7-7u80) "*"))]
-              (b:copy p (b:join b.prefix (: p :match "[^/]+$"))))
+              (b:copy p (b:join b.prefix (p:match "[^/]+$"))))
             (b:log (.. "Setting interpreter for '" b.prefix "/bin/java' '"
                        (b:path_for :glibc) "/lib/ld-linux-x86-64.so.2'"))
             (b:log (.. "Setting rpath for '" b.prefix "/bin/java' to '"
@@ -69,5 +69,5 @@
                     (or (b:getenv :LD_RUN_PATH) "")
                     "{}"
                     ";"] {:cwd (.. b.cache :/jre7-7u80)}))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}

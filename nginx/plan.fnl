@@ -66,10 +66,10 @@
             (b:run [:make :install])
             (b:mkdir (.. b.prefix :/sbin))
             (if (b:exists (.. b.prefix :/sbin))
-                (b:copy (.. b.cache "/" (.. b.name "-" b.version) :/objs/nginx)
+                (b:copy (.. b.cache "/" b.name "-" b.version :/objs/nginx)
                         (b:join (.. b.prefix :/sbin)
-                                (: (.. b.cache "/" (.. b.name "-" b.version)
+                                (: (.. b.cache "/" b.name "-" b.version
                                        :/objs/nginx)
                                    :match "[^/]+$")))
-                (b:copy (.. b.cache "/" (.. b.name "-" b.version) :/objs/nginx)
+                (b:copy (.. b.cache "/" b.name "-" b.version :/objs/nginx)
                         (.. b.prefix :/sbin))))}

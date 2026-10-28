@@ -10,18 +10,18 @@
  :deps [:karate/bash :karate/coreutils :karate/php :karate/which]
  :build_deps [:karate/composer]
  :bin_dirs [:bin/vendor/bin]
- :download (fn [b]
+ :download (fn [_b]
              nil)
- :verify (fn [b]
+ :verify (fn [_b]
            nil)
- :unpack (fn [b]
+ :unpack (fn [_b]
            nil)
  :build (fn [b]
           (b:run [:composer :global :require "drush/drush:8.*"]))
  :install (fn [b]
             (each [_ p (ipairs (b:glob (.. (or (b:getenv :HOME) "") :/.composer)
                                        "*"))]
-              (b:copy p (b:join (.. b.prefix :/bin/) (: p :match "[^/]+$"))))
+              (b:copy p (b:join (.. b.prefix :/bin/) (p:match "[^/]+$"))))
             (b:fix_interpreter [(.. b.prefix :/bin/vendor/bin/drush)]
                                :karate/coreutils :bin/env)
             (b:fix_interpreter [(.. b.prefix :/bin/vendor/bin/drush.launcher)]

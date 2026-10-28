@@ -8,7 +8,7 @@
  :description "Production-Grade Container Scheduling and Management"
  :upstream_url "https://github.com/kubernetes/kubernetes"
  :deps [:karate/kubernetes/1.11.2]
- :build (fn [b]
+ :build (fn [_b]
           nil)
- :install (fn [b]
+ :install (fn [_b]
             nil)}

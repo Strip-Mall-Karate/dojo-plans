@@ -29,5 +29,5 @@
           (b:run [:./configure :--prefix b.prefix])
           (b:run [:make :lib-ext])
           (b:run [:make]))
- :strip (fn [b]
+ :strip (fn [_b]
           nil)}
