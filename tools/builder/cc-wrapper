@@ -4,20 +4,28 @@
 # The container's gcc, g++, cc and c++ for a first build, before karate's gcc exists. A program
 # linked against a karate glibc runs only with that glibc's dynamic linker, and the host compiler
 # names the host's, so when the build's LD_RUN_PATH holds a karate glibc this adds that glibc's
-# dynamic linker to a link. Compiling and preprocessing pass through untouched.
+# dynamic linker to a link. Compiling and preprocessing pass through untouched, and so does a call
+# with no input files, such as `g++ -v`: given the linker option, the driver links nothing and
+# fails, and libtool, which runs `g++ -v` to decide whether C++ works, then builds no C++ library.
 set -euo pipefail
 
 name=$(basename "$0")
 real="/usr/bin/${name}"
 
 linking=yes
+inputs=no
 for arg in "$@"; do
   case "${arg}" in
   -c | -S | -E | -M | -MM) linking=no ;;
   # musl-gcc links against musl, with its own dynamic linker.
   *musl-gcc.specs) linking=no ;;
+  -*) ;;
+  *) inputs=yes ;;
   esac
 done
+if [[ "${inputs}" == no ]]; then
+  linking=no
+fi
 
 linker=""
 if [[ "${linking}" == yes ]]; then
